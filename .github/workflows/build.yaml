@@ -1,0 +1,59 @@
+name: Build Script
+
+on:
+    workflow_dispatch:
+    push:
+        branches:
+            - master
+        paths:
+            - src/**
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+        - name: Checkout
+          uses: actions/checkout@v3
+
+        - name: Setup Node.js
+          uses: actions/setup-node@v3
+          with:
+            node-version: 18.18.0
+            cache: 'npm'
+
+        - name: Install Dependencies
+          run: npm install && npm ci
+
+        - name: Build
+          id: build
+          run: |
+            npm run build
+            echo "BUILD_STATUS=success" >> "$GITHUB_OUTPUT"
+
+        - name: Organize Files
+          id: organize
+          if: steps.build.outputs.BUILD_STATUS == 'success' && !cancelled()
+          run: |
+            cd dist
+            echo "FIRMWARE=$PWD" >> "$GITHUB_OUTPUT"
+            echo "ORGANIZE_STATUS=success" >> "$GITHUB_OUTPUT"
+
+        - name: Generate Release Tag
+          id: tag
+          if: steps.organize.outputs.ORGANIZE_STATUS == 'success' && !cancelled()
+          run: |
+            echo "RELEASE_TAG=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+            touch release.txt
+            echo "更新日志[CHANGELOG.md](https://github.com/ADJazzzz/BLSPAM/blob/main/CHANGELOG.md)" >> release.txt
+            echo "TAG_STATUS=success" >> "$GITHUB_OUTPUT"
+
+        - name: Upload To Release
+          uses: softprops/action-gh-release@v0.1.15
+          if: steps.tag.outputs.TAG_STATUS == 'success' && !cancelled()
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            tag_name: ${{ steps.tag.outputs.RELEASE_TAG }}
+            body_path: release.txt
+            files: ${{ steps.organize.outputs.FIRMWARE }}/*
