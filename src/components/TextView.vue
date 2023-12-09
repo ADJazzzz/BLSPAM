@@ -86,7 +86,7 @@ const rules = {
         <n-form-item>
             <n-space align="center">
                 <n-form-item label="时间间隔" path="timeinterval">
-                    <n-popover trigger="hover">
+                    <n-popover trigger="hover" style="max-width: 300px;" placement="bottom">
                         <template #trigger>
                             <n-input-number
                                 clearable
