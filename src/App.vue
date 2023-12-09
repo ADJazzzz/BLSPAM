@@ -100,7 +100,7 @@ observer.observe(document.body, { childList: true, subtree: true })
                         :collapsed-width="64"
                         :width="240"
                         :native-scrollbar="false"
-                        style="max-height: 320px"
+                        content-style="max-height: 320px"
                         :collapsed="uiStore.uiConfig.isCollapsed"
                         :on-update:collapsed="handleCollapse"
                     >
