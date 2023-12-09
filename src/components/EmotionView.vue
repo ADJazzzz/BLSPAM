@@ -104,7 +104,7 @@ const handleStopSpamer = () => {
         <n-gi>
             <n-form :rules="rules" :disabled="moduleStore.moduleConfig.EmotionSpam.enable">
                 <n-form-item label="时间间隔" path="timeinterval">
-                    <n-popover trigger="hover" style="max-width: 300px;">
+                    <n-popover trigger="hover" style="max-width: 300px">
                         <template #trigger>
                             <n-input-number
                                 clearable

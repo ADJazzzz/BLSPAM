@@ -20,7 +20,4 @@ async function minifyUserscript(inputPath, outputPath) {
     console.log(`\n压缩完成: ${inputPath} -> ${outputPath}`)
 }
 
-minifyUserscript(
-    'dist/bilibili-live-spamer.user.js',
-    'dist/bilibili-live-spamer.min.user.js'
-)
+minifyUserscript('dist/bilibili-live-spamer.user.js', 'dist/bilibili-live-spamer.min.user.js')
