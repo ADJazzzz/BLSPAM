@@ -72,6 +72,10 @@ const renderPanel = () => {
     })
 }
 
+const handleCollapse = (collapsed: boolean) => {
+    uiStore.uiConfig.isCollapsed = collapsed
+}
+
 const observer = new MutationObserver((mutationsList, observer) => {
     const controlPanel = dq('#control-panel-ctnr-box')
     if (controlPanel) {
@@ -97,6 +101,8 @@ observer.observe(document.body, { childList: true, subtree: true })
                         :width="240"
                         :native-scrollbar="false"
                         style="max-height: 320px"
+                        :collapsed="uiStore.uiConfig.isCollapsed"
+                        :on-update:collapsed="handleCollapse"
                     >
                         <PanelMenu />
                     </n-layout-sider>

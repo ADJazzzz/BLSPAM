@@ -8,7 +8,8 @@ interface defaultValues {
 export default {
     ui: {
         activeMenuIndex: 'TextView',
-        isShowPanel: false
+        isShowPanel: false,
+        isCollapsed: false
     },
     modules: {
         TextSpam: {

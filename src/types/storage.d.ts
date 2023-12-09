@@ -19,6 +19,7 @@ type menuIndex = 'TextView' | 'EmotionView'
 interface uiConfig {
     activeMenuIndex: menuIndex
     isShowPanel: boolean
+    isCollapsed: boolean
 }
 
 type moduleEmitter = {
