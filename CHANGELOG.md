@@ -1,4 +1,4 @@
-## [1.0.2](https://github.com/ADJazzzz/BLSPAM/compare/1.0.2...1.0.1) 2023-12-09
+## [1.0.2](https://github.com/ADJazzzz/BLSPAM/compare/1.0.1...1.0.2) 2023-12-09
 
 ### 调整
 
