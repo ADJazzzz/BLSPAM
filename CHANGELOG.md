@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/ADJazzzz/BLSPAM/compare/1.0.2...1.0.3) 2023-12-16
+
+### 调整
+
+- 修复侧边栏边框位置错误
+- 添加分割线分离表情与设置
+
 ## [1.0.2](https://github.com/ADJazzzz/BLSPAM/compare/1.0.1...1.0.2) 2023-12-09
 
 ### 调整
