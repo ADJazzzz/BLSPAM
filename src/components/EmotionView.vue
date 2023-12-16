@@ -100,6 +100,7 @@ const handleStopSpamer = () => {
             </n-space>
         </n-checkbox-group>
     </div>
+    <n-divider style="margin: 15px 0" />
     <n-grid x-gap="2" :cols="2" style="align-items: center; margin-top: 5px">
         <n-gi>
             <n-form :rules="rules" :disabled="moduleStore.moduleConfig.EmotionSpam.enable">
