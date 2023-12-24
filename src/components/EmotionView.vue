@@ -135,7 +135,11 @@ const handleStopSpamer = () => {
                     type="info"
                     @click="
                         moduleStore.moduleConfig.EmotionSpam.msg = biliStore.emotionData.flatMap(
-                            (emoticons) => emoticons.emoticons.map((unid) => unid.emoticon_unique)
+                            (emoticons) => {
+                                return emoticons.emoticons
+                                    .filter((data) => data.perm !== 0)
+                                    .map((data) => data.emoticon_unique)
+                            }
                         )
                     "
                 >
