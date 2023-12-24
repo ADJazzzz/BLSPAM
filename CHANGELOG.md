@@ -1,3 +1,9 @@
+## [1.0.4](https://github.com/ADJazzzz/BLSPAM/compare/1.0.3...1.0.4) 2023-12-24
+
+## 修复
+
+- 修复表情全选功能会选上没解锁表情
+
 ## [1.0.3](https://github.com/ADJazzzz/BLSPAM/compare/1.0.2...1.0.3) 2023-12-16
 
 ### 调整
