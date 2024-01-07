@@ -1,6 +1,7 @@
 name: 新功能请求
 description: 你有新的功能请求？在这里填写下吧
 labels: ['enhancement']
+title: "[Feature] "
 assignees: ADJazzzz
 
 body:
