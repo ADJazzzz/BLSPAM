@@ -1,0 +1,70 @@
+name: Bug反馈
+description: 你发现了BUG？填写一下进行反馈吧
+labels: ['bug']
+assignees: ADJazzzz
+
+body:
+    - type: markdown
+      attributes:
+          value: |
+              感谢你的反馈！会尽快修复的，大概
+
+    - type: textarea
+      id: describe
+      validations:
+          required: true
+      attributes:
+          label: 'bug描述'
+          description: |
+              描述你所遇到的bug
+
+    - type: textarea
+      id: picture
+      validations:
+          required: false
+      attributes:
+          label: '截图'
+          description: |
+              可以提供有关截图
+
+    - type: dropdown
+      id: browsers
+      validations:
+          required: true
+      attributes:
+          label: '浏览器'
+          description: |
+              使用的浏览器
+          options:
+              - Firefox
+              - Chrome
+              - Safari
+              - Microsoft Edge
+              - 其他（如360等）
+
+    - type: input
+      id: scriptmanager
+      validations:
+          required: true
+      attributes:
+          label: '脚本管理器'
+          description: |
+              使用的用户脚本管理器名称和版本号
+
+    - type: input
+      id: version
+      validations:
+          required: true
+      attributes:
+          label: '脚本版本号'
+          description: |
+              使用的脚本版本号
+
+    - type: textarea
+      id: extra
+      validations:
+          required: false
+      attributes:
+          label: '其他'
+          description: |
+              若有其他想要补充的内容，在这里说明
