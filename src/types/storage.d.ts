@@ -4,6 +4,7 @@ interface modulesConfig {
         msg: string
         timeinterval: number
         textinterval: number
+        timelimit: number
     }
 
     EmotionSpam: {
@@ -11,6 +12,7 @@ interface modulesConfig {
         timeinterval: number
         emotionViewSelectedID: number
         msg: string[]
+        timelimit: number
     }
 }
 

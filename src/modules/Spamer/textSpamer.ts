@@ -9,52 +9,80 @@ class TextSpamer extends BaseModule {
         return msg.replace(/\n/g, '')
     }
 
+    private formatTime(time: number): number {
+        return time * 1000
+    }
+
     private async cycleSendDanmu(
-        formattedmsg: string,
+        msg: string,
         roomid: number,
         timeinterval: number,
-        textinterval: number
+        textinterval: number,
+        timelimit: number
     ): Promise<void> {
-        const slices: string[] = []
-        let currentIndex = 0
+        const sendMsg = async (message: string) => {
+            if (this.config.enable) {
+                await BILIAPI.sendMsg(message, roomid)
+            }
+        }
 
-        if (formattedmsg.length < textinterval) {
-            const short = setInterval(async () => {
-                if (this.config.enable) {
-                    await BILIAPI.sendMsg(formattedmsg, roomid)
-                } else {
-                    clearInterval(short)
-                }
-            }, timeinterval)
+        if (msg.length < textinterval) {
+            const shortInterval = setInterval(() => sendMsg(msg), timeinterval)
+            if (!this.config.enable) {
+                clearInterval(shortInterval)
+            }
+            if (timelimit !== 0) {
+                setTimeout(() => {
+                    clearInterval(shortInterval)
+                    this.config.enable = false
+                }, timelimit)
+            }
         } else {
-            for (let i = 0; i < formattedmsg.length; i += textinterval) {
-                slices.push(formattedmsg.slice(i, i + textinterval))
+            const slices: string[] = []
+            for (let i = 0; i < msg.length; i += textinterval) {
+                slices.push(msg.slice(i, i + textinterval))
             }
 
-            const long = setInterval(async () => {
-                if (this.config.enable) {
-                    if (currentIndex < slices.length) {
-                        await BILIAPI.sendMsg(slices[currentIndex], roomid)
-                        currentIndex++
-                    } else {
-                        currentIndex = 0
-                    }
+            let currentIndex = 0
+
+            const sendMsgLong = async () => {
+                if (currentIndex < slices.length) {
+                    await sendMsg(slices[currentIndex])
+                    currentIndex++
                 } else {
-                    clearInterval(long)
+                    currentIndex = 0
                 }
-            }, timeinterval)
+            }
+
+            const longInterval = setInterval(sendMsgLong, timeinterval)
+            if (!this.config.enable) {
+                clearInterval(longInterval)
+            }
+            if (timelimit !== 0) {
+                setTimeout(() => {
+                    clearInterval(longInterval)
+                    this.config.enable = false
+                }, timelimit)
+            }
         }
     }
 
     public async run(): Promise<void> {
         this.logger.log('文字独轮车准备就绪')
         this.moduleStore.emitter.on('TextSpam', async () => {
-            const formattedmsg = this.formatMsg(this.config.msg)
+            const formattedMsg = this.formatMsg(this.config.msg)
             const roomid = useBiliStore().BilibiliLive?.ROOMID
-            const timeinterval = this.config.timeinterval
+            const timeinterval = this.formatTime(this.config.timeinterval)
             const textinterval = this.config.textinterval
+            const formattedTime = this.formatTime(this.config.timelimit)
             if (roomid) {
-                await this.cycleSendDanmu(formattedmsg, roomid, timeinterval, textinterval)
+                await this.cycleSendDanmu(
+                    formattedMsg,
+                    roomid,
+                    timeinterval,
+                    textinterval,
+                    formattedTime
+                )
             }
         })
     }

@@ -29,16 +29,29 @@ const handleClick = (id: number) => {
 const handleUpdateValue = (value: (string | number)[]) => {
     moduleStore.moduleConfig.EmotionSpam.msg = value.map(String)
 }
+
 const rules = {
     timeinterval: {
         required: true,
-        message: '最小为1000',
+        message: '最小为1',
         trigger: ['input', 'blur'],
         validator: () => {
-            if (moduleStore.moduleConfig.EmotionSpam.timeinterval >= 1000) {
-                return true
-            } else {
+            if (moduleStore.moduleConfig.EmotionSpam.timeinterval === null) {
                 return false
+            } else {
+                return true
+            }
+        }
+    },
+    timelimit: {
+        required: true,
+        message: '输入一个大于等于0的数字',
+        trigger: ['input', 'blur'],
+        validator: () => {
+            if (moduleStore.moduleConfig.TextSpam.timelimit === null) {
+                return false
+            } else {
+                return true
             }
         }
     }
@@ -46,7 +59,10 @@ const rules = {
 const handleStartSpamer = () => {
     if (moduleStore.moduleConfig.EmotionSpam.msg.length === 0) {
         message.error('没选表情你车什么?')
-    } else if (moduleStore.moduleConfig.EmotionSpam.timeinterval === null) {
+    } else if (
+        moduleStore.moduleConfig.EmotionSpam.timeinterval === null ||
+        moduleStore.moduleConfig.EmotionSpam.timelimit === null
+    ) {
         message.error('没参数你车什么?')
     } else {
         uiStore.uiConfig.isShowPanel = false
@@ -111,14 +127,33 @@ const handleStopSpamer = () => {
                                 clearable
                                 :show-button="false"
                                 v-model:value="moduleStore.moduleConfig.EmotionSpam.timeinterval"
-                                placeholder="默认3000，单位为毫秒(ms)"
-                                min="1000"
+                                placeholder="默认3，单位为秒"
+                                min="1"
                                 :precision="0"
-                            />
+                            >
+                                <template #suffix> 秒 </template>
+                            </n-input-number>
                         </template>
                         <span
-                            >弹幕发送时间间隔，默认为3秒（3000ms），也是b站最快的发弹幕频率，当然这里可以设置小于该值</span
+                            >弹幕发送时间间隔，默认为3秒，也是b站最快的发弹幕频率，当然这里可以设置小于该值</span
                         >
+                    </n-popover>
+                </n-form-item>
+                <n-form-item label="时间限制" path="timelimit">
+                    <n-popover trigger="hover">
+                        <template #trigger>
+                            <n-input-number
+                                clearable
+                                :show-button="false"
+                                v-model:value="moduleStore.moduleConfig.EmotionSpam.timelimit"
+                                placeholder="默认0"
+                                min="0"
+                                :precision="0"
+                            >
+                                <template #suffix> 秒 </template>
+                            </n-input-number>
+                        </template>
+                        <span>设定一个时间，计时完成后自动停止，单位为秒，0为关闭该功能</span>
                     </n-popover>
                 </n-form-item>
             </n-form>

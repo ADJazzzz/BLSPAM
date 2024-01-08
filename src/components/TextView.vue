@@ -14,7 +14,6 @@ import { useModuleStore } from '../stores/useModuleStore'
 
 const uiStore = useUIStore()
 const moduleStore = useModuleStore()
-
 const message = useMessage()
 
 const handleStartSpamer = () => {
@@ -25,7 +24,8 @@ const handleStartSpamer = () => {
         message.error('没内容你车什么?')
     } else if (
         moduleStore.moduleConfig.TextSpam.textinterval === null ||
-        moduleStore.moduleConfig.TextSpam.timeinterval === null
+        moduleStore.moduleConfig.TextSpam.timeinterval === null ||
+        moduleStore.moduleConfig.TextSpam.timelimit === null
     ) {
         message.error('没参数你车什么?')
     } else {
@@ -36,7 +36,6 @@ const handleStartSpamer = () => {
         })
     }
 }
-
 const handleStopSpamer = () => {
     moduleStore.moduleConfig.TextSpam.enable = false
 }
@@ -47,10 +46,10 @@ const rules = {
         message: '最小为1000',
         trigger: ['input', 'blur'],
         validator: () => {
-            if (moduleStore.moduleConfig.TextSpam.timeinterval >= 1000) {
-                return true
-            } else {
+            if (moduleStore.moduleConfig.TextSpam.timeinterval === null) {
                 return false
+            } else {
+                return true
             }
         }
     },
@@ -59,10 +58,22 @@ const rules = {
         message: '输入一个大于0，小于30的数字',
         trigger: ['input', 'blur'],
         validator: () => {
-            if (moduleStore.moduleConfig.TextSpam.textinterval >= 1) {
-                return true
-            } else {
+            if (moduleStore.moduleConfig.TextSpam.textinterval === null) {
                 return false
+            } else {
+                return true
+            }
+        }
+    },
+    timelimit: {
+        required: true,
+        message: '输入一个大于等于0的数字',
+        trigger: ['input', 'blur'],
+        validator: () => {
+            if (moduleStore.moduleConfig.TextSpam.timelimit === null) {
+                return false
+            } else {
+                return true
             }
         }
     },
@@ -92,13 +103,15 @@ const rules = {
                                 clearable
                                 :show-button="false"
                                 v-model:value="moduleStore.moduleConfig.TextSpam.timeinterval"
-                                placeholder="默认3000，单位为毫秒(ms)"
-                                min="1000"
+                                placeholder="默认3，单位为秒"
+                                min="1"
                                 :precision="0"
-                            />
+                            >
+                                <template #suffix> 秒 </template>
+                            </n-input-number>
                         </template>
                         <span
-                            >弹幕发送时间间隔，默认为3秒（3000ms），也是b站最快的发弹幕频率，当然这里可以设置小于该值</span
+                            >弹幕发送时间间隔，默认为3秒，也是b站最快的发弹幕频率，当然这里可以设置小于该值</span
                         >
                     </n-popover>
                 </n-form-item>
@@ -116,6 +129,23 @@ const rules = {
                             />
                         </template>
                         <span>每次弹幕发送字数，最大为30</span>
+                    </n-popover>
+                </n-form-item>
+                <n-form-item label="时间限制" path="timelimit">
+                    <n-popover trigger="hover">
+                        <template #trigger>
+                            <n-input-number
+                                clearable
+                                :show-button="false"
+                                v-model:value="moduleStore.moduleConfig.TextSpam.timelimit"
+                                placeholder="默认0"
+                                min="0"
+                                :precision="0"
+                            >
+                                <template #suffix> 秒 </template>
+                            </n-input-number>
+                        </template>
+                        <span>设定一个时间，计时完成后自动停止，单位为秒，0为关闭该功能</span>
                     </n-popover>
                 </n-form-item>
             </n-space>
