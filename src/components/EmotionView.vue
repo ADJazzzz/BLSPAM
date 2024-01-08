@@ -78,7 +78,7 @@ const handleStopSpamer = () => {
 </script>
 
 <template>
-    <n-space justify="start">
+    <n-space id="emotionTab" justify="start">
         <div
             style="padding: 0 5px"
             v-for="data in biliStore.emotionData"
@@ -90,7 +90,10 @@ const handleStopSpamer = () => {
         </div>
     </n-space>
     <n-divider style="margin: 15px 0" />
-    <div v-if="moduleStore.moduleConfig.EmotionSpam.emotionViewSelectedID !== null">
+    <div
+        id="emotionContent"
+        v-if="moduleStore.moduleConfig.EmotionSpam.emotionViewSelectedID !== null"
+    >
         <n-checkbox-group
             v-model:value="moduleStore.moduleConfig.EmotionSpam.msg"
             @update:value="handleUpdateValue"
@@ -120,42 +123,46 @@ const handleStopSpamer = () => {
     <n-grid x-gap="2" :cols="2" style="align-items: center; margin-top: 5px">
         <n-gi>
             <n-form :rules="rules" :disabled="moduleStore.moduleConfig.EmotionSpam.enable">
-                <n-form-item label="时间间隔" path="timeinterval">
-                    <n-popover trigger="hover" style="max-width: 300px">
-                        <template #trigger>
-                            <n-input-number
-                                clearable
-                                :show-button="false"
-                                v-model:value="moduleStore.moduleConfig.EmotionSpam.timeinterval"
-                                placeholder="默认3，单位为秒"
-                                min="1"
-                                :precision="0"
+                <n-space>
+                    <n-form-item label="时间间隔" path="timeinterval">
+                        <n-popover trigger="hover" style="max-width: 300px">
+                            <template #trigger>
+                                <n-input-number
+                                    clearable
+                                    :show-button="false"
+                                    v-model:value="
+                                        moduleStore.moduleConfig.EmotionSpam.timeinterval
+                                    "
+                                    placeholder="默认3，单位为秒"
+                                    min="1"
+                                    :precision="0"
+                                >
+                                    <template #suffix> 秒 </template>
+                                </n-input-number>
+                            </template>
+                            <span
+                                >弹幕发送时间间隔，默认为3秒，也是b站最快的发弹幕频率，当然这里可以设置小于该值</span
                             >
-                                <template #suffix> 秒 </template>
-                            </n-input-number>
-                        </template>
-                        <span
-                            >弹幕发送时间间隔，默认为3秒，也是b站最快的发弹幕频率，当然这里可以设置小于该值</span
-                        >
-                    </n-popover>
-                </n-form-item>
-                <n-form-item label="时间限制" path="timelimit">
-                    <n-popover trigger="hover">
-                        <template #trigger>
-                            <n-input-number
-                                clearable
-                                :show-button="false"
-                                v-model:value="moduleStore.moduleConfig.EmotionSpam.timelimit"
-                                placeholder="默认0"
-                                min="0"
-                                :precision="0"
-                            >
-                                <template #suffix> 秒 </template>
-                            </n-input-number>
-                        </template>
-                        <span>设定一个时间，计时完成后自动停止，单位为秒，0为关闭该功能</span>
-                    </n-popover>
-                </n-form-item>
+                        </n-popover>
+                    </n-form-item>
+                    <n-form-item label="时间限制" path="timelimit">
+                        <n-popover trigger="hover">
+                            <template #trigger>
+                                <n-input-number
+                                    clearable
+                                    :show-button="false"
+                                    v-model:value="moduleStore.moduleConfig.EmotionSpam.timelimit"
+                                    placeholder="默认0"
+                                    min="0"
+                                    :precision="0"
+                                >
+                                    <template #suffix> 秒 </template>
+                                </n-input-number>
+                            </template>
+                            <span>设定一个时间，计时完成后自动停止，单位为秒，0为关闭该功能</span>
+                        </n-popover>
+                    </n-form-item>
+                </n-space>
             </n-form>
         </n-gi>
         <n-gi>
