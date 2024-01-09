@@ -48,7 +48,7 @@ const rules = {
         message: '输入一个大于等于0的数字',
         trigger: ['input', 'blur'],
         validator: () => {
-            if (moduleStore.moduleConfig.TextSpam.timelimit === null) {
+            if (moduleStore.moduleConfig.EmotionSpam.timelimit === null) {
                 return false
             } else {
                 return true
