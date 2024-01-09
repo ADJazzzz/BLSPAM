@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {
     NAvatar,
-    NSpace,
     NDivider,
     NCheckboxGroup,
     NCheckbox,
@@ -10,8 +9,7 @@ import {
     NForm,
     NFormItem,
     NInputNumber,
-    NGrid,
-    NGi,
+    NFlex,
     useMessage
 } from 'naive-ui'
 import { useBiliStore } from '../stores/useBiliStore'
@@ -78,7 +76,7 @@ const handleStopSpamer = () => {
 </script>
 
 <template>
-    <n-space id="emotionTab" justify="start">
+    <n-flex id="emotionTab" justify="start">
         <div
             style="padding: 0 5px"
             v-for="data in biliStore.emotionData"
@@ -88,7 +86,7 @@ const handleStopSpamer = () => {
         >
             <n-avatar color="white" :src="data.current_cover" />
         </div>
-    </n-space>
+    </n-flex>
     <n-divider style="margin: 15px 0" />
     <div
         id="emotionContent"
@@ -98,7 +96,7 @@ const handleStopSpamer = () => {
             v-model:value="moduleStore.moduleConfig.EmotionSpam.msg"
             @update:value="handleUpdateValue"
         >
-            <n-space style="padding-top: 5px">
+            <n-flex style="padding-top: 5px">
                 <n-checkbox
                     :value="data.emoticon_unique"
                     v-for="data in biliStore.emotionData.find(
@@ -116,95 +114,89 @@ const handleStopSpamer = () => {
                         <span>{{ data.emoji }}</span>
                     </n-popover>
                 </n-checkbox>
-            </n-space>
+            </n-flex>
         </n-checkbox-group>
     </div>
     <n-divider style="margin: 15px 0" />
-    <n-grid x-gap="2" :cols="2" style="align-items: center; margin-top: 5px">
-        <n-gi>
-            <n-form :rules="rules" :disabled="moduleStore.moduleConfig.EmotionSpam.enable">
-                <n-space>
-                    <n-form-item label="时间间隔" path="timeinterval">
-                        <n-popover trigger="hover" style="max-width: 300px">
-                            <template #trigger>
-                                <n-input-number
-                                    clearable
-                                    :show-button="false"
-                                    v-model:value="
-                                        moduleStore.moduleConfig.EmotionSpam.timeinterval
-                                    "
-                                    placeholder="默认3，单位为秒"
-                                    min="1"
-                                    :precision="0"
-                                >
-                                    <template #suffix> 秒 </template>
-                                </n-input-number>
-                            </template>
-                            <span
-                                >弹幕发送时间间隔，默认为3秒，也是b站最快的发弹幕频率，当然这里可以设置小于该值</span
+    <n-flex justify="space-between" align="center">
+        <n-form :rules="rules" :disabled="moduleStore.moduleConfig.EmotionSpam.enable">
+            <n-flex>
+                <n-form-item label="时间间隔" path="timeinterval">
+                    <n-popover trigger="hover" style="max-width: 300px">
+                        <template #trigger>
+                            <n-input-number
+                                clearable
+                                :show-button="false"
+                                v-model:value="moduleStore.moduleConfig.EmotionSpam.timeinterval"
+                                placeholder="默认3，单位为秒"
+                                min="1"
+                                :precision="0"
                             >
-                        </n-popover>
-                    </n-form-item>
-                    <n-form-item label="时间限制" path="timelimit">
-                        <n-popover trigger="hover">
-                            <template #trigger>
-                                <n-input-number
-                                    clearable
-                                    :show-button="false"
-                                    v-model:value="moduleStore.moduleConfig.EmotionSpam.timelimit"
-                                    placeholder="默认0"
-                                    min="0"
-                                    :precision="0"
-                                >
-                                    <template #suffix> 秒 </template>
-                                </n-input-number>
-                            </template>
-                            <span>设定一个时间，计时完成后自动停止，单位为秒，0为关闭该功能</span>
-                        </n-popover>
-                    </n-form-item>
-                </n-space>
-            </n-form>
-        </n-gi>
-        <n-gi>
-            <n-space
-                justify="end"
-                style="margin-top: 10px"
-                v-if="!moduleStore.moduleConfig.EmotionSpam.enable"
+                                <template #suffix> 秒 </template>
+                            </n-input-number>
+                        </template>
+                        <span
+                            >弹幕发送时间间隔，默认为3秒，也是b站最快的发弹幕频率，当然这里可以设置小于该值</span
+                        >
+                    </n-popover>
+                </n-form-item>
+                <n-form-item label="时间限制" path="timelimit">
+                    <n-popover trigger="hover">
+                        <template #trigger>
+                            <n-input-number
+                                clearable
+                                :show-button="false"
+                                v-model:value="moduleStore.moduleConfig.EmotionSpam.timelimit"
+                                placeholder="默认0"
+                                min="0"
+                                :precision="0"
+                            >
+                                <template #suffix> 秒 </template>
+                            </n-input-number>
+                        </template>
+                        <span>设定一个时间，计时完成后自动停止，单位为秒，0为关闭该功能</span>
+                    </n-popover>
+                </n-form-item>
+            </n-flex>
+        </n-form>
+        <n-flex
+            justify="end"
+            style="margin-top: 10px"
+            v-if="!moduleStore.moduleConfig.EmotionSpam.enable"
+        >
+            <n-button
+                v-if="!moduleStore.moduleConfig.EmotionSpam.msg.length"
+                round
+                type="info"
+                @click="
+                    moduleStore.moduleConfig.EmotionSpam.msg = biliStore.emotionData.flatMap(
+                        (emoticons) => {
+                            return emoticons.emoticons
+                                .filter((data) => data.perm !== 0)
+                                .map((data) => data.emoticon_unique)
+                        }
+                    )
+                "
             >
-                <n-button
-                    v-if="!moduleStore.moduleConfig.EmotionSpam.msg.length"
-                    round
-                    type="info"
-                    @click="
-                        moduleStore.moduleConfig.EmotionSpam.msg = biliStore.emotionData.flatMap(
-                            (emoticons) => {
-                                return emoticons.emoticons
-                                    .filter((data) => data.perm !== 0)
-                                    .map((data) => data.emoticon_unique)
-                            }
-                        )
-                    "
-                >
-                    全选
-                </n-button>
-                <n-button
-                    v-if="moduleStore.moduleConfig.EmotionSpam.msg.length"
-                    round
-                    type="info"
-                    @click="moduleStore.moduleConfig.EmotionSpam.msg = []"
-                    >清空</n-button
-                >
-                <n-button round @click="uiStore.uiConfig.isShowPanel = false">取消</n-button>
-                <n-button round type="primary" @click="handleStartSpamer">开车</n-button>
-            </n-space>
-            <n-space
-                justify="end"
-                style="margin-top: 10px"
-                v-if="moduleStore.moduleConfig.EmotionSpam.enable"
+                全选
+            </n-button>
+            <n-button
+                v-if="moduleStore.moduleConfig.EmotionSpam.msg.length"
+                round
+                type="info"
+                @click="moduleStore.moduleConfig.EmotionSpam.msg = []"
+                >清空</n-button
             >
-                <n-button round @click="uiStore.uiConfig.isShowPanel = false">取消</n-button>
-                <n-button round type="error" @click="handleStopSpamer">停车</n-button>
-            </n-space>
-        </n-gi>
-    </n-grid>
+            <n-button round @click="uiStore.uiConfig.isShowPanel = false">取消</n-button>
+            <n-button round type="primary" @click="handleStartSpamer">开车</n-button>
+        </n-flex>
+        <n-flex
+            justify="end"
+            style="margin-top: 10px"
+            v-if="moduleStore.moduleConfig.EmotionSpam.enable"
+        >
+            <n-button round @click="uiStore.uiConfig.isShowPanel = false">取消</n-button>
+            <n-button round type="error" @click="handleStopSpamer">停车</n-button>
+        </n-flex>
+    </n-flex>
 </template>

@@ -6,6 +6,7 @@ import type { MenuOption } from 'naive-ui'
 import { useUIStore } from '../stores/useUIStore'
 import TextIcon from './Icons/TextIcon.vue'
 import EmotionIcon from './Icons/EmotionIcon.vue'
+import TextGroupIcon from './Icons/TextGroupIcon.vue'
 
 const uiStore = useUIStore()
 
@@ -18,6 +19,11 @@ const menuOptions: MenuOption[] = [
         label: '文字',
         key: 'TextView',
         icon: renderIcon(TextIcon)
+    },
+    {
+        label: '文字池',
+        key: 'TextGroupView',
+        icon: renderIcon(TextGroupIcon)
     },
     {
         label: '表情',

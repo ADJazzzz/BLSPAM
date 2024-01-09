@@ -6,7 +6,7 @@ import {
     NInput,
     NInputNumber,
     NPopover,
-    NSpace,
+    NFlex,
     useMessage
 } from 'naive-ui'
 import { useUIStore } from '../stores/useUIStore'
@@ -95,7 +95,7 @@ const rules = {
 <template>
     <n-form :rules="rules" :disabled="moduleStore.moduleConfig.TextSpam.enable">
         <n-form-item>
-            <n-space align="center">
+            <n-flex align="center">
                 <n-form-item label="时间间隔" path="timeinterval">
                     <n-popover trigger="hover" style="max-width: 300px" placement="bottom">
                         <template #trigger>
@@ -148,7 +148,7 @@ const rules = {
                         <span>设定一个时间，计时完成后自动停止，单位为秒，0为关闭该功能</span>
                     </n-popover>
                 </n-form-item>
-            </n-space>
+            </n-flex>
         </n-form-item>
         <n-form-item label="发送内容" path="msg">
             <n-input
@@ -161,16 +161,16 @@ const rules = {
             />
         </n-form-item>
     </n-form>
-    <n-space
+    <n-flex
         justify="end"
         style="margin-top: 10px"
         v-if="!moduleStore.moduleConfig.TextSpam.enable"
     >
         <n-button round @click="uiStore.uiConfig.isShowPanel = false">取消</n-button>
         <n-button round type="primary" @click="handleStartSpamer">开车</n-button>
-    </n-space>
-    <n-space justify="end" style="margin-top: 10px" v-if="moduleStore.moduleConfig.TextSpam.enable">
+    </n-flex>
+    <n-flex justify="end" style="margin-top: 10px" v-if="moduleStore.moduleConfig.TextSpam.enable">
         <n-button round @click="uiStore.uiConfig.isShowPanel = false">取消</n-button>
         <n-button round type="error" @click="handleStopSpamer">停车</n-button>
-    </n-space>
+    </n-flex>
 </template>
