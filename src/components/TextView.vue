@@ -43,14 +43,10 @@ const handleStopSpamer = () => {
 const rules = {
     timeinterval: {
         required: true,
-        message: '最小为1000',
+        message: '最小为1',
         trigger: ['input', 'blur'],
         validator: () => {
-            if (moduleStore.moduleConfig.TextSpam.timeinterval === null) {
-                return false
-            } else {
-                return true
-            }
+            return moduleStore.moduleConfig.TextSpam.timeinterval !== null
         }
     },
     textinterval: {
@@ -58,11 +54,7 @@ const rules = {
         message: '输入一个大于0，小于30的数字',
         trigger: ['input', 'blur'],
         validator: () => {
-            if (moduleStore.moduleConfig.TextSpam.textinterval === null) {
-                return false
-            } else {
-                return true
-            }
+            return moduleStore.moduleConfig.TextSpam.textinterval !== null
         }
     },
     timelimit: {
@@ -70,11 +62,7 @@ const rules = {
         message: '输入一个大于等于0的数字',
         trigger: ['input', 'blur'],
         validator: () => {
-            if (moduleStore.moduleConfig.TextSpam.timelimit === null) {
-                return false
-            } else {
-                return true
-            }
+            return moduleStore.moduleConfig.TextSpam.timelimit !== null
         }
     },
     msg: {
@@ -82,11 +70,7 @@ const rules = {
         message: '没内容你车什么',
         trigger: ['input', 'blur'],
         validator: () => {
-            if (moduleStore.moduleConfig.TextSpam.msg.length > 0) {
-                return true
-            } else {
-                return false
-            }
+            return moduleStore.moduleConfig.TextSpam.msg.length > 0
         }
     }
 }
@@ -97,7 +81,7 @@ const rules = {
         <n-form-item>
             <n-flex align="center">
                 <n-form-item label="时间间隔" path="timeinterval">
-                    <n-popover trigger="hover" style="max-width: 300px" placement="bottom">
+                    <n-popover trigger="hover" style="max-width: 300px">
                         <template #trigger>
                             <n-input-number
                                 clearable
@@ -160,17 +144,21 @@ const rules = {
                 placeholder="车了可能会被禁，但不车就等于一直被禁"
             />
         </n-form-item>
+        <n-flex
+            justify="end"
+            style="margin-top: 10px"
+            v-if="!moduleStore.moduleConfig.TextSpam.enable"
+        >
+            <n-button round @click="uiStore.uiConfig.isShowPanel = false">取消</n-button>
+            <n-button round type="primary" @click="handleStartSpamer">开车</n-button>
+        </n-flex>
+        <n-flex
+            justify="end"
+            style="margin-top: 10px"
+            v-if="moduleStore.moduleConfig.TextSpam.enable"
+        >
+            <n-button round @click="uiStore.uiConfig.isShowPanel = false">取消</n-button>
+            <n-button round type="error" @click="handleStopSpamer">停车</n-button>
+        </n-flex>
     </n-form>
-    <n-flex
-        justify="end"
-        style="margin-top: 10px"
-        v-if="!moduleStore.moduleConfig.TextSpam.enable"
-    >
-        <n-button round @click="uiStore.uiConfig.isShowPanel = false">取消</n-button>
-        <n-button round type="primary" @click="handleStartSpamer">开车</n-button>
-    </n-flex>
-    <n-flex justify="end" style="margin-top: 10px" v-if="moduleStore.moduleConfig.TextSpam.enable">
-        <n-button round @click="uiStore.uiConfig.isShowPanel = false">取消</n-button>
-        <n-button round type="error" @click="handleStopSpamer">停车</n-button>
-    </n-flex>
 </template>

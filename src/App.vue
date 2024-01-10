@@ -5,6 +5,7 @@ import {
     NBadge,
     NConfigProvider,
     NMessageProvider,
+    NDialogProvider,
     zhCN,
     NModal,
     NLayout,
@@ -54,7 +55,8 @@ const renderPanel = () => {
                             processing: true,
                             type:
                                 useModuleStore().moduleConfig.TextSpam.enable ||
-                                useModuleStore().moduleConfig.EmotionSpam.enable
+                                useModuleStore().moduleConfig.EmotionSpam.enable ||
+                                useModuleStore().moduleConfig.TextGroupSpam.enable
                                     ? 'success'
                                     : useBiliStore().userInfo?.isLogin
                                       ? 'info'
@@ -91,26 +93,28 @@ observer.observe(document.body, { childList: true, subtree: true })
 <template>
     <n-config-provider :locale="zhCN">
         <n-message-provider>
-            <n-modal v-model:show="uiStore.uiConfig.isShowPanel" style="max-width: 1200px">
-                <n-layout has-sider>
-                    <n-layout-sider
-                        bordered
-                        show-trigger
-                        collapse-mode="width"
-                        :collapsed-width="64"
-                        :width="240"
-                        :native-scrollbar="false"
-                        content-style="max-height: 320px"
-                        :collapsed="uiStore.uiConfig.isCollapsed"
-                        :on-update:collapsed="handleCollapse"
-                    >
-                        <PanelMenu />
-                    </n-layout-sider>
-                    <n-layout-content content-style="padding: 24px;">
-                        <PanelContent />
-                    </n-layout-content>
-                </n-layout>
-            </n-modal>
+            <n-dialog-provider>
+                <n-modal v-model:show="uiStore.uiConfig.isShowPanel" style="max-width: 1200px">
+                    <n-layout has-sider>
+                        <n-layout-sider
+                            bordered
+                            show-trigger
+                            collapse-mode="width"
+                            :collapsed-width="64"
+                            :width="240"
+                            :native-scrollbar="false"
+                            content-style="max-height: 320px"
+                            :collapsed="uiStore.uiConfig.isCollapsed"
+                            :on-update:collapsed="handleCollapse"
+                        >
+                            <PanelMenu />
+                        </n-layout-sider>
+                        <n-layout-content content-style="padding: 24px;">
+                            <PanelContent />
+                        </n-layout-content>
+                    </n-layout>
+                </n-modal>
+            </n-dialog-provider>
         </n-message-provider>
     </n-config-provider>
 </template>

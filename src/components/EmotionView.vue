@@ -34,11 +34,7 @@ const rules = {
         message: '最小为1',
         trigger: ['input', 'blur'],
         validator: () => {
-            if (moduleStore.moduleConfig.EmotionSpam.timeinterval === null) {
-                return false
-            } else {
-                return true
-            }
+            return moduleStore.moduleConfig.EmotionSpam.timeinterval !== null
         }
     },
     timelimit: {
@@ -46,11 +42,7 @@ const rules = {
         message: '输入一个大于等于0的数字',
         trigger: ['input', 'blur'],
         validator: () => {
-            if (moduleStore.moduleConfig.EmotionSpam.timelimit === null) {
-                return false
-            } else {
-                return true
-            }
+            return moduleStore.moduleConfig.EmotionSpam.timelimit !== null
         }
     }
 }
