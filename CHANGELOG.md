@@ -1,6 +1,18 @@
+## [1.1.0](https://github.com/ADJazzzz/BLSPAM/compare/1.0.4...1.1.0) 2024-01-10
+
+### 新增
+
+-   时间限制功能[(#4)](https://github.com/ADJazzzz/BLSPAM/issues/4)
+-   文字弹幕池功能[(#5)](https://github.com/ADJazzzz/BLSPAM/issues/5)
+
+### 调整
+
+-   输入时间调整为秒
+-   UI调整
+
 ## [1.0.4](https://github.com/ADJazzzz/BLSPAM/compare/1.0.3...1.0.4) 2023-12-24
 
-## 修复
+### 修复
 
 -   修复表情全选功能会选上没解锁表情
 
