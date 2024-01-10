@@ -37,7 +37,8 @@ export default defineConfig({
                     ),
                     pinia: cdn.unpkg('Pinia', 'dist/pinia.iife.prod.js'),
                     'naive-ui': cdn.unpkg('naive', 'dist/index.prod.js'),
-                    axios: cdn.unpkg('axios', 'dist/axios.min.js')
+                    axios: cdn.unpkg('axios', 'dist/axios.min.js'),
+                    lodash: cdn.unpkg('_', 'lodash.min.js')
                 }
             }
         })
