@@ -24,15 +24,14 @@
 -   使用独轮车可能会对直播间环境造成污染，若你的账号被封禁或禁言，本脚本、作者以及贡献者不负任何责任
 -   本脚本会使用你的账号信息用于对B站相关API请求
 -   本脚本只会对B站相关域名和依赖CDN（目前使用的是 [UNPKG](https://unpkg.com/) ）发起请求
--   本脚本可以多开，但不建议
 
 **安装**
 
-|                                              Github min                                              |                                              Github                                              |
-| :--------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------: |
-| [安装](https://github.com/ADJazzzz/BLSPAM/releases/latest/download/bilibili-live-spamer.min.user.js) | [安装](https://github.com/ADJazzzz/BLSPAM/releases/latest/download/bilibili-live-spamer.user.js) |
+|                                              Github min                                              |                                              Github                                              |                                    greasyfork                                     |
+| :--------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------: |
+| [安装](https://github.com/ADJazzzz/BLSPAM/releases/latest/download/bilibili-live-spamer.min.user.js) | [安装](https://github.com/ADJazzzz/BLSPAM/releases/latest/download/bilibili-live-spamer.user.js) | [安装](https://update.greasyfork.org/scripts/481738/Bilibili-Live-Spamer.user.js) |
 
-> 两个版本没有区别，推荐使用min版
+> Github的两个版本没有区别，推荐使用min版
 
 ### 更新日志
 
@@ -61,6 +60,8 @@
 本脚本使用了以下组件进行开发：
 
 -   [Vue.js](https://github.com/vuejs/core)
+-   [vite](https://vitejs.dev)
+-   [vite-plugin-monkey](https://github.com/lisonge/vite-plugin-monkey)
 -   [pinia](https://github.com/vuejs/pinia)
 -   [naive-ui](https://www.naiveui.com)
 -   [axios](https://axios-http.com)
@@ -68,7 +69,7 @@
 -   [mitt](https://github.com/developit/mitt)
 -   [bilibili API collect](https://github.com/SocialSisterYi/bilibili-API-collect)
 
-😘感谢这些组件为本项目极大地提高了开发效率。
+😘感谢这些组件为本项目极大地提高了开发效率
 
 # 相关推荐
 

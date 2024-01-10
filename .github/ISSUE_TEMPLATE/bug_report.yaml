@@ -1,7 +1,7 @@
 name: Bug反馈
 description: 你发现了BUG？填写一下进行反馈吧
 labels: ['bug']
-title: "[Bug] "
+title: '[Bug] '
 assignees: ADJazzzz
 
 body:

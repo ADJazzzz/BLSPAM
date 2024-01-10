@@ -147,14 +147,22 @@ const handleStopSpamer = () => {
                     :name="panels.name"
                     :tab="panels.tab"
                 >
-                    <n-form-item label="标题，用于区分不同的弹幕组" show-require-mark :validation-status="panels.tab === '' ? 'error' : undefined">
+                    <n-form-item
+                        label="标题，用于区分不同的弹幕组"
+                        show-require-mark
+                        :validation-status="panels.tab === '' ? 'error' : undefined"
+                    >
                         <n-input
                             v-model:value="panels.tab"
                             clearable
                             placeholder="最好写一下标题吧"
                         />
                     </n-form-item>
-                    <n-form-item label="发送内容" show-require-mark :validation-status="panels.msg === '' ? 'error' : undefined">
+                    <n-form-item
+                        label="发送内容"
+                        show-require-mark
+                        :validation-status="panels.msg === '' ? 'error' : undefined"
+                    >
                         <n-input
                             v-model:value="panels.msg"
                             round
