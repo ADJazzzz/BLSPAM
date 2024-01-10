@@ -4,6 +4,7 @@ interface modulesConfig {
         msg: string
         timeinterval: number
         textinterval: number
+        timelimit: number
     }
 
     EmotionSpam: {
@@ -11,10 +12,25 @@ interface modulesConfig {
         timeinterval: number
         emotionViewSelectedID: number
         msg: string[]
+        timelimit: number
+    }
+
+    TextGroupSpam: {
+        enable: boolean
+        timeinterval: number
+        textGroupTabsValue: number
+        textGroupTabPanels: textGroupTabPanels[]
     }
 }
 
-type menuIndex = 'TextView' | 'EmotionView'
+type textGroupTabPanels = {
+    key: number
+    name: number
+    tab: string
+    msg: string
+}
+
+type menuIndex = 'TextView' | 'EmotionView' | 'TextGroupView'
 
 interface uiConfig {
     activeMenuIndex: menuIndex
@@ -27,6 +43,9 @@ type moduleEmitter = {
         module: string
     }
     EmotionSpam: {
+        module: string
+    }
+    TextGroupSpam: {
         module: string
     }
 }
