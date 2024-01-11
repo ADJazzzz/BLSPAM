@@ -78,10 +78,10 @@ const rules = {
 
 <template>
     <n-form :rules="rules" :disabled="moduleStore.moduleConfig.TextSpam.enable">
-        <n-form-item>
+        <n-form-item :show-label="false">
             <n-flex align="center">
                 <n-form-item label="时间间隔" path="timeinterval">
-                    <n-popover trigger="hover" style="max-width: 300px">
+                    <n-popover trigger="hover" style="max-width: 300px" placement="bottom">
                         <template #trigger>
                             <n-input-number
                                 clearable
@@ -100,7 +100,7 @@ const rules = {
                     </n-popover>
                 </n-form-item>
                 <n-form-item label="数量间隔" path="textinterval">
-                    <n-popover trigger="hover">
+                    <n-popover trigger="hover" placement="bottom">
                         <template #trigger>
                             <n-input-number
                                 clearable
@@ -116,7 +116,7 @@ const rules = {
                     </n-popover>
                 </n-form-item>
                 <n-form-item label="时间限制" path="timelimit">
-                    <n-popover trigger="hover">
+                    <n-popover trigger="hover" placement="bottom">
                         <template #trigger>
                             <n-input-number
                                 clearable
