@@ -16,7 +16,6 @@ const openDialog = () => {
         content,
         positiveText: '知道了'
     })
-    console.log('openDialog')
 }
 </script>
 

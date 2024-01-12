@@ -27,9 +27,6 @@ const logger = new Logger('App')
 const uiStore = useUIStore()
 const moduleStore = useModuleStore()
 uiStore.uiConfig.isShowPanel = false
-// moduleStore.moduleConfig.TextSpam.enable = false
-// moduleStore.moduleConfig.EmotionSpam.enable = false
-// moduleStore.moduleConfig.TextGroupSpam.enable = false
 
 const renderPanel = () => {
     pollingQuery(document, '.icon-left-part', 300, 300, true).then((controlPanelLeft) => {

@@ -38,6 +38,11 @@ export default {
                     msg: ''
                 }
             ]
+        },
+        setting: {
+            saveSpamerStatus: {
+                enable: false
+            }
         }
     }
 } as defaultValues

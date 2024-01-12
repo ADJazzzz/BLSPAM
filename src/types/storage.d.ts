@@ -21,6 +21,18 @@ interface modulesConfig {
         textGroupTabsValue: number
         textGroupTabPanels: textGroupTabPanels[]
     }
+
+    setting: {
+        saveSpamerStatus: {
+            enable: boolean
+        }
+    }
+}
+
+interface uiConfig {
+    activeMenuIndex: menuIndex
+    isShowPanel: boolean
+    isCollapsed: boolean
 }
 
 type textGroupTabPanels = {
@@ -31,12 +43,6 @@ type textGroupTabPanels = {
 }
 
 type menuIndex = 'TextView' | 'EmotionView' | 'TextGroupView'
-
-interface uiConfig {
-    activeMenuIndex: menuIndex
-    isShowPanel: boolean
-    isCollapsed: boolean
-}
 
 type moduleEmitter = {
     TextSpam: {
