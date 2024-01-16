@@ -108,10 +108,10 @@ const handleStopSpamer = () => {
 
 <template>
     <n-form :rules="rules" :disabled="moduleStore.moduleConfig.TextGroupSpam.enable">
-        <n-form-item>
+        <n-form-item :show-label="false">
             <n-flex>
                 <n-form-item label="时间间隔" path="timeinterval">
-                    <n-popover trigger="hover" style="max-width: 300px">
+                    <n-popover trigger="hover" style="max-width: 300px" placement="bottom">
                         <template #trigger>
                             <n-input-number
                                 clearable

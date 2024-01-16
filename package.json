@@ -1,7 +1,7 @@
 {
     "name": "bilibili-live-spamer",
     "private": true,
-    "version": "1.1.0",
+    "version": "1.1.1",
     "type": "module",
     "scripts": {
         "dev": "vite",
@@ -24,8 +24,8 @@
         "@vue/eslint-config-prettier": "^9.0.0",
         "@vue/eslint-config-typescript": "^12.0.0",
         "eslint": "^8.56.0",
-        "eslint-plugin-vue": "^9.19.2",
-        "prettier": "^3.1.1",
+        "eslint-plugin-vue": "^9.20.1",
+        "prettier": "^3.2.2",
         "terser": "^5.26.0",
         "typescript": "^5.3.3",
         "vite": "^5.0.11",

@@ -25,9 +25,8 @@ import Logger from './utils/logger'
 const logger = new Logger('App')
 
 const uiStore = useUIStore()
+const moduleStore = useModuleStore()
 uiStore.uiConfig.isShowPanel = false
-useModuleStore().moduleConfig.TextSpam.enable = false
-useModuleStore().moduleConfig.EmotionSpam.enable = false
 
 const renderPanel = () => {
     pollingQuery(document, '.icon-left-part', 300, 300, true).then((controlPanelLeft) => {
@@ -54,9 +53,9 @@ const renderPanel = () => {
                             dot: true,
                             processing: true,
                             type:
-                                useModuleStore().moduleConfig.TextSpam.enable ||
-                                useModuleStore().moduleConfig.EmotionSpam.enable ||
-                                useModuleStore().moduleConfig.TextGroupSpam.enable
+                                moduleStore.moduleConfig.TextSpam.enable ||
+                                moduleStore.moduleConfig.EmotionSpam.enable ||
+                                moduleStore.moduleConfig.TextGroupSpam.enable
                                     ? 'success'
                                     : useBiliStore().userInfo?.isLogin
                                       ? 'info'
@@ -103,7 +102,7 @@ observer.observe(document.body, { childList: true, subtree: true })
                             :collapsed-width="64"
                             :width="240"
                             :native-scrollbar="false"
-                            content-style="max-height: 320px"
+                            content-style="max-height: 320px; padding-top: 8px"
                             :collapsed="uiStore.uiConfig.isCollapsed"
                             :on-update:collapsed="handleCollapse"
                         >

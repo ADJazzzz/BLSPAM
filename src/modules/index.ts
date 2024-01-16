@@ -1,2 +1,2 @@
-export * from './default'
 export * from './Spamer'
+export * from './Setting'
