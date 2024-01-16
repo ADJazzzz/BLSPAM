@@ -1,3 +1,9 @@
+## [1.1.1](https://github.com/ADJazzzz/BLSPAM/compare/1.1.0...1.1.1) 2024-01-16
+
+### 新增
+
+-   保持独轮车开关状态
+
 ## [1.1.0](https://github.com/ADJazzzz/BLSPAM/compare/1.0.4...1.1.0) 2024-01-10
 
 ### 新增

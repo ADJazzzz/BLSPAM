@@ -42,7 +42,7 @@ type textGroupTabPanels = {
     msg: string
 }
 
-type menuIndex = 'TextView' | 'EmotionView' | 'TextGroupView'
+type menuIndex = 'TextView' | 'EmotionView' | 'TextGroupView' | 'SettingView'
 
 type moduleEmitter = {
     TextSpam: {
