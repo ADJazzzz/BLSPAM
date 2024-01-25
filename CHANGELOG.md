@@ -1,3 +1,9 @@
+## [1.1.2](https://github.com/ADJazzzz/BLSPAM/compare/1.1.1...1.1.2) 2024-01-25
+
+### 调整
+
+-   调整入口样式
+
 ## [1.1.1](https://github.com/ADJazzzz/BLSPAM/compare/1.1.0...1.1.1) 2024-01-16
 
 ### 新增
