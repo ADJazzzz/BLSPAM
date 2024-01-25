@@ -35,8 +35,10 @@ const renderPanel = () => {
             {
                 class: 'blspam_btn',
                 text: true,
-                style: { margin: '0 5px', fontSize: '20px', verticalAlign: 'middle' },
-                tag: 'span',
+                tag: 'div',
+                style: { marginLeft: '4px', display: 'inline-block' },
+                focusable: false,
+                bordered: false,
                 onClick: () => {
                     if (!useBiliStore().userInfo?.isLogin) {
                         uiStore.uiConfig.isShowPanel = false
@@ -63,7 +65,7 @@ const renderPanel = () => {
                         },
                         {
                             default: () =>
-                                h(NIcon, { component: MainIcon }, { default: () => null })
+                                h(NIcon, { component: MainIcon, size: 20 }, { default: () => null })
                         }
                     )
             }
