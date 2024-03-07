@@ -26,10 +26,10 @@
         "eslint": "^8.57.0",
         "eslint-plugin-vue": "^9.22.0",
         "prettier": "^3.2.5",
-        "terser": "^5.28.1",
+        "terser": "^5.29.1",
         "typescript": "^5.3.3",
-        "vite": "^5.1.4",
+        "vite": "^5.1.5",
         "vite-plugin-monkey": "^3.5.1",
-        "vue-tsc": "^1.8.27"
+        "vue-tsc": "^2.0.6"
     }
 }
