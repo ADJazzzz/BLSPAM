@@ -19,7 +19,7 @@ class Cookies extends BaseModule {
             if (Object.keys(cookieValues).length === cookieNames.length) {
                 resolve(cookieValues as BiliCookies)
             } else {
-                reject(new Error(`没找到所有的cookies`))
+                reject(new Error(`没找到cookies`))
             }
         })
     }
