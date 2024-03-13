@@ -22,13 +22,13 @@
         "@rushstack/eslint-patch": "^1.7.2",
         "@vitejs/plugin-vue": "^5.0.4",
         "@vue/eslint-config-prettier": "^9.0.0",
-        "@vue/eslint-config-typescript": "^12.0.0",
+        "@vue/eslint-config-typescript": "^13.0.0",
         "eslint": "^8.57.0",
-        "eslint-plugin-vue": "^9.22.0",
+        "eslint-plugin-vue": "^9.23.0",
         "prettier": "^3.2.5",
         "terser": "^5.29.1",
-        "typescript": "^5.3.3",
-        "vite": "^5.1.5",
+        "typescript": "^5.4.2",
+        "vite": "^5.1.6",
         "vite-plugin-monkey": "^3.5.1",
         "vue-tsc": "^2.0.6"
     }
