@@ -23,7 +23,7 @@ export default defineConfig({
                     'https://github.com/ADJazzzz/BLSPAM/releases/latest/download/bilibili-live-spamer.min.user.js',
                 match: ['*://live.bilibili.com/*'],
                 'run-at': 'document-end',
-                connect: ['api.bilibili.com', 'api.live.bilibili.com', 'live.bilibili.com']
+                connect: ['api.bilibili.com', 'api.live.bilibili.com', 'live.bilibili.com', 'api.github.com']
             },
             build: {
                 externalGlobals: {
