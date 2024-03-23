@@ -76,7 +76,7 @@ const handleStopSpamer = () => {
             :id="data.pkg_id.toString()"
             @click="handleClick(data.pkg_id)"
         >
-            <n-avatar color="white" :src="data.current_cover" />
+            <n-avatar color="white" :src="data.current_cover" :size="35" />
         </div>
     </n-flex>
     <n-divider style="margin: 15px 0" />
@@ -101,7 +101,7 @@ const handleStopSpamer = () => {
                 >
                     <n-popover>
                         <template #trigger>
-                            <n-avatar color="white" size="large" :src="data.url" />
+                            <n-avatar color="white" :size="60" :src="data.url" />
                         </template>
                         <span>{{ data.emoji }}</span>
                     </n-popover>

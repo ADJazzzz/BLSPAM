@@ -1,3 +1,13 @@
+## [1.2.0](https://github.com/ADJazzzz/BLSPAM/compare/1.1.2...1.2.0) 2024-03-23
+
+### 新增
+
+-   自动检测更新
+
+### 调整
+
+-   调整表情大小
+
 ## [1.1.2](https://github.com/ADJazzzz/BLSPAM/compare/1.1.1...1.1.2) 2024-01-25
 
 ### 调整
