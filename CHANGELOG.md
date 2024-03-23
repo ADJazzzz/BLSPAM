@@ -1,4 +1,4 @@
-## Next_Version
+## [1.2.0](https://github.com/ADJazzzz/BLSPAM/compare/1.1.2...1.2.0) 2024-03-23
 
 ### 新增
 
