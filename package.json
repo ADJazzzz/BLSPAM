@@ -19,17 +19,17 @@
         "vue": "^3.3.13"
     },
     "devDependencies": {
-        "@rushstack/eslint-patch": "^1.10.1",
+        "@rushstack/eslint-patch": "^1.10.2",
         "@vitejs/plugin-vue": "^5.0.4",
         "@vue/eslint-config-prettier": "^9.0.0",
         "@vue/eslint-config-typescript": "^13.0.0",
         "eslint": "^8.57.0",
-        "eslint-plugin-vue": "^9.24.0",
+        "eslint-plugin-vue": "^9.24.1",
         "prettier": "^3.2.5",
-        "terser": "^5.30.0",
-        "typescript": "^5.4.3",
-        "vite": "^5.2.7",
+        "terser": "^5.30.3",
+        "typescript": "^5.4.5",
+        "vite": "^5.2.8",
         "vite-plugin-monkey": "^3.5.2",
-        "vue-tsc": "^2.0.7"
+        "vue-tsc": "^2.0.12"
     }
 }
