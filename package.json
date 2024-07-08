@@ -24,12 +24,12 @@
         "@vue/eslint-config-prettier": "^9.0.0",
         "@vue/eslint-config-typescript": "^13.0.0",
         "eslint": "^8.57.0",
-        "eslint-plugin-vue": "^9.26.0",
+        "eslint-plugin-vue": "^9.27.0",
         "prettier": "^3.3.2",
         "terser": "^5.31.1",
         "typescript": "^5.4.5",
-        "vite": "^5.3.1",
-        "vite-plugin-monkey": "^4.0.3",
-        "vue-tsc": "^2.0.22"
+        "vite": "^5.3.3",
+        "vite-plugin-monkey": "^4.0.4",
+        "vue-tsc": "^2.0.26"
     }
 }
