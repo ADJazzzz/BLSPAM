@@ -53,7 +53,10 @@ export const useModuleStore = defineStore('modules', () => {
 
     watch(
         moduleConfig,
-        _.debounce((newUiConfig: modulesConfig) => Storage.setModuleConfig(newUiConfig), 350)
+        _.debounce(
+            (newModuleConfig: modulesConfig) => Storage.setModuleConfig(newModuleConfig),
+            350
+        )
     )
 
     return { moduleConfig, loadModules, emitter }

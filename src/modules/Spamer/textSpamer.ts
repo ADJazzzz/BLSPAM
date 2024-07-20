@@ -21,19 +21,27 @@ class TextSpamer extends BaseModule {
         timelimit: number
     ): Promise<void> {
         const sendMsg = async (message: string) => {
-            if (this.config.enable) {
-                await BILIAPI.sendMsg(message, roomid)
+            try {
+                const response = await BILIAPI.sendMsg(message, roomid)
+                if (response.data.code === 0) {
+                    this.logger.log(`弹幕 ${message} 发送成功`, response)
+                } else {
+                    this.logger.error(`弹幕 ${message} 发送失败`, response)
+                }
+            } catch (error) {
+                this.logger.error(`弹幕 ${message} 发送失败`, error)
             }
         }
 
         if (msg.length < textinterval) {
-            const shortInterval = setInterval(() => sendMsg(msg), timeinterval)
+            const sendMSGShort = setInterval(() => sendMsg(msg), timeinterval)
             if (!this.config.enable) {
-                clearInterval(shortInterval)
+                clearInterval(sendMSGShort)
             }
+
             if (timelimit !== 0) {
                 setTimeout(() => {
-                    clearInterval(shortInterval)
+                    clearInterval(sendMSGShort)
                     this.config.enable = false
                 }, timelimit)
             }
@@ -45,22 +53,23 @@ class TextSpamer extends BaseModule {
 
             let currentIndex = 0
 
-            const sendMsgLong = async () => {
-                if (currentIndex < slices.length) {
-                    await sendMsg(slices[currentIndex])
-                    currentIndex++
+            const sendMSGLong = setInterval(async () => {
+                if (this.config.enable) {
+                    if (currentIndex < slices.length) {
+                        await sendMsg(slices[currentIndex])
+                        currentIndex++
+                    }
+                    if (currentIndex >= slices.length) {
+                        currentIndex = 0
+                    }
                 } else {
-                    currentIndex = 0
+                    clearInterval(sendMSGLong)
                 }
-            }
+            }, timeinterval)
 
-            const longInterval = setInterval(sendMsgLong, timeinterval)
-            if (!this.config.enable) {
-                clearInterval(longInterval)
-            }
             if (timelimit !== 0) {
                 setTimeout(() => {
-                    clearInterval(longInterval)
+                    clearInterval(sendMSGLong)
                     this.config.enable = false
                 }, timelimit)
             }
@@ -68,7 +77,6 @@ class TextSpamer extends BaseModule {
     }
 
     public async run(): Promise<void> {
-        this.logger.log('文字独轮车准备就绪')
         this.moduleStore.emitter.on('TextSpam', async () => {
             const formattedMsg = this.formatMsg(this.config.msg)
             const roomid = useBiliStore().BilibiliLive?.ROOMID

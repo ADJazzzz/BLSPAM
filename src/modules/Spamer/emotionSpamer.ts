@@ -18,8 +18,15 @@ class EmotionSpamer extends BaseModule {
         let currentIndex = 0
 
         const sendEmotion = async (emotion: string) => {
-            if (this.config.enable) {
-                await BILIAPI.sendEmotion(emotion, roomid)
+            try {
+                const response = await BILIAPI.sendEmotion(emotion, roomid)
+                if (response.data.code === 0) {
+                    this.logger.log(`表情 ${emotion} 发送成功`, response)
+                } else {
+                    this.logger.error(`表情 ${emotion} 发送失败`, response)
+                }
+            } catch (error) {
+                this.logger.error(`表情 ${emotion} 发送失败`, error)
             }
         }
 
@@ -28,7 +35,8 @@ class EmotionSpamer extends BaseModule {
                 if (currentIndex < emotions.length) {
                     await sendEmotion(emotions[currentIndex])
                     currentIndex++
-                } else {
+                }
+                if (currentIndex >= emotions.length) {
                     currentIndex = 0
                 }
             } else {
@@ -45,7 +53,6 @@ class EmotionSpamer extends BaseModule {
     }
 
     public async run(): Promise<void> {
-        this.logger.log('表情独轮车准备就绪')
         this.moduleStore.emitter.on('EmotionSpam', async () => {
             const msg = this.config.msg
             const roomid = useBiliStore().BilibiliLive?.ROOMID

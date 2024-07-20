@@ -32,8 +32,15 @@ class TextGroupSpamer extends BaseModule {
     ): Promise<void> {
         let currentIndex = 0
         const sendMsg = async (msg: string) => {
-            if (this.config.enable) {
-                await BILIAPI.sendMsg(msg, roomid)
+            try {
+                const response = await BILIAPI.sendMsg(msg, roomid)
+                if (response.data.code === 0) {
+                    this.logger.log(`弹幕 ${msg} 发送成功`, response)
+                } else {
+                    this.logger.error(`弹幕 ${msg} 发送失败`, response)
+                }
+            } catch (error) {
+                this.logger.error(`弹幕 ${msg} 发送失败`, error)
             }
         }
 
@@ -42,7 +49,8 @@ class TextGroupSpamer extends BaseModule {
                 if (currentIndex < msg.length) {
                     await sendMsg(msg[currentIndex])
                     currentIndex++
-                } else {
+                }
+                if (currentIndex >= msg.length) {
                     currentIndex = 0
                 }
             } else {
@@ -52,7 +60,6 @@ class TextGroupSpamer extends BaseModule {
     }
 
     public async run(): Promise<void> {
-        this.logger.log('文字池独轮车准备就绪')
         this.moduleStore.emitter.on('TextGroupSpam', async () => {
             const msg = this.formatMsg()
             const roomid = useBiliStore().BilibiliLive?.ROOMID
