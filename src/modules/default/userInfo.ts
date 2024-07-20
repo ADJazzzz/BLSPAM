@@ -1,5 +1,5 @@
 import BILIAPI from '../../utils/bili'
-import { UserData, LiveInfoData } from '../../types'
+import { UserData, LiveInfoData, UserResponse, LiveResponse } from '../../types'
 import { useBiliStore } from '../../stores/useBiliStore'
 import { unsafeWindow } from '$'
 import BaseModule from '../BaseModule'
@@ -7,7 +7,7 @@ import BaseModule from '../BaseModule'
 class UserInfo extends BaseModule {
     private async getUserInfo(): Promise<UserData.Nav.Data> {
         try {
-            const response = await BILIAPI.nav()
+            const response = (await BILIAPI.nav()) as UserResponse.Nav
             if (response.code === 0) {
                 return Promise.resolve(response.data)
             } else {
@@ -26,9 +26,10 @@ class UserInfo extends BaseModule {
                 const windowBiliLive = unsafeWindow.BilibiliLive
                 if (windowBiliLive) {
                     clearInterval(timer)
+                    this.logger.log(windowBiliLive)
                     resolve(windowBiliLive)
                 }
-            }, 100)
+            }, 200)
         })
     }
 
@@ -40,7 +41,7 @@ class UserInfo extends BaseModule {
         }
         const EmotionData: LiveInfoData.GetEmoticons.EmotionData[] = []
         try {
-            const response = await BILIAPI.getEmoticons('pc', roomID)
+            const response = (await BILIAPI.getEmoticons('pc', roomID)) as LiveResponse.GetEmoticons
             if (response.code === 0) {
                 EmotionData.push(...response.data.data)
                 return Promise.resolve(EmotionData)

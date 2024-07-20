@@ -11,6 +11,18 @@ const spHelpInfo: HelpInfo = {
                     h('br'),
                     h('span', '该功能默认关闭。')
                 ])
+        },
+        autoCheckUpdate: {
+            title: '自动检测更新',
+            content: () =>
+                h('p', [
+                    h(
+                        'span',
+                        '启用后，将会在脚本启动时自动检测更新，当然也可以手动检测更新。若检测到新版本，将会弹出通知。'
+                    ),
+                    h('br'),
+                    h('span', '该功能默认开启。')
+                ])
         }
     }
 }

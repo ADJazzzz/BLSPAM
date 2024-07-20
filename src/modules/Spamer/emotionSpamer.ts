@@ -1,6 +1,7 @@
 import BILIAPI from '../../utils/bili'
 import { useBiliStore } from '../../stores/useBiliStore'
 import BaseModule from '../BaseModule'
+import { AxiosResponse } from '../../types'
 
 class EmotionSpamer extends BaseModule {
     config = this.moduleStore.moduleConfig.EmotionSpam
@@ -19,7 +20,7 @@ class EmotionSpamer extends BaseModule {
 
         const sendEmotion = async (emotion: string) => {
             try {
-                const response = await BILIAPI.sendEmotion(emotion, roomid)
+                const response = (await BILIAPI.sendEmotion(emotion, roomid)) as AxiosResponse
                 if (response.data.code === 0) {
                     this.logger.log(`表情 ${emotion} 发送成功`, response)
                 } else {

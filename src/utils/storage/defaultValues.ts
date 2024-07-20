@@ -9,8 +9,7 @@ export default {
     ui: {
         activeMenuIndex: 'TextView',
         isShowPanel: false,
-        isCollapsed: false,
-        isShowUpdateNotify: true
+        isCollapsed: false
     },
     modules: {
         TextSpam: {
@@ -43,6 +42,9 @@ export default {
         setting: {
             saveSpamerStatus: {
                 enable: false
+            },
+            autoCheckUpdate: {
+                enable: true
             }
         }
     }

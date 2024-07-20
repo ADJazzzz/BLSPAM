@@ -2,6 +2,7 @@ import _ from 'lodash'
 import BILIAPI from '../../utils/bili'
 import { useBiliStore } from '../../stores/useBiliStore'
 import BaseModule from '../BaseModule'
+import { AxiosResponse } from '../../types'
 
 class TextGroupSpamer extends BaseModule {
     config = this.moduleStore.moduleConfig.TextGroupSpam
@@ -33,7 +34,7 @@ class TextGroupSpamer extends BaseModule {
         let currentIndex = 0
         const sendMsg = async (msg: string) => {
             try {
-                const response = await BILIAPI.sendMsg(msg, roomid)
+                const response = (await BILIAPI.sendMsg(msg, roomid)) as AxiosResponse
                 if (response.data.code === 0) {
                     this.logger.log(`弹幕 ${msg} 发送成功`, response)
                 } else {

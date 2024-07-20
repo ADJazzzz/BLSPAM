@@ -1,4 +1,4 @@
-import { Response } from './bapiresponse'
+import { LiveResponse, UserResponse, AxiosResponse } from './bapiresponse'
 
 interface BApiMethod {
     sendMsg: (
@@ -11,7 +11,7 @@ interface BApiMethod {
         color?: number,
         bubble?: number,
         reply_mid?: number
-    ) => Promise<Response.AxiosResponse>
+    ) => Promise<LiveResponse.SendMsg | AxiosResponse>
     sendEmotion: (
         msg: string,
         roomid: number,
@@ -20,9 +20,12 @@ interface BApiMethod {
         dm_type?: number,
         fontsize?: number,
         bubble?: number
-    ) => Promise<Response.AxiosResponse>
-    getEmoticons: (platform: string, room_id: number) => Promise<Response.AxiosResponse>
-    nav: () => Promise<Response.AxiosResponse>
+    ) => Promise<LiveResponse.SendMsg | AxiosResponse>
+    getEmoticons: (
+        platform: string,
+        room_id: number
+    ) => Promise<LiveResponse.GetEmoticons | AxiosResponse>
+    nav: () => Promise<UserResponse.Nav | AxiosResponse>
 }
 
 export { BApiMethod }

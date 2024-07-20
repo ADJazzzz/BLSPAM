@@ -1,6 +1,7 @@
 import BILIAPI from '../../utils/bili'
 import { useBiliStore } from '../../stores/useBiliStore'
 import BaseModule from '../BaseModule'
+import { AxiosResponse } from '../../types'
 
 class TextSpamer extends BaseModule {
     config = this.moduleStore.moduleConfig.TextSpam
@@ -22,7 +23,7 @@ class TextSpamer extends BaseModule {
     ): Promise<void> {
         const sendMsg = async (message: string) => {
             try {
-                const response = await BILIAPI.sendMsg(message, roomid)
+                const response = (await BILIAPI.sendMsg(message, roomid)) as AxiosResponse
                 if (response.data.code === 0) {
                     this.logger.log(`弹幕 ${message} 发送成功`, response)
                 } else {

@@ -1,3 +1,10 @@
+## NEXT_VERSION
+
+### 调整
+
+- 调整自动检测更新
+- 相关细节调整
+
 ## [1.2.0](https://github.com/ADJazzzz/BLSPAM/compare/1.1.2...1.2.0) 2024-03-23
 
 ### 新增
