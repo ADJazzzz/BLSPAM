@@ -1,5 +1,8 @@
 ## NEXT_VERSION
 
+
+## [1.3.0](https://github.com/ADJazzzz/BLSPAM/compare/1.2.0...1.3.0) 2024-07-21
+
 ### 新增
 
 - 弹幕+1[(#10)](https://github.com/ADJazzzz/BLSPAM/issues/10)
