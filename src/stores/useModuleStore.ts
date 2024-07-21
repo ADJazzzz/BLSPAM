@@ -7,7 +7,6 @@ import Storage from '../utils/storage'
 import * as defaultModules from '../modules/default'
 import * as otherModules from '../modules'
 import Logger from '../utils/logger'
-import BaseModule from '../modules/BaseModule'
 
 export const useModuleStore = defineStore('modules', () => {
     const moduleConfig: modulesConfig = reactive(Storage.getModuleConfig())
@@ -16,9 +15,7 @@ export const useModuleStore = defineStore('modules', () => {
     function loadDefaultModules(): Promise<void[]> {
         const promiseArray: Promise<void>[] = []
         for (const [name, module] of Object.entries(defaultModules)) {
-            promiseArray.push(
-                new (module as new (moduleName: string) => BaseModule)(name).run() as Promise<void>
-            )
+            promiseArray.push(new module(name).run())
         }
         return Promise.all<Promise<void>[]>(promiseArray)
     }
@@ -26,9 +23,7 @@ export const useModuleStore = defineStore('modules', () => {
     function loadOtherModules(): Promise<void[]> {
         const promiseArray: Promise<void>[] = []
         for (const [name, module] of Object.entries(otherModules)) {
-            promiseArray.push(
-                new (module as new (moduleName: string) => BaseModule)(name).run() as Promise<void>
-            )
+            promiseArray.push(new module(name).run())
         }
         return Promise.all<Promise<void>[]>(promiseArray)
     }
@@ -53,7 +48,10 @@ export const useModuleStore = defineStore('modules', () => {
 
     watch(
         moduleConfig,
-        _.debounce((newUiConfig: modulesConfig) => Storage.setModuleConfig(newUiConfig), 350)
+        _.debounce(
+            (newModuleConfig: modulesConfig) => Storage.setModuleConfig(newModuleConfig),
+            350
+        )
     )
 
     return { moduleConfig, loadModules, emitter }

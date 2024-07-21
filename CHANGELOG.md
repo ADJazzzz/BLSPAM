@@ -1,3 +1,18 @@
+## NEXT_VERSION
+
+
+## [1.3.0](https://github.com/ADJazzzz/BLSPAM/compare/1.2.0...1.3.0) 2024-07-21
+
+### 新增
+
+- 弹幕+1[(#10)](https://github.com/ADJazzzz/BLSPAM/issues/10)
+- 弹幕复制[(#11)](https://github.com/ADJazzzz/BLSPAM/issues/11)
+
+### 调整
+
+- 调整自动检测更新
+- 相关细节调整
+
 ## [1.2.0](https://github.com/ADJazzzz/BLSPAM/compare/1.1.2...1.2.0) 2024-03-23
 
 ### 新增

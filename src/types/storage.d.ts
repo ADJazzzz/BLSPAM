@@ -26,6 +26,12 @@ interface modulesConfig {
         saveSpamerStatus: {
             enable: boolean
         }
+        autoCheckUpdate: {
+            enable: boolean
+        }
+        danmakuModules: {
+            enable: boolean
+        }
     }
 }
 
@@ -33,7 +39,6 @@ interface uiConfig {
     activeMenuIndex: menuIndex
     isShowPanel: boolean
     isCollapsed: boolean
-    isShowUpdateNotify: boolean
 }
 
 type textGroupTabPanels = {

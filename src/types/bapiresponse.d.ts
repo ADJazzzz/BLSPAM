@@ -25,4 +25,12 @@ declare namespace UserResponse {
     }
 }
 
-export { LiveResponse, UserResponse }
+interface AxiosResponse {
+    config: any
+    data: LiveResponse.SendMsg | LiveResponse.GetEmoticons | UserResponse.Nav
+    headers: any
+    status: number
+    statusText: string
+}
+
+export { LiveResponse, UserResponse, AxiosResponse }

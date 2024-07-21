@@ -157,23 +157,7 @@ const handleStopSpamer = () => {
             v-if="!moduleStore.moduleConfig.EmotionSpam.enable"
         >
             <n-button
-                v-if="!moduleStore.moduleConfig.EmotionSpam.msg.length"
-                round
-                type="info"
-                @click="
-                    moduleStore.moduleConfig.EmotionSpam.msg = biliStore.emotionData.flatMap(
-                        (emoticons) => {
-                            return emoticons.emoticons
-                                .filter((data) => data.perm !== 0)
-                                .map((data) => data.emoticon_unique)
-                        }
-                    )
-                "
-            >
-                全选
-            </n-button>
-            <n-button
-                v-if="moduleStore.moduleConfig.EmotionSpam.msg.length"
+                :disabled="moduleStore.moduleConfig.EmotionSpam.msg.length === 0"
                 round
                 type="info"
                 @click="moduleStore.moduleConfig.EmotionSpam.msg = []"

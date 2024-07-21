@@ -5,7 +5,8 @@ import { modulesConfig, uiConfig } from '../../types'
 
 class Storage {
     private static mergeConfigs(current_config_item: any, default_config_item: any): any {
-        const mergedConfig = _.merge({}, default_config_item, current_config_item)
+        const cleanConfig = _.pick(current_config_item, Object.keys(default_config_item))
+        const mergedConfig = _.merge({}, default_config_item, cleanConfig)
         return _.omitBy(mergedConfig, _.isUndefined)
     }
 
