@@ -34,7 +34,9 @@ class checkUpdate extends BaseModule {
             .response
 
         if (currentVersion === getGitHubAPI.tag_name) {
-            this.logger.log('当前版本已经是最新版本')
+            this.logger.log('当前已是最新的版本')
+            const { message } = createDiscreteApi(['message'])
+            message.info('当前已是最新的版本')
         } else if (currentVersion < getGitHubAPI.tag_name) {
             this.logger.log(`发现新版本：${getGitHubAPI.tag_name}`)
             const { notification } = createDiscreteApi(['notification'])

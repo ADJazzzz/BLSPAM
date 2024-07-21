@@ -26,7 +26,7 @@ class danmakuModules extends BaseModule {
                                 node.classList.contains('has-bubble') &&
                                 node.classList.length === 4)
                         ) {
-                            node.addEventListener('click', this.handleNodeClick.bind(this))
+                            node.addEventListener('click', (event) => this.handleNodeClick(event))
                         }
                     })
                 })
@@ -34,7 +34,7 @@ class danmakuModules extends BaseModule {
         }
     }
 
-    private handleNodeClick(event: Event) {
+    private handleNodeClick(event: MouseEvent) {
         const clickedElement = event.target
         if (
             clickedElement instanceof HTMLElement &&
