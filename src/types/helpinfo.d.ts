@@ -9,6 +9,7 @@ interface HelpInfo {
     SettingView: {
         saveSpamerStatus: HelpInfoItem
         autoCheckUpdate: HelpInfoItem
+        danmakuModules: HelpInfoItem
     }
 }
 

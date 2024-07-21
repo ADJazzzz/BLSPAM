@@ -18,6 +18,12 @@ const manualCheckUpdate = new checkUpdate('ManualCheckUpdate')
         /></n-flex>
         <n-flex align="center"
             ><n-switch
+                v-model:value="
+                    moduleStore.moduleConfig.setting.danmakuModules.enable
+                " />弹幕+1和弹幕复制<InfoDialog id="SettingView.danmakuModules"
+        /></n-flex>
+        <n-flex align="center"
+            ><n-switch
                 v-model:value="moduleStore.moduleConfig.setting.autoCheckUpdate.enable"
             />自动检测更新<InfoDialog id="SettingView.autoCheckUpdate" /><n-button
                 strong

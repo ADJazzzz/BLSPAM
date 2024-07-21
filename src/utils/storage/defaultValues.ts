@@ -45,6 +45,9 @@ export default {
             },
             autoCheckUpdate: {
                 enable: true
+            },
+            danmakuModules: {
+                enable: false
             }
         }
     }

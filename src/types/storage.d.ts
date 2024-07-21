@@ -29,6 +29,9 @@ interface modulesConfig {
         autoCheckUpdate: {
             enable: boolean
         }
+        danmakuModules: {
+            enable: boolean
+        }
     }
 }
 

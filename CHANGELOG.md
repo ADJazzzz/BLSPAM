@@ -1,5 +1,10 @@
 ## NEXT_VERSION
 
+### 新增
+
+- 弹幕+1[(#10)](https://github.com/ADJazzzz/BLSPAM/issues/10)
+- 弹幕复制[(#11)](https://github.com/ADJazzzz/BLSPAM/issues/11)
+
 ### 调整
 
 - 调整自动检测更新
