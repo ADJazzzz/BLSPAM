@@ -35,10 +35,13 @@ class TextSpamer extends BaseModule {
         }
 
         if (msg.length < textinterval) {
-            const sendMSGShort = setInterval(() => sendMsg(msg), timeinterval)
-            if (!this.config.enable) {
-                clearInterval(sendMSGShort)
-            }
+            const sendMSGShort = setInterval(async () => {
+                if (this.config.enable) {
+                    await sendMsg(msg)
+                } else {
+                    clearInterval(sendMSGShort)
+                }
+            }, timeinterval)
 
             if (timelimit !== 0) {
                 setTimeout(() => {
