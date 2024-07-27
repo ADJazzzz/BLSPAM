@@ -15,21 +15,21 @@
         "lodash": "^4.17.21",
         "mitt": "^3.0.1",
         "naive-ui": "^2.39.0",
-        "pinia": "^2.1.7",
-        "vue": "^3.3.13"
+        "pinia": "^2.2.0",
+        "vue": "^3.4.34"
     },
     "devDependencies": {
-        "@rushstack/eslint-patch": "^1.10.3",
-        "@vitejs/plugin-vue": "^5.0.5",
+        "@rushstack/eslint-patch": "^1.10.4",
+        "@vitejs/plugin-vue": "^5.1.0",
         "@vue/eslint-config-prettier": "^9.0.0",
         "@vue/eslint-config-typescript": "^13.0.0",
         "eslint": "^8.57.0",
         "eslint-plugin-vue": "^9.27.0",
         "prettier": "^3.3.3",
         "terser": "^5.31.3",
-        "typescript": "^5.4.5",
-        "vite": "^5.3.4",
-        "vite-plugin-monkey": "^4.0.4",
-        "vue-tsc": "^2.0.26"
+        "typescript": "^5.5.4",
+        "vite": "^5.3.5",
+        "vite-plugin-monkey": "^4.0.6",
+        "vue-tsc": "^2.0.29"
     }
 }
