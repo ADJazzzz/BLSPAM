@@ -27,7 +27,7 @@ export default defineConfig({
             },
             build: {
                 externalGlobals: {
-                    vue: cdn.unpkg('Vue', 'dist/vue.global.prod.js').concat(
+                    vue: cdn.jsdelivr('Vue', 'dist/vue.global.prod.js').concat(
                         await util.fn2dataUrl(() => {
                             // @ts-ignore
                             window.Vue = Vue
@@ -35,10 +35,10 @@ export default defineConfig({
                             window.VueDemi = Vue
                         })
                     ),
-                    pinia: cdn.unpkg('Pinia', 'dist/pinia.iife.prod.js'),
-                    'naive-ui': cdn.unpkg('naive', 'dist/index.prod.js'),
-                    axios: cdn.unpkg('axios', 'dist/axios.min.js'),
-                    lodash: cdn.unpkg('_', 'lodash.min.js')
+                    pinia: cdn.jsdelivr('Pinia', 'dist/pinia.iife.prod.js'),
+                    'naive-ui': cdn.jsdelivr('naive', 'dist/index.prod.js'),
+                    axios: cdn.jsdelivr('axios', 'dist/axios.min.js'),
+                    lodash: cdn.jsdelivr('_', 'lodash.min.js')
                 }
             }
         })
