@@ -17,7 +17,7 @@ body:
       attributes:
           label: 'bug描述'
           description: |
-              描述你所遇到的bug
+              描述你所遇到的bug，以及复现的步骤
 
     - type: textarea
       id: picture
@@ -66,6 +66,6 @@ body:
       validations:
           required: false
       attributes:
-          label: '其他'
+          label: '其他补充'
           description: |
               若有其他想要补充的内容，在这里说明
