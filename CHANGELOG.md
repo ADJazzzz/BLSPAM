@@ -1,5 +1,11 @@
 ## NEXT_VERSION
 
+## [1.3.4](https://github.com/ADJazzzz/BLSPAM/compare/1.3.3...1.3.4) 2024-08-01
+
+### 修复
+
+-   修复网页字体大小被naive-ui全局样式放大[(#16)](https://github.com/ADJazzzz/BLSPAM/issues/16)
+
 ## [1.3.3](https://github.com/ADJazzzz/BLSPAM/compare/1.3.2...1.3.3) 2024-07-21
 
 ### 修复

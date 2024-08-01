@@ -21,6 +21,7 @@ import MainIcon from './components/Icons/MainIcon.vue'
 import PanelMenu from './components/PanelMenu.vue'
 import PanelContent from './components/PanelContent.vue'
 import Logger from './utils/logger'
+import { GM_addStyle } from '$'
 
 const logger = new Logger('App')
 
@@ -89,9 +90,12 @@ const observer = new MutationObserver((mutationsList, observer) => {
 })
 
 observer.observe(document.body, { childList: true, subtree: true })
+// n-config-provider 的 preflight-style-disabled 属性不知道为什么不生效，只能这样了
+GM_addStyle('body { font-size: 12px }')
 </script>
 
 <template>
+    <!-- <n-config-provider :locale="zhCN" preflight-style-disabled> -->
     <n-config-provider :locale="zhCN">
         <n-message-provider>
             <n-dialog-provider>
