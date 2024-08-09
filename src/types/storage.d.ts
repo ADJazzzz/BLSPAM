@@ -39,6 +39,7 @@ interface uiConfig {
     activeMenuIndex: menuIndex
     isShowPanel: boolean
     isCollapsed: boolean
+    theme: string
 }
 
 type textGroupTabPanels = {

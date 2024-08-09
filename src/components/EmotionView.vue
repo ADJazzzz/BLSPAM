@@ -71,12 +71,16 @@ const handleStopSpamer = () => {
     <n-flex id="emotionTab" justify="start">
         <div
             style="padding: 0 5px"
-            v-for="data in biliStore.emotionData"
+            v-for="data in biliStore.emotionData.filter((data) => data.pkg_id !== 100)"
             :key="data.pkg_id"
             :id="data.pkg_id.toString()"
             @click="handleClick(data.pkg_id)"
         >
-            <n-avatar color="white" :src="data.current_cover" :size="35" />
+            <n-avatar
+                :color="uiStore.uiConfig.theme === 'dark' ? '#101014' : 'white'"
+                :src="data.current_cover"
+                :size="35"
+            />
         </div>
     </n-flex>
     <n-divider style="margin: 15px 0" />
@@ -101,7 +105,12 @@ const handleStopSpamer = () => {
                 >
                     <n-popover>
                         <template #trigger>
-                            <n-avatar color="white" :size="60" :src="data.url" />
+                            <n-avatar
+                                :color="uiStore.uiConfig.theme === 'dark' ? '#101014' : 'white'"
+                                :size="60"
+                                :src="data.url"
+                                object-fit="contain"
+                            />
                         </template>
                         <span>{{ data.emoji }}</span>
                     </n-popover>

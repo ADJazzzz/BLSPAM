@@ -1,5 +1,21 @@
 ## NEXT_VERSION
 
+## [1.3.5](https://github.com/ADJazzzz/BLSPAM/compare/1.3.4...1.3.6) 2024-08-10
+
+### 新增
+
+-   适配深色模式（自动跟随B站官方实验室中的深色模式）
+
+### 修复
+
+-   修复通用表情显示问题
+-   过滤无效表情
+
+### 调整
+
+-   B站相关API调整
+-   更改CDN [unpkg => jsdelivr](https://www.jsdelivr.com)
+
 ## [1.3.4](https://github.com/ADJazzzz/BLSPAM/compare/1.3.3...1.3.4) 2024-08-01
 
 ### 修复
@@ -10,7 +26,7 @@
 
 ### 修复
 
--   修复段弹幕无法停止的问题
+-   修复短弹幕无法停止的问题
 
 ## [1.3.2](https://github.com/ADJazzzz/BLSPAM/compare/1.3.1...1.3.2) 2024-07-21
 

@@ -9,7 +9,8 @@ export default {
     ui: {
         activeMenuIndex: 'TextView',
         isShowPanel: false,
-        isCollapsed: false
+        isCollapsed: false,
+        theme: 'light'
     },
     modules: {
         TextSpam: {
@@ -22,7 +23,7 @@ export default {
         EmotionSpam: {
             enable: false,
             timeinterval: 3,
-            emotionViewSelectedID: 100,
+            emotionViewSelectedID: 1,
             msg: [],
             timelimit: 0
         },
