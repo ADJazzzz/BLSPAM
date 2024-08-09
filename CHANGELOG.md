@@ -1,6 +1,6 @@
 ## NEXT_VERSION
 
-## [1.3.5](https://github.com/ADJazzzz/BLSPAM/compare/1.3.4...1.3.6) 2024-08-10
+## [1.3.5](https://github.com/ADJazzzz/BLSPAM/compare/1.3.4...1.3.5) 2024-08-10
 
 ### 新增
 
