@@ -13,7 +13,7 @@ interface BApiMethod {
         reply_attr?: number,
         replay_dmid?: any,
         statistics?: { appId: number; platform: number },
-        fontsize?: number,
+        fontsize?: number
     ) => Promise<LiveResponse.SendMsg | AxiosResponse>
     sendEmotion: (
         msg: string,
@@ -23,7 +23,7 @@ interface BApiMethod {
         mode?: number,
         dm_type?: number,
         emoticonOptions?: any,
-        fontsize?: number,
+        fontsize?: number
     ) => Promise<LiveResponse.SendMsg | AxiosResponse>
     getEmoticons: (
         platform: string,
