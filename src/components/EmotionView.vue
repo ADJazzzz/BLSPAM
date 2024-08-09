@@ -71,7 +71,7 @@ const handleStopSpamer = () => {
     <n-flex id="emotionTab" justify="start">
         <div
             style="padding: 0 5px"
-            v-for="data in biliStore.emotionData"
+            v-for="data in biliStore.emotionData.filter((data) => data.pkg_id !== 100)"
             :key="data.pkg_id"
             :id="data.pkg_id.toString()"
             @click="handleClick(data.pkg_id)"
