@@ -4,22 +4,28 @@ interface BApiMethod {
     sendMsg: (
         msg: string,
         room_id: number,
-        room_type?: number,
-        mode?: number,
-        jumpfrom?: number,
-        fontsize?: number,
-        color?: number,
         bubble?: number,
-        reply_mid?: number
+        color?: number,
+        mode?: number,
+        room_type?: number,
+        jumpfrom?: number,
+        reply_mid?: number,
+        reply_attr?: number,
+        replay_dmid?: any,
+        statistics?: { appId: number; platform: number },
+        fontsize?: number,
+        rnd?: number
     ) => Promise<LiveResponse.SendMsg | AxiosResponse>
     sendEmotion: (
         msg: string,
         roomid: number,
+        bubble?: number,
         color?: number,
         mode?: number,
         dm_type?: number,
+        emoticonOptions?: any,
         fontsize?: number,
-        bubble?: number
+        rnd?: number
     ) => Promise<LiveResponse.SendMsg | AxiosResponse>
     getEmoticons: (
         platform: string,

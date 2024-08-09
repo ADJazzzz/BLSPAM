@@ -8,13 +8,15 @@ const BILIAPI: BApiMethod = {
     sendMsg: (
         msg,
         roomid,
-        room_type = 0,
-        mode = 1,
-        jumpfrom = 0,
-        fontsize = 25,
-        color = 16777215,
         bubble = 0,
-        reply_mid = 0
+        color = 16777215,
+        mode = 1,
+        room_type = 0,
+        jumpfrom = 0,
+        reply_mid = 0,
+        reply_attr = 0,
+        fontsize = 25,
+        statistics = { appId: 100, platform: 5 }
     ) => {
         const biliStore = useBiliStore()
         const bili_jct = (biliStore.cookies as BiliCookies).bili_jct
@@ -24,13 +26,15 @@ const BILIAPI: BApiMethod = {
             {
                 msg,
                 roomid,
-                room_type,
-                mode,
-                jumpfrom,
-                fontsize,
-                color,
                 bubble,
+                color,
+                mode,
+                room_type,
+                jumpfrom,
                 reply_mid,
+                reply_attr,
+                fontsize,
+                statistics: JSON.stringify(statistics),
                 rnd: timestamp(),
                 csrf: bili_jct,
                 csrf_token: bili_jct
@@ -46,11 +50,11 @@ const BILIAPI: BApiMethod = {
     sendEmotion: (
         msg,
         roomid,
+        bubble = 0,
         color = 16777215,
         mode = 1,
         dm_type = 1,
-        fontsize = 25,
-        bubble = 0
+        fontsize = 25
     ) => {
         const biliStore = useBiliStore()
         const bili_jct = (biliStore.cookies as BiliCookies).bili_jct
@@ -60,12 +64,12 @@ const BILIAPI: BApiMethod = {
             {
                 msg,
                 roomid,
+                bubble,
                 color,
                 mode,
                 dm_type,
                 fontsize,
                 rnd: timestamp(),
-                bubble,
                 csrf: bili_jct,
                 csrf_token: bili_jct
             },

@@ -8,6 +8,66 @@ declare namespace LiveInfoData {
             mode: number
             show_player_type: number
             extra: string
+            user: User
+        }
+        interface User {
+            uid: number
+            base: Base
+            medal: Medal | null
+            wealth: any | null
+            title: Title
+            guard: any | null
+            uhead_frame: any | null
+            guard_leader: GuardLeader
+        }
+        interface Base {
+            name: string
+            face: string
+            name_color: number
+            is_mystery: boolean
+            risk_ctrl_info: any | null
+            origin_info: OriginInfo
+            official_info: OfficialInfo
+            name_color_str: string
+        }
+        interface OriginInfo {
+            name: string
+            face: string
+        }
+        interface OfficialInfo {
+            role: number
+            title: string
+            desc: string
+            type: number
+        }
+        interface Medal {
+            name: string
+            level: number
+            color_start: number
+            color_end: number
+            color_border: number
+            color: number
+            id: number
+            typ: number
+            is_light: number
+            ruid: number
+            guard_level: number
+            score: number
+            guard_icon: string
+            honor_icon: string
+            v2_medal_color_start: string
+            v2_medal_color_end: string
+            v2_medal_color_border: string
+            v2_medal_color_text: string
+            v2_medal_color_level: string
+            user_receive_count: number
+        }
+        interface Title {
+            old_title_css_id: string
+            title_css_id: string
+        }
+        interface GuardLeader {
+            is_guard_leader: boolean
         }
     }
 
