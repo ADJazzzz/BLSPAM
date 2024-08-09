@@ -101,7 +101,7 @@ const handleStopSpamer = () => {
                 >
                     <n-popover>
                         <template #trigger>
-                            <n-avatar color="white" :size="60" :src="data.url" />
+                            <n-avatar color="white" :size="60" :src="data.url" object-fit="contain" />
                         </template>
                         <span>{{ data.emoji }}</span>
                     </n-popover>
