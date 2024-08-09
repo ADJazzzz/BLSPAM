@@ -9,7 +9,8 @@ export default {
     ui: {
         activeMenuIndex: 'TextView',
         isShowPanel: false,
-        isCollapsed: false
+        isCollapsed: false,
+        theme: 'light'
     },
     modules: {
         TextSpam: {

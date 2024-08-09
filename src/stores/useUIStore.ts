@@ -10,6 +10,7 @@ export const useUIStore = defineStore('ui', () => {
     const updateMenuValue = (key: menuIndex) => {
         uiConfig.activeMenuIndex = key
     }
+
     watch(
         uiConfig,
         _.debounce((newUiConfig: uiConfig) => Storage.setUiConfig(newUiConfig), 350)

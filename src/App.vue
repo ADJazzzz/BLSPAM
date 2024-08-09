@@ -10,7 +10,8 @@ import {
     NModal,
     NLayout,
     NLayoutSider,
-    NLayoutContent
+    NLayoutContent,
+    darkTheme
 } from 'naive-ui'
 import { h, render } from 'vue'
 import { dq, pollingQuery } from './utils/dom'
@@ -21,7 +22,7 @@ import MainIcon from './components/Icons/MainIcon.vue'
 import PanelMenu from './components/PanelMenu.vue'
 import PanelContent from './components/PanelContent.vue'
 import Logger from './utils/logger'
-import { GM_addStyle } from '$'
+import { GM_addStyle, unsafeWindow } from '$'
 
 const logger = new Logger('App')
 
@@ -45,6 +46,7 @@ const renderPanel = () => {
                         uiStore.uiConfig.isShowPanel = false
                     } else {
                         uiStore.uiConfig.isShowPanel = true
+                        handleUpdateTheme()
                     }
                 }
             },
@@ -76,8 +78,13 @@ const renderPanel = () => {
     })
 }
 
-const handleCollapse = (collapsed: boolean) => {
+const handleUpdateCollapse = (collapsed: boolean) => {
     uiStore.uiConfig.isCollapsed = collapsed
+}
+
+const handleUpdateTheme = () => {
+    const biliTheme = unsafeWindow.bililiveThemeV2.getTheme()
+    uiStore.uiConfig.theme = biliTheme
 }
 
 const observer = new MutationObserver((mutationsList, observer) => {
@@ -96,7 +103,7 @@ GM_addStyle('body { font-size: 12px }')
 
 <template>
     <!-- <n-config-provider :locale="zhCN" preflight-style-disabled> -->
-    <n-config-provider :locale="zhCN">
+    <n-config-provider :locale="zhCN" :theme="uiStore.uiConfig.theme === 'dark' ? darkTheme : null">
         <n-message-provider>
             <n-dialog-provider>
                 <n-modal v-model:show="uiStore.uiConfig.isShowPanel" style="max-width: 1200px">
@@ -110,7 +117,7 @@ GM_addStyle('body { font-size: 12px }')
                             :native-scrollbar="false"
                             content-style="max-height: 320px; padding-top: 8px"
                             :collapsed="uiStore.uiConfig.isCollapsed"
-                            :on-update:collapsed="handleCollapse"
+                            :on-update:collapsed="handleUpdateCollapse"
                         >
                             <PanelMenu />
                         </n-layout-sider>

@@ -11,6 +11,9 @@ declare global {
             AREA_ID: number
             PARENT_AREA_ID: number
         }
+        bililiveThemeV2: {
+            getTheme: () => string
+        }
     }
 }
 
