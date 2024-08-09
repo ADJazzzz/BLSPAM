@@ -5,6 +5,11 @@
 -   修复通用表情显示问题
 -   过滤无效表情
 
+### 调整
+
+-   B站相关API调整
+-   更改CDN [unpkg => jsdelivr](https://www.jsdelivr.com)
+
 ## [1.3.4](https://github.com/ADJazzzz/BLSPAM/compare/1.3.3...1.3.4) 2024-08-01
 
 ### 修复
