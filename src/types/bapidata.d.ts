@@ -173,6 +173,7 @@ declare namespace UserData {
             is_senior_member: number
             wbi_img: WbiImg
             is_jury: boolean
+            name_render: any
         }
 
         interface LevelInfo {
