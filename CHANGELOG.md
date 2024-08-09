@@ -1,5 +1,10 @@
 ## NEXT_VERSION
 
+### 修复
+
+-   修复通用表情显示问题
+-   过滤无效表情
+
 ## [1.3.4](https://github.com/ADJazzzz/BLSPAM/compare/1.3.3...1.3.4) 2024-08-01
 
 ### 修复
