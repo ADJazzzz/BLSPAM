@@ -1,5 +1,7 @@
 ## NEXT_VERSION
 
+## [1.3.5](https://github.com/ADJazzzz/BLSPAM/compare/1.3.4...1.3.6) 2024-08-10
+
 ### 新增
 
 -   适配深色模式
@@ -24,7 +26,7 @@
 
 ### 修复
 
--   修复段弹幕无法停止的问题
+-   修复短弹幕无法停止的问题
 
 ## [1.3.2](https://github.com/ADJazzzz/BLSPAM/compare/1.3.1...1.3.2) 2024-07-21
 
