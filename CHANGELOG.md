@@ -3,6 +3,7 @@
 ### 调整
 
 -   调整弹幕+1和复制模块
+-   增加保持独轮车开启功能的相关提醒[(#20)](https://github.com/ADJazzzz/BLSPAM/issues/20)
 
 ## [1.3.5](https://github.com/ADJazzzz/BLSPAM/compare/1.3.4...1.3.5) 2024-08-10
 
