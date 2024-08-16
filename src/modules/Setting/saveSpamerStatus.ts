@@ -1,3 +1,4 @@
+import { createDiscreteApi } from 'naive-ui'
 import BaseModule from '../BaseModule'
 
 class SaveSpamerStatus extends BaseModule {
@@ -11,6 +12,12 @@ class SaveSpamerStatus extends BaseModule {
                 for (const module of modules) {
                     if ((this.moduleStore.moduleConfig as any)[module].enable) {
                         ;(this.moduleStore.emitter.emit as any)(module, { module })
+                        const { notification } = createDiscreteApi(['notification'])
+                        notification.create({
+                            content: '将恢复独轮车开关状态，如需关闭请到控制面板关闭并刷新网页',
+                            closable: false,
+                            duration: 6e3
+                        })
                         break
                     }
                 }
