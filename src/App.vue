@@ -11,7 +11,8 @@ import {
     NLayout,
     NLayoutSider,
     NLayoutContent,
-    darkTheme
+    darkTheme,
+    lightTheme
 } from 'naive-ui'
 import { h, render } from 'vue'
 import { dq, pollingQuery } from './utils/dom'
@@ -103,7 +104,10 @@ GM_addStyle('body { font-size: 12px }')
 
 <template>
     <!-- <n-config-provider :locale="zhCN" preflight-style-disabled> -->
-    <n-config-provider :locale="zhCN" :theme="uiStore.uiConfig.theme === 'dark' ? darkTheme : null">
+    <n-config-provider
+        :locale="zhCN"
+        :theme="uiStore.uiConfig.theme === 'dark' ? darkTheme : lightTheme"
+    >
         <n-message-provider>
             <n-dialog-provider>
                 <n-modal v-model:show="uiStore.uiConfig.isShowPanel" style="max-width: 1200px">
