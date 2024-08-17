@@ -4,6 +4,11 @@
 
 <div align ="center">
 <h3>B站直播独轮车</h3>
+
+[![GitHub Release](https://img.shields.io/github/v/release/ADJazzzz/BLSPAM)]((https://github.com/ADJazzzz/BLSPAM/releases/latest))
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ADJazzzz/BLSPAM/build.yaml)](https://github.com/ADJazzzz/BLSPAM/actions/workflows/build.yaml)
+[![GitHub Repo stars](https://img.shields.io/github/stars/ADJazzzz/BLSPAM)](https://github.com/ADJazzzz/BLSPAM)
+
 </div>
 
 # 功能
@@ -46,7 +51,7 @@
 
 <img src="/images/panel.png">
 
-> 右上角为状态显示，蓝色为可使用状态，红色为不可使用状态（未登录，API异常等），绿色为正在运行独轮车
+> 右上角为状态显示，**蓝色**为可使用状态，**红色**为不可使用状态（未登录，API异常等），**绿色**为正在运行独轮车
 
 # 兼容
 
