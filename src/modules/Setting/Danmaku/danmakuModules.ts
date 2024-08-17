@@ -52,14 +52,14 @@ class danmakuModules extends BaseModule {
                     const dmRepeat = document.createElement('div')
                     dmRepeat.style.cursor = 'pointer'
                     dmRepeat.style.padding = 10 + 'px'
+                    dmRepeat.addEventListener('click', () => this.dmRepeat(msg))
                     dmRepeat.classList.add('dm-repeat')
 
                     const ATag = document.createElement('a')
                     ATag.style.color = '#23ade5'
-                    ATag.addEventListener('click', () => this.dmRepeat(msg))
                     ATag.innerText = '弹幕+1'
-                    dmRepeat.appendChild(ATag)
 
+                    dmRepeat.appendChild(ATag)
                     element.appendChild(dmRepeat)
                 }
 
@@ -67,14 +67,14 @@ class danmakuModules extends BaseModule {
                     const danmakuCopy = document.createElement('div')
                     danmakuCopy.style.cursor = 'pointer'
                     danmakuCopy.style.padding = 10 + 'px'
+                    danmakuCopy.addEventListener('click', () => this.dmCopy(msg))
                     danmakuCopy.classList.add('danmaku-copy')
 
                     const ATag = document.createElement('a')
                     ATag.style.color = '#23ade5'
-                    ATag.addEventListener('click', () => this.dmCopy(msg))
                     ATag.innerText = '弹幕复制'
-                    danmakuCopy.appendChild(ATag)
 
+                    danmakuCopy.appendChild(ATag)
                     element.appendChild(danmakuCopy)
                 }
             })
