@@ -5,7 +5,7 @@
 <div align ="center">
 <h3>B站直播独轮车</h3>
 
-[![GitHub Release](https://img.shields.io/github/v/release/ADJazzzz/BLSPAM)]((https://github.com/ADJazzzz/BLSPAM/releases/latest))
+[![GitHub Release](https://img.shields.io/github/v/release/ADJazzzz/BLSPAM)](https://github.com/ADJazzzz/BLSPAM/releases/latest)
 [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ADJazzzz/BLSPAM/build.yaml)](https://github.com/ADJazzzz/BLSPAM/actions/workflows/build.yaml)
 [![GitHub Repo stars](https://img.shields.io/github/stars/ADJazzzz/BLSPAM)](https://github.com/ADJazzzz/BLSPAM)
 
