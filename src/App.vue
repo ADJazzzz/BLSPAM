@@ -32,14 +32,14 @@ const moduleStore = useModuleStore()
 uiStore.uiConfig.isShowPanel = false
 
 const renderPanel = () => {
-    pollingQuery(document, '.icon-left-part', 300, 300, true).then((controlPanelLeft) => {
+    pollingQuery(document, '.chat-input-ctnr-new.p-relative', 300, 300, true).then((controlPanelLeft) => {
         const buttonNode = h(
             NButton,
             {
                 class: 'blspam_btn',
                 text: true,
                 tag: 'div',
-                style: { marginLeft: '4px', display: 'inline-block' },
+                style: { marginRight: '4px', alignSelf: 'center' },
                 focusable: false,
                 bordered: false,
                 onClick: () => {
@@ -69,7 +69,7 @@ const renderPanel = () => {
                         },
                         {
                             default: () =>
-                                h(NIcon, { component: MainIcon, size: 20 }, { default: () => null })
+                                h(NIcon, { component: MainIcon, size: 24 }, { default: () => null })
                         }
                     )
             }
