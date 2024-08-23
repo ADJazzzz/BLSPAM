@@ -4,7 +4,7 @@
 
 ### 调整
 
--   适配B站直播新UI
+-   适配B站直播新UI（还在旧版UI的同学请勿更新）
 
 ## [1.3.6](https://github.com/ADJazzzz/BLSPAM/compare/1.3.5...1.3.6) 2024-08-17
 
