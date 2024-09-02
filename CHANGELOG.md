@@ -1,10 +1,16 @@
 ## NEXT_VERSION
 
+## [1.3.8](https://github.com/ADJazzzz/BLSPAM/compare/1.3.7...1.3.8) 2024-09-02
+
+### 调整
+
+-   适配B站直播新旧两种UI布局
+
 ## [1.3.7](https://github.com/ADJazzzz/BLSPAM/compare/1.3.6...1.3.7) 2024-08-22
 
 ### 调整
 
--   适配B站直播新UI（还在旧版UI的同学请勿更新）
+-   适配B站直播新UI ~~（还在旧版UI的同学请勿更新）~~ 
 
 ## [1.3.6](https://github.com/ADJazzzz/BLSPAM/compare/1.3.5...1.3.6) 2024-08-17
 
