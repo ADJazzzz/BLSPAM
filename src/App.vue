@@ -102,7 +102,7 @@ const observer = new MutationObserver((mutationsList, observer) => {
                 observer.disconnect()
                 logger.log('初始化完成')
             }
-        }, 200)
+        }, 500)
     }
 })
 observer.observe(document.body, { childList: true, subtree: true })
