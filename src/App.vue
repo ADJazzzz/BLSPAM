@@ -85,22 +85,24 @@ const handleUpdateTheme = () => {
 const observer = new MutationObserver((mutationsList, observer) => {
     const controlPanel = dq('#control-panel-ctnr-box')
     if (controlPanel) {
-        const oldTheme = dq('.icon-left-part')
-        const newTheme = dq('.chat-input-ctnr-new.p-relative')
+        setTimeout(() => {
+            const oldTheme = dq('.icon-left-part')
+            const newTheme = dq('.chat-input-ctnr-new.p-relative')
 
-        if (oldTheme || newTheme) {
-            if (oldTheme) {
-                renderPanel('.icon-left-part', { marginLeft: '4px', display: 'inline-block' })
+            if (oldTheme || newTheme) {
+                if (oldTheme) {
+                    renderPanel('.icon-left-part', { marginLeft: '4px', display: 'inline-block' })
+                }
+                if (newTheme) {
+                    renderPanel('.chat-input-ctnr-new.p-relative', {
+                        marginRight: '4px',
+                        alignSelf: 'center'
+                    })
+                }
             }
-            if (newTheme) {
-                renderPanel('.chat-input-ctnr-new.p-relative', {
-                    marginRight: '4px',
-                    alignSelf: 'center'
-                })
-            }
-            observer.disconnect()
-            logger.log('初始化完成')
-        }
+        }, 500)
+        observer.disconnect()
+        logger.log('初始化完成')
     }
 })
 observer.observe(document.body, { childList: true, subtree: true })

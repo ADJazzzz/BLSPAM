@@ -9,6 +9,7 @@ class UserInfo extends BaseModule {
         try {
             const response = (await BILIAPI.nav()) as UserResponse.Nav
             if (response.code === 0) {
+                this.logger.log('UserInfo', response)
                 return Promise.resolve(response.data)
             } else {
                 this.logger.error('获取用户信息出错', response.message)
@@ -26,7 +27,7 @@ class UserInfo extends BaseModule {
                 const windowBiliLive = unsafeWindow.BilibiliLive
                 if (windowBiliLive) {
                     clearInterval(timer)
-                    this.logger.log(windowBiliLive)
+                    this.logger.log('windowBiliLive', windowBiliLive)
                     resolve(windowBiliLive)
                 }
             }, 200)
@@ -43,6 +44,7 @@ class UserInfo extends BaseModule {
         try {
             const response = (await BILIAPI.getEmoticons('pc', roomID)) as LiveResponse.GetEmoticons
             if (response.code === 0) {
+                this.logger.log('EmotionData', response)
                 EmotionData.push(...response.data.data)
                 return Promise.resolve(EmotionData)
             } else {
