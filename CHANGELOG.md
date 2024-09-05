@@ -1,5 +1,11 @@
 ## NEXT_VERSION
 
+## [1.3.9](https://github.com/ADJazzzz/BLSPAM/compare/1.3.8...1.3.9) 2024-09-05
+
+### 修复
+
+-   修复因注入过早导致控制面板错位
+
 ## [1.3.8](https://github.com/ADJazzzz/BLSPAM/compare/1.3.7...1.3.8) 2024-09-02
 
 ### 调整
