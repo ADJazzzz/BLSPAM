@@ -13,7 +13,9 @@ interface BApiMethod {
         reply_attr?: number,
         replay_dmid?: any,
         statistics?: { appId: number; platform: number },
-        fontsize?: number
+        fontsize?: number,
+        reply_type?: number,
+        reply_uname?: string
     ) => Promise<LiveResponse.SendMsg | AxiosResponse>
     sendEmotion: (
         msg: string,
