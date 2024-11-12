@@ -29,6 +29,7 @@
 **注意事项**
 
 -   ~~还在旧版UI的同学请安装[1.3.6](https://github.com/ADJazzzz/BLSPAM/releases/tag/1.3.6)版本~~ 新版本（`1.3.8`版本及以上）已支持新旧两种UI布局
+-   若Tampermonkey版本 >= `5.3.2`，需要在浏览器扩展页面开启`开发者模式` [详见](https://www.tampermonkey.net/faq.php#Q209)
 -   使用独轮车可能会对直播间环境造成污染，若你的账号被封禁或禁言，本脚本、作者以及贡献者不负任何责任
 -   本脚本会使用你的账号信息用于对B站相关API请求
 -   本脚本只会对B站相关域名、依赖CDN 和 Github API 发起请求
