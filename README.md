@@ -7,6 +7,7 @@
 
 [![GitHub Release](https://img.shields.io/github/v/release/ADJazzzz/BLSPAM)](https://github.com/ADJazzzz/BLSPAM/releases/latest)
 [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ADJazzzz/BLSPAM/build.yaml)](https://github.com/ADJazzzz/BLSPAM/actions/workflows/build.yaml)
+[![GitHub Download Count](https://img.shields.io/github/downloads/ADJazzzz/BLSPAM/total?label=Download)](https://github.com/ADJazzzz/BLSPAM/releases)
 [![GitHub Repo stars](https://img.shields.io/github/stars/ADJazzzz/BLSPAM)](https://github.com/ADJazzzz/BLSPAM)
 
 </div>
