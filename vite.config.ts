@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import monkey, { cdn, util } from 'vite-plugin-monkey'
+import monkey, { cdn } from 'vite-plugin-monkey'
 
 export default defineConfig({
     plugins: [
@@ -27,14 +27,7 @@ export default defineConfig({
             },
             build: {
                 externalGlobals: {
-                    vue: cdn.jsdelivr('Vue', 'dist/vue.global.prod.js').concat(
-                        await util.fn2dataUrl(() => {
-                            // @ts-ignore
-                            window.Vue = Vue
-                            // @ts-ignore
-                            window.VueDemi = Vue
-                        })
-                    ),
+                    vue: cdn.jsdelivr('Vue', 'dist/vue.global.prod.js'),
                     pinia: cdn.jsdelivr('Pinia', 'dist/pinia.iife.prod.js'),
                     'naive-ui': cdn.jsdelivr('naive', 'dist/index.prod.js'),
                     axios: cdn.jsdelivr('axios', 'dist/axios.min.js'),

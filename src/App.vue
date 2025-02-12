@@ -86,7 +86,7 @@ const handleUpdateCollapse = (collapsed: boolean) => {
     uiStore.uiConfig.isCollapsed = collapsed
 }
 
-new MutationObserver((mutationsList, observer) => {
+new MutationObserver((_mutationsList, observer) => {
     const controlPanel = dq('#control-panel-ctnr-box')
     if (controlPanel) {
         setTimeout(() => {
