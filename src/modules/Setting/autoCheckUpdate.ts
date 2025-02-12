@@ -28,14 +28,31 @@ class checkUpdate extends BaseModule {
         return GM_info.script.version
     }
 
+    private compareVersion(curVer: string, latVer: string): number {
+        const curVerParts = curVer.split('.').map(Number)
+        const latVerParts = latVer.split('.').map(Number)
+
+        for (let i = 0; i < Math.max(curVerParts.length, latVerParts.length); i++) {
+            const curVerPart = curVerParts[i] ?? 0
+            const latVerPart = latVerParts[i] ?? 0
+
+            if (curVerPart !== latVerPart) {
+                return curVerPart > latVerPart ? 1 : -1
+            }
+        }
+
+        return 0
+    }
+
     public async CheckUpdate() {
         const currentVersion = this.getCurrentVersion()
         const getGitHubAPI: CheckUpdate.GitHub.GithubAPI = (await this.getLatestVersionRes())
             .response
 
-        if (currentVersion === getGitHubAPI.tag_name) {
+        const compareRes = this.compareVersion(currentVersion, getGitHubAPI.tag_name)
+        if (compareRes === 0) {
             this.logger.log('当前已是最新的版本')
-        } else if (currentVersion < getGitHubAPI.tag_name) {
+        } else if (compareRes === -1) {
             this.logger.log(`发现新版本：${getGitHubAPI.tag_name}`)
             const { notification } = createDiscreteApi(['notification'])
             notification.create({
