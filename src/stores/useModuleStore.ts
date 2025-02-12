@@ -34,7 +34,7 @@ export const useModuleStore = defineStore('modules', () => {
         let retryCount = 0
         const maxRetries = 2
         const retryDelay = 200
-    
+
         while (retryCount <= maxRetries) {
             try {
                 await loadDefaultModules()
@@ -44,14 +44,14 @@ export const useModuleStore = defineStore('modules', () => {
                 errorCount++
                 retryCount++
                 if (retryCount <= maxRetries) {
-                    await new Promise(resolve => setTimeout(resolve, retryDelay))
+                    await new Promise((resolve) => setTimeout(resolve, retryDelay))
                 } else {
                     logger.error('达到最大重试次数，终止运行')
                     break
                 }
             }
         }
-    
+
         if (errorCount < maxRetries) {
             try {
                 await loadOtherModules()
