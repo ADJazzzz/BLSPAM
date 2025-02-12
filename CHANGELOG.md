@@ -1,5 +1,11 @@
 ## NEXT_VERSION
 
+## [1.3.11](https://github.com/ADJazzzz/BLSPAM/compare/1.3.10...1.3.11) 2024-09-05
+
+### 修复
+
+-   修复版本号对比问题
+
 ## [1.3.10](https://github.com/ADJazzzz/BLSPAM/compare/1.3.9...1.3.10) 2025-02-12
 
 ### 更新
