@@ -1,5 +1,15 @@
 ## NEXT_VERSION
 
+## [1.3.10](https://github.com/ADJazzzz/BLSPAM/compare/1.3.9...1.3.10) 2025-02-12
+
+### 更新
+
+-   更新主要依赖项
+
+### 调整
+
+-   添加默认模块加载重试机制
+
 ## [1.3.9](https://github.com/ADJazzzz/BLSPAM/compare/1.3.8...1.3.9) 2024-09-05
 
 ### 修复

@@ -29,9 +29,9 @@ export default defineConfig({
                 externalGlobals: {
                     vue: cdn.jsdelivr('Vue', 'dist/vue.global.prod.js').concat(
                         await util.fn2dataUrl(() => {
-                            // @ts-ignore
+                            // @ts-expect-error: 脚本缺失这个回报错
                             window.Vue = Vue
-                            // @ts-ignore
+                            // @ts-expect-error: 脚本缺失这个回报错
                             window.VueDemi = Vue
                         })
                     ),

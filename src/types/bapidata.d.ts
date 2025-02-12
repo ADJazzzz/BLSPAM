@@ -234,6 +234,7 @@ declare namespace UserData {
             tv_vip_status: number
             tv_vip_pay_type: number
             tv_due_date: number
+            avatar_icon: AvatarIcon
         }
         interface Label {
             path: string
@@ -248,6 +249,9 @@ declare namespace UserData {
             img_label_uri_hant: string
             img_label_uri_hans_static: string
             img_label_uri_hant_static: string
+        }
+        interface AvatarIcon {
+            icon_resource: object
         }
 
         interface Wallet {

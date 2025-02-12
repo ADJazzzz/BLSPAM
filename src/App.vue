@@ -82,7 +82,11 @@ const handleUpdateTheme = () => {
     const biliTheme = unsafeWindow.bililiveThemeV2.getTheme()
     uiStore.uiConfig.theme = biliTheme
 }
-const observer = new MutationObserver((mutationsList, observer) => {
+const handleUpdateCollapse = (collapsed: boolean) => {
+    uiStore.uiConfig.isCollapsed = collapsed
+}
+
+new MutationObserver((_mutationsList, observer) => {
     const controlPanel = dq('#control-panel-ctnr-box')
     if (controlPanel) {
         setTimeout(() => {
@@ -104,12 +108,7 @@ const observer = new MutationObserver((mutationsList, observer) => {
         observer.disconnect()
         logger.log('初始化完成')
     }
-})
-observer.observe(document.body, { childList: true, subtree: true })
-
-const handleUpdateCollapse = (collapsed: boolean) => {
-    uiStore.uiConfig.isCollapsed = collapsed
-}
+}).observe(document.body, { childList: true, subtree: true })
 // n-config-provider 的 preflight-style-disabled 属性不知道为什么不生效，只能这样了
 GM_addStyle('body { font-size: 12px }')
 </script>

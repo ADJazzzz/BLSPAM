@@ -17,7 +17,9 @@ const BILIAPI: BApiMethod = {
         reply_attr = 0,
         reply_dmid = '',
         statistics = { appId: 100, platform: 5 },
-        fontsize = 25
+        fontsize = 25,
+        reply_type = 0,
+        reply_uname = ''
     ) => {
         const biliStore = useBiliStore()
         const bili_jct = (biliStore.cookies as BiliCookies).bili_jct
@@ -37,6 +39,8 @@ const BILIAPI: BApiMethod = {
                 reply_dmid,
                 fontsize,
                 statistics: JSON.stringify(statistics),
+                reply_type,
+                reply_uname,
                 rnd: timestamp(),
                 csrf: bili_jct,
                 csrf_token: bili_jct

@@ -31,13 +31,28 @@ export const useModuleStore = defineStore('modules', () => {
     async function loadModules(): Promise<void> {
         const logger = new Logger('LoadModules')
         let errorCount = 0
-        try {
-            await loadDefaultModules()
-        } catch (error) {
-            logger.error('加载默认模块出错', error)
-            errorCount++
+        let retryCount = 0
+        const maxRetries = 2
+        const retryDelay = 200
+    
+        while (retryCount <= maxRetries) {
+            try {
+                await loadDefaultModules()
+                break
+            } catch (error) {
+                logger.error(`重试次数: ${retryCount + 1}`, error)
+                errorCount++
+                retryCount++
+                if (retryCount <= maxRetries) {
+                    await new Promise(resolve => setTimeout(resolve, retryDelay))
+                } else {
+                    logger.error('达到最大重试次数，终止运行')
+                    break
+                }
+            }
         }
-        if (!errorCount) {
+    
+        if (errorCount < maxRetries) {
             try {
                 await loadOtherModules()
             } catch (error) {
