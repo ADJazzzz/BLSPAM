@@ -32,6 +32,8 @@ class TextGroupSpamer extends BaseModule {
         timeinterval: number
     ): Promise<void> {
         let currentIndex = 0
+        let intervalId: NodeJS.Timeout | null = null
+
         const sendMsg = async (msg: string) => {
             try {
                 const response = (await BILIAPI.sendMsg(msg, roomid)) as AxiosResponse
@@ -45,7 +47,7 @@ class TextGroupSpamer extends BaseModule {
             }
         }
 
-        const send = setInterval(async () => {
+        const sendNextMsg = async () => {
             if (this.config.enable) {
                 if (currentIndex < msg.length) {
                     await sendMsg(msg[currentIndex])
@@ -55,9 +57,17 @@ class TextGroupSpamer extends BaseModule {
                     currentIndex = 0
                 }
             } else {
-                clearInterval(send)
+                if (intervalId) {
+                    clearInterval(intervalId)
+                    intervalId = null
+                }
             }
-        }, timeinterval)
+        }
+
+        // Invoke send immediately
+        sendNextMsg()
+
+        intervalId = setInterval(sendNextMsg, timeinterval)
     }
 
     public async run(): Promise<void> {

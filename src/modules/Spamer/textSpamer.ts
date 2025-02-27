@@ -34,22 +34,31 @@ class TextSpamer extends BaseModule {
             }
         }
 
+        let intervalId: NodeJS.Timeout | null = null
+
+        const stopSending = () => {
+            if (intervalId) {
+                clearInterval(intervalId)
+                intervalId = null
+                this.config.enable = false
+            }
+        }
+
         if (msg.length < textinterval) {
-            const sendMSGShort = setInterval(async () => {
+            const sendNext = async () => {
                 if (this.config.enable) {
                     await sendMsg(msg)
                 } else {
-                    clearInterval(sendMSGShort)
+                    stopSending()
                 }
-            }, timeinterval)
-
-            if (timelimit !== 0) {
-                setTimeout(() => {
-                    clearInterval(sendMSGShort)
-                    this.config.enable = false
-                }, timelimit)
             }
-        } else {
+
+            // Invoke send immediately
+            sendNext()
+
+            intervalId = setInterval(sendNext, timeinterval)
+        }
+        else {
             const slices: string[] = []
             for (let i = 0; i < msg.length; i += textinterval) {
                 slices.push(msg.slice(i, i + textinterval))
@@ -57,7 +66,7 @@ class TextSpamer extends BaseModule {
 
             let currentIndex = 0
 
-            const sendMSGLong = setInterval(async () => {
+            const sendNextSlice = async () => {
                 if (this.config.enable) {
                     if (currentIndex < slices.length) {
                         await sendMsg(slices[currentIndex])
@@ -67,16 +76,18 @@ class TextSpamer extends BaseModule {
                         currentIndex = 0
                     }
                 } else {
-                    clearInterval(sendMSGLong)
+                    stopSending()
                 }
-            }, timeinterval)
-
-            if (timelimit !== 0) {
-                setTimeout(() => {
-                    clearInterval(sendMSGLong)
-                    this.config.enable = false
-                }, timelimit)
             }
+
+            // Invoke send immediately
+            sendNextSlice()
+
+            intervalId = setInterval(sendNextSlice, timeinterval)
+        }
+
+        if (timelimit !== 0) {
+            setTimeout(stopSending, timelimit)
         }
     }
 
