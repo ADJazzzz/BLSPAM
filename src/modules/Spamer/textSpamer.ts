@@ -57,8 +57,7 @@ class TextSpamer extends BaseModule {
             sendNext()
 
             intervalId = setInterval(sendNext, timeinterval)
-        }
-        else {
+        } else {
             const slices: string[] = []
             for (let i = 0; i < msg.length; i += textinterval) {
                 slices.push(msg.slice(i, i + textinterval))

@@ -10,6 +10,7 @@ import {
     NFormItem,
     NInputNumber,
     NFlex,
+    NPageHeader,
     useMessage
 } from 'naive-ui'
 import { useBiliStore } from '../stores/useBiliStore'
@@ -68,6 +69,7 @@ const handleStopSpamer = () => {
 </script>
 
 <template>
+    <n-page-header subtitle="表情独轮车，好用爱用" style="margin-bottom: 10px" />
     <n-flex id="emotionTab" justify="start">
         <div
             style="padding: 0 5px"

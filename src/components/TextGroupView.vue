@@ -10,6 +10,7 @@ import {
     NTabs,
     NTabPane,
     NButton,
+    NPageHeader,
     useMessage,
     useDialog
 } from 'naive-ui'
@@ -108,6 +109,10 @@ const handleStopSpamer = () => {
 
 <template>
     <n-form :rules="rules" :disabled="moduleStore.moduleConfig.TextGroupSpam.enable">
+        <n-page-header
+            subtitle="文字组独轮车：循环发送所有弹幕组内容"
+            style="margin-bottom: 10px"
+        />
         <n-form-item :show-label="false">
             <n-flex>
                 <n-form-item label="时间间隔" path="timeinterval">

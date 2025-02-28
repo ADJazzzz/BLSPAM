@@ -7,6 +7,7 @@ import {
     NInputNumber,
     NPopover,
     NFlex,
+    NPageHeader,
     useMessage
 } from 'naive-ui'
 import { useUIStore } from '../stores/useUIStore'
@@ -78,6 +79,7 @@ const rules = {
 
 <template>
     <n-form :rules="rules" :disabled="moduleStore.moduleConfig.TextSpam.enable">
+        <n-page-header subtitle="文字独轮车" style="margin-bottom: 10px" />
         <n-form-item :show-label="false">
             <n-flex align="center">
                 <n-form-item label="时间间隔" path="timeinterval">
