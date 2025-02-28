@@ -31,7 +31,9 @@ class EmotionSpamer extends BaseModule {
             }
         }
 
-        const send = setInterval(async () => {
+        let intervalId: NodeJS.Timeout | null = null
+
+        const sendNextEmotion = async () => {
             if (this.config.enable) {
                 if (currentIndex < emotions.length) {
                     await sendEmotion(emotions[currentIndex])
@@ -41,14 +43,24 @@ class EmotionSpamer extends BaseModule {
                     currentIndex = 0
                 }
             } else {
-                clearInterval(send)
+                if (intervalId !== null) {
+                    clearInterval(intervalId)
+                    intervalId = null
+                }
             }
-        }, timeinterval)
+        }
+
+        // Invoke send immediately
+        sendNextEmotion()
+
+        intervalId = setInterval(sendNextEmotion, timeinterval)
 
         if (timelimit !== 0) {
             setTimeout(() => {
-                clearInterval(send)
-                this.config.enable = false
+                if (intervalId !== null) {
+                    clearInterval(intervalId)
+                    this.config.enable = false
+                }
             }, timelimit)
         }
     }
