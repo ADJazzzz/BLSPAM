@@ -16,11 +16,13 @@ import {
 import { useBiliStore } from '../stores/useBiliStore'
 import { useModuleStore } from '../stores/useModuleStore'
 import { useUIStore } from '../stores/useUIStore'
+import stop from '../modules/Spamer/emotionSpamer'
 
 const biliStore = useBiliStore()
 const moduleStore = useModuleStore()
 const uiStore = useUIStore()
 const message = useMessage()
+const emStop = new stop('StopEmotionSpamer')
 
 const handleClick = (id: number) => {
     moduleStore.moduleConfig.EmotionSpam.emotionViewSelectedID = id
@@ -64,7 +66,7 @@ const handleStartSpamer = () => {
     }
 }
 const handleStopSpamer = () => {
-    moduleStore.moduleConfig.EmotionSpam.enable = false
+    emStop.stop()
 }
 </script>
 

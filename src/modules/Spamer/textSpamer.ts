@@ -5,6 +5,8 @@ import { AxiosResponse } from '../../types'
 
 class TextSpamer extends BaseModule {
     config = this.moduleStore.moduleConfig.TextSpam
+    private intervalId: NodeJS.Timeout | null = null
+    private msgSlices: string[] = []
 
     private formatMsg(msg: string): string {
         return msg.replace(/\n/g, '')
@@ -12,6 +14,14 @@ class TextSpamer extends BaseModule {
 
     private formatTime(time: number): number {
         return time * 1000
+    }
+
+    private cleanUP(): void {
+        if (this.intervalId) {
+            clearInterval(this.intervalId)
+            this.intervalId = null
+        }
+        this.msgSlices = []
     }
 
     private async cycleSendDanmu(
@@ -34,60 +44,57 @@ class TextSpamer extends BaseModule {
             }
         }
 
-        let intervalId: NodeJS.Timeout | null = null
-
-        const stopSending = () => {
-            if (intervalId) {
-                clearInterval(intervalId)
-                intervalId = null
-                this.config.enable = false
-            }
-        }
-
         if (msg.length < textinterval) {
             const sendNext = async () => {
                 if (this.config.enable) {
                     await sendMsg(msg)
                 } else {
-                    stopSending()
+                    this.cleanUP()
                 }
             }
 
-            // Invoke send immediately
-            sendNext()
+            await sendNext()
 
-            intervalId = setInterval(sendNext, timeinterval)
+            this.intervalId = setInterval(sendNext, timeinterval)
         } else {
-            const slices: string[] = []
             for (let i = 0; i < msg.length; i += textinterval) {
-                slices.push(msg.slice(i, i + textinterval))
+                this.msgSlices.push(msg.slice(i, i + textinterval))
             }
 
             let currentIndex = 0
 
             const sendNextSlice = async () => {
                 if (this.config.enable) {
-                    if (currentIndex < slices.length) {
-                        await sendMsg(slices[currentIndex])
+                    if (currentIndex < this.msgSlices.length) {
+                        await sendMsg(this.msgSlices[currentIndex])
                         currentIndex++
                     }
-                    if (currentIndex >= slices.length) {
+                    if (currentIndex >= this.msgSlices.length) {
                         currentIndex = 0
                     }
                 } else {
-                    stopSending()
+                    this.cleanUP()
                 }
             }
 
-            // Invoke send immediately
-            sendNextSlice()
+            await sendNextSlice()
 
-            intervalId = setInterval(sendNextSlice, timeinterval)
+            this.intervalId = setInterval(sendNextSlice, timeinterval)
         }
 
         if (timelimit !== 0) {
-            setTimeout(stopSending, timelimit)
+            setTimeout(() => {
+                this.config.enable = false
+                this.cleanUP()
+                this.logger.log('文字独轮车已停止')
+            }, timelimit)
         }
+    }
+
+    public stop(): void {
+        this.config.enable = false
+        this.cleanUP()
+        this.logger.log('文字独轮车已停止')
     }
 
     public async run(): Promise<void> {

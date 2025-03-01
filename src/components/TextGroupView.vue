@@ -17,11 +17,13 @@ import {
 import _ from 'lodash'
 import { useModuleStore } from '../stores/useModuleStore'
 import { useUIStore } from '../stores/useUIStore'
+import stop from '../modules/Spamer/textGroupSpamer'
 
 const moduleStore = useModuleStore()
 const uiStore = useUIStore()
 const message = useMessage()
 const dialog = useDialog()
+const tgStop = new stop('StopTextGroupSpamer')
 
 const rules = {
     timeinterval: {
@@ -103,7 +105,7 @@ const handleStartSpamer = () => {
     }
 }
 const handleStopSpamer = () => {
-    moduleStore.moduleConfig.TextGroupSpam.enable = false
+    tgStop.stop()
 }
 </script>
 

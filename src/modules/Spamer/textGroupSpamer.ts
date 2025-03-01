@@ -6,6 +6,7 @@ import { AxiosResponse } from '../../types'
 
 class TextGroupSpamer extends BaseModule {
     config = this.moduleStore.moduleConfig.TextGroupSpam
+    private intervalId: NodeJS.Timeout | null = null
 
     private formatMsg(): string[] {
         const slicedMsg = _.flatMap(this.config.textGroupTabPanels, (items) => {
@@ -26,13 +27,19 @@ class TextGroupSpamer extends BaseModule {
         return time * 1000
     }
 
+    private cleanUP(): void {
+        if (this.intervalId) {
+            clearInterval(this.intervalId)
+            this.intervalId = null
+        }
+    }
+
     private async cycleSendDanmuGroup(
         msg: string[],
         roomid: number,
         timeinterval: number
     ): Promise<void> {
         let currentIndex = 0
-        let intervalId: NodeJS.Timeout | null = null
 
         const sendMsg = async (msg: string) => {
             try {
@@ -57,17 +64,19 @@ class TextGroupSpamer extends BaseModule {
                     currentIndex = 0
                 }
             } else {
-                if (intervalId) {
-                    clearInterval(intervalId)
-                    intervalId = null
-                }
+                this.cleanUP()
             }
         }
 
-        // Invoke send immediately
-        sendNextMsg()
+        await sendNextMsg()
 
-        intervalId = setInterval(sendNextMsg, timeinterval)
+        this.intervalId = setInterval(sendNextMsg, timeinterval)
+    }
+
+    public stop(): void {
+        this.config.enable = false
+        this.cleanUP()
+        this.logger.log('文字组独轮车已停止')
     }
 
     public async run(): Promise<void> {
