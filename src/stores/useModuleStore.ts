@@ -33,7 +33,7 @@ export const useModuleStore = defineStore('modules', () => {
         let errorCount = 0
         let retryCount = 0
         const maxRetries = 2
-        const retryDelay = 200
+        const retryDelay = 2000
 
         while (retryCount <= maxRetries) {
             try {
@@ -52,7 +52,7 @@ export const useModuleStore = defineStore('modules', () => {
             }
         }
 
-        if (errorCount < maxRetries) {
+        if (errorCount <= maxRetries) {
             try {
                 await loadOtherModules()
             } catch (error) {

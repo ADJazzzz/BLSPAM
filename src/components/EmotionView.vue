@@ -10,16 +10,19 @@ import {
     NFormItem,
     NInputNumber,
     NFlex,
+    NPageHeader,
     useMessage
 } from 'naive-ui'
 import { useBiliStore } from '../stores/useBiliStore'
 import { useModuleStore } from '../stores/useModuleStore'
 import { useUIStore } from '../stores/useUIStore'
+import stop from '../modules/Spamer/emotionSpamer'
 
 const biliStore = useBiliStore()
 const moduleStore = useModuleStore()
 const uiStore = useUIStore()
 const message = useMessage()
+const emStop = new stop('StopEmotionSpamer')
 
 const handleClick = (id: number) => {
     moduleStore.moduleConfig.EmotionSpam.emotionViewSelectedID = id
@@ -63,11 +66,12 @@ const handleStartSpamer = () => {
     }
 }
 const handleStopSpamer = () => {
-    moduleStore.moduleConfig.EmotionSpam.enable = false
+    emStop.stop()
 }
 </script>
 
 <template>
+    <n-page-header subtitle="表情独轮车，好用爱用" style="margin-bottom: 10px" />
     <n-flex id="emotionTab" justify="start">
         <div
             style="padding: 0 5px"

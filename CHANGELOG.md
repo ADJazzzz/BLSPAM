@@ -1,6 +1,18 @@
 ## NEXT_VERSION
 
-## [1.3.11](https://github.com/ADJazzzz/BLSPAM/compare/1.3.10...1.3.11) 2024-09-05
+## [1.3.12](https://github.com/ADJazzzz/BLSPAM/compare/1.3.11...1.3.12) 2025-03-01
+
+### 调整
+
+-   添加说明
+-   现在在启动独轮车时，立即发送一次消息[(#28)](https://github.com/ADJazzzz/BLSPAM/pull/28)
+-   优化发送逻辑
+
+### 更新
+
+-   更新主要依赖项
+
+## [1.3.11](https://github.com/ADJazzzz/BLSPAM/compare/1.3.10...1.3.11) 2025-02-12
 
 ### 修复
 

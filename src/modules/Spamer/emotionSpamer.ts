@@ -5,9 +5,17 @@ import { AxiosResponse } from '../../types'
 
 class EmotionSpamer extends BaseModule {
     config = this.moduleStore.moduleConfig.EmotionSpam
+    private intervalId: NodeJS.Timeout | null = null
 
     private formatTime(time: number): number {
         return time * 1000
+    }
+
+    private cleanUP(): void {
+        if (this.intervalId) {
+            clearInterval(this.intervalId)
+            this.intervalId = null
+        }
     }
 
     private async cycleSendEmotion(
@@ -31,7 +39,7 @@ class EmotionSpamer extends BaseModule {
             }
         }
 
-        const send = setInterval(async () => {
+        const sendNextEmotion = async () => {
             if (this.config.enable) {
                 if (currentIndex < emotions.length) {
                     await sendEmotion(emotions[currentIndex])
@@ -41,16 +49,27 @@ class EmotionSpamer extends BaseModule {
                     currentIndex = 0
                 }
             } else {
-                clearInterval(send)
+                this.cleanUP()
             }
-        }, timeinterval)
+        }
+
+        await sendNextEmotion()
+
+        this.intervalId = setInterval(sendNextEmotion, timeinterval)
 
         if (timelimit !== 0) {
             setTimeout(() => {
-                clearInterval(send)
                 this.config.enable = false
+                this.cleanUP()
+                this.logger.log('表情独轮车已停止')
             }, timelimit)
         }
+    }
+
+    public stop(): void {
+        this.config.enable = false
+        this.cleanUP()
+        this.logger.log('表情独轮车已停止')
     }
 
     public async run(): Promise<void> {

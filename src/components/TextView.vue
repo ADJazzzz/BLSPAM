@@ -7,14 +7,17 @@ import {
     NInputNumber,
     NPopover,
     NFlex,
+    NPageHeader,
     useMessage
 } from 'naive-ui'
 import { useUIStore } from '../stores/useUIStore'
 import { useModuleStore } from '../stores/useModuleStore'
+import stop from '../modules/Spamer/textSpamer'
 
 const uiStore = useUIStore()
 const moduleStore = useModuleStore()
 const message = useMessage()
+const tStop = new stop('StopTextSpamer')
 
 const handleStartSpamer = () => {
     if (
@@ -37,7 +40,7 @@ const handleStartSpamer = () => {
     }
 }
 const handleStopSpamer = () => {
-    moduleStore.moduleConfig.TextSpam.enable = false
+    tStop.stop()
 }
 
 const rules = {
@@ -78,6 +81,7 @@ const rules = {
 
 <template>
     <n-form :rules="rules" :disabled="moduleStore.moduleConfig.TextSpam.enable">
+        <n-page-header subtitle="文字独轮车" style="margin-bottom: 10px" />
         <n-form-item :show-label="false">
             <n-flex align="center">
                 <n-form-item label="时间间隔" path="timeinterval">

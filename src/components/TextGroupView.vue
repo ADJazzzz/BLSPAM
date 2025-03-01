@@ -10,17 +10,20 @@ import {
     NTabs,
     NTabPane,
     NButton,
+    NPageHeader,
     useMessage,
     useDialog
 } from 'naive-ui'
 import _ from 'lodash'
 import { useModuleStore } from '../stores/useModuleStore'
 import { useUIStore } from '../stores/useUIStore'
+import stop from '../modules/Spamer/textGroupSpamer'
 
 const moduleStore = useModuleStore()
 const uiStore = useUIStore()
 const message = useMessage()
 const dialog = useDialog()
+const tgStop = new stop('StopTextGroupSpamer')
 
 const rules = {
     timeinterval: {
@@ -102,12 +105,16 @@ const handleStartSpamer = () => {
     }
 }
 const handleStopSpamer = () => {
-    moduleStore.moduleConfig.TextGroupSpam.enable = false
+    tgStop.stop()
 }
 </script>
 
 <template>
     <n-form :rules="rules" :disabled="moduleStore.moduleConfig.TextGroupSpam.enable">
+        <n-page-header
+            subtitle="文字组独轮车：循环发送所有弹幕组内容"
+            style="margin-bottom: 10px"
+        />
         <n-form-item :show-label="false">
             <n-flex>
                 <n-form-item label="时间间隔" path="timeinterval">
