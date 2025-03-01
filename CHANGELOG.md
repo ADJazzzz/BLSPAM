@@ -12,7 +12,7 @@
 
 -   更新主要依赖项
 
-## [1.3.11](https://github.com/ADJazzzz/BLSPAM/compare/1.3.10...1.3.11) 2024-02-12
+## [1.3.11](https://github.com/ADJazzzz/BLSPAM/compare/1.3.10...1.3.11) 2025-02-12
 
 ### 修复
 
