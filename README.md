@@ -44,6 +44,10 @@
 
 > Github的两个版本没有区别，推荐使用min版
 
+### 参与开发
+
+请阅读 [CONTRIBUTING](https://github.com/ADJazzzz/BLSPAM/blob/main/CONTRIBUTING.md)
+
 ### 更新日志
 
 [CHANGELOG](https://github.com/ADJazzzz/BLSPAM/blob/main/CHANGELOG.md)
