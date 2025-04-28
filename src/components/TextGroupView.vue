@@ -107,12 +107,28 @@ const handleStartSpamer = () => {
 const handleStopSpamer = () => {
     tgStop.stop()
 }
+const handleSendToText = () => {
+    const currentTabValue = moduleStore.moduleConfig.TextGroupSpam.textGroupTabsValue
+    const currentPanel = moduleStore.moduleConfig.TextGroupSpam.textGroupTabPanels.find(
+        (panel) => panel.name === currentTabValue
+    )
+    if (currentPanel) {
+        if (!_.isEmpty(currentPanel.msg)) {
+            moduleStore.moduleConfig.TextSpam.msg = currentPanel.msg
+            uiStore.uiConfig.activeMenuIndex = 'TextView'
+        } else {
+            message.error('没有内容发什么')
+        }
+    } else {
+        message.error('未找到当前标签页')
+    }
+}
 </script>
 
 <template>
     <n-form :rules="rules" :disabled="moduleStore.moduleConfig.TextGroupSpam.enable">
         <n-page-header
-            subtitle="文字组独轮车：循环发送所有弹幕组内容"
+            subtitle="文字池独轮车：循环发送所有弹幕组内容。当然，也可以当成一个收藏夹😀"
             style="margin-bottom: 10px"
         />
         <n-form-item :show-label="false">
@@ -187,6 +203,7 @@ const handleStopSpamer = () => {
             style="margin-top: 10px"
             v-if="!moduleStore.moduleConfig.TextGroupSpam.enable"
         >
+            <n-button round type="info" @click="handleSendToText">发送到文字独轮车</n-button>
             <n-button round @click="uiStore.uiConfig.isShowPanel = false">取消</n-button>
             <n-button round type="primary" @click="handleStartSpamer">开车</n-button>
         </n-flex>
