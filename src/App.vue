@@ -63,7 +63,7 @@ const renderPanel = (elementName: string, ctrStyle: object) => {
                                 moduleStore.moduleConfig.EmotionSpam.enable ||
                                 moduleStore.moduleConfig.TextGroupSpam.enable
                                     ? 'success'
-                                    : useBiliStore().userInfo?.isLogin
+                                    : useBiliStore().userInfo?.isLogin && useBiliStore().cookies
                                       ? 'info'
                                       : 'error'
                         },

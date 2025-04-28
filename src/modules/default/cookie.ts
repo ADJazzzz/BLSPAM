@@ -5,7 +5,7 @@ import BaseModule from '../BaseModule'
 class Cookies extends BaseModule {
     private getCookiesValue(): Promise<BiliCookies> {
         return new Promise<BiliCookies>((resolve, reject) => {
-            const cookieNames = ['bili_jct', 'LIVE_BUVID']
+            const cookieNames = ['bili_jct']
             const cookieValues: Partial<BiliCookies> = {}
 
             const cookies = document.cookie.split(';')
