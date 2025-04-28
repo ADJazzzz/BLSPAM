@@ -76,7 +76,7 @@ class TextGroupSpamer extends BaseModule {
     public stop(): void {
         this.config.enable = false
         this.cleanUP()
-        this.logger.log('文字组独轮车已停止')
+        this.logger.log('文字池独轮车已停止')
     }
 
     public async run(): Promise<void> {

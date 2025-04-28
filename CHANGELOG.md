@@ -1,5 +1,19 @@
 ## NEXT_VERSION
 
+## [1.4.0](https://github.com/ADJazzzz/BLSPAM/compare/1.3.12...1.4.0) 2025-04-28
+
+### 新增
+
+- 文字池内容可发送到文字独轮车[(#30)](https://github.com/ADJazzzz/BLSPAM/issues/30)
+
+### 修复
+
+- 修复因B站修改cookie值导致无法发出弹幕[(#31)](https://github.com/ADJazzzz/BLSPAM/issues/31)
+
+### 更新
+
+- 更新主要依赖项
+
 ## [1.3.12](https://github.com/ADJazzzz/BLSPAM/compare/1.3.11...1.3.12) 2025-03-01
 
 ### 调整
