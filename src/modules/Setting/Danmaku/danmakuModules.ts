@@ -15,16 +15,18 @@ class danmakuModules extends BaseModule {
                 mutationsList.forEach((mutationsList) => {
                     Array.from(mutationsList.addedNodes).forEach((node) => {
                         if (
-                            (node instanceof HTMLElement &&
-                                node.classList.contains('chat-item') &&
-                                node.classList.contains('danmaku-item') &&
-                                node.classList.length === 2) ||
-                            (node instanceof HTMLElement &&
-                                node.classList.contains('chat-item') &&
-                                node.classList.contains('danmaku-item') &&
-                                node.classList.contains('chat-colorful-bubble') &&
-                                node.classList.contains('has-bubble') &&
-                                node.classList.length === 4)
+                            node instanceof HTMLElement &&
+                            node.classList.contains('chat-item') &&
+                            node.classList.contains('danmaku-item') &&
+                            // 白字
+                            (node.classList.length === 2 ||
+                                // 舰长提督总督
+                                (node.classList.contains('chat-colorful-bubble') &&
+                                    node.classList.contains('has-bubble') &&
+                                    node.classList.length === 4) ||
+                                    // 富哥
+                                (node.classList.contains('has-bubble') &&
+                                    node.classList.length === 3))
                         ) {
                             node.addEventListener('click', (event) => this.handleNodeClick(event))
                         }
