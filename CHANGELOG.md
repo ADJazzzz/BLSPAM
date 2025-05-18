@@ -1,5 +1,15 @@
 ## NEXT_VERSION
 
+## [1.4.1](https://github.com/ADJazzzz/BLSPAM/compare/1.4.0...1.4.1) 2025-05-18
+
+### 修复
+
+- 修复非大航海弹幕但有聊天气泡框的弹幕无法+1和复制
+
+### 更新
+
+- 更新主要依赖项
+
 ## [1.4.0](https://github.com/ADJazzzz/BLSPAM/compare/1.3.12...1.4.0) 2025-04-28
 
 ### 新增
