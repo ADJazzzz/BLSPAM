@@ -34,9 +34,7 @@ interface BApiMethod {
         room_id: number
     ) => Promise<LiveResponse.GetEmoticons | AxiosResponse>
     nav: () => Promise<UserResponse.Nav | AxiosResponse>
-    getInfoByUser: (
-        room_id: number
-    ) => Promise<LiveResponse.GetInfoByUser | AxiosResponse>
+    getInfoByUser: (room_id: number) => Promise<LiveResponse.GetInfoByUser | AxiosResponse>
 }
 
 export { BApiMethod }

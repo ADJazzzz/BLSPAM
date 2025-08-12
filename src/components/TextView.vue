@@ -118,7 +118,10 @@ const rules = {
                                 :precision="0"
                             />
                         </template>
-                        <span>每次弹幕发送字数, 最大为 {{ biliStore.infoByuser?.property.danmu.length }} </span>
+                        <span
+                            >每次弹幕发送字数, 最大为
+                            {{ biliStore.infoByuser?.property.danmu.length }}
+                        </span>
                     </n-popover>
                 </n-form-item>
                 <n-form-item label="时间限制" path="timelimit">

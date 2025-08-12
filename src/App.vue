@@ -43,7 +43,7 @@ const renderPanel = (elementName: string, ctrStyle: object) => {
                 focusable: false,
                 bordered: false,
                 onClick: () => {
-                    if (!useBiliStore().userInfo?.isLogin) {
+                    if (!useBiliStore().loginInfo?.isLogin) {
                         uiStore.uiConfig.isShowPanel = false
                     } else {
                         uiStore.uiConfig.isShowPanel = true
@@ -63,7 +63,7 @@ const renderPanel = (elementName: string, ctrStyle: object) => {
                                 moduleStore.moduleConfig.EmotionSpam.enable ||
                                 moduleStore.moduleConfig.TextGroupSpam.enable
                                     ? 'success'
-                                    : useBiliStore().userInfo?.isLogin && useBiliStore().cookies
+                                    : useBiliStore().loginInfo?.isLogin && useBiliStore().cookies
                                       ? 'info'
                                       : 'error'
                         },

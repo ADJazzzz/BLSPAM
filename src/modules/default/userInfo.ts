@@ -5,11 +5,11 @@ import { unsafeWindow } from '$'
 import BaseModule from '../BaseModule'
 
 class UserInfo extends BaseModule {
-    private async getUserInfo(): Promise<UserData.Nav.Data> {
+    private async getLoginInfo(): Promise<UserData.Nav.Data> {
         try {
             const response = (await BILIAPI.nav()) as UserResponse.Nav
             if (response.code === 0) {
-                this.logger.log('UserInfo', response)
+                this.logger.log('LoginInfo', response)
                 return Promise.resolve(response.data)
             } else {
                 this.logger.error('获取登陆信息出错', response.message)
@@ -83,7 +83,7 @@ class UserInfo extends BaseModule {
         if (useBiliStore().BilibiliLive) {
             useBiliStore().emotionData = await this.getEmotionData()
         }
-        useBiliStore().userInfo = await this.getUserInfo()
+        useBiliStore().loginInfo = await this.getLoginInfo()
         useBiliStore().infoByuser = await this.getInfoByUser()
     }
 }

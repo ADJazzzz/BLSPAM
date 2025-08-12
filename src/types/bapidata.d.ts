@@ -1,5 +1,3 @@
-import { info } from "console"
-
 declare namespace LiveInfoData {
     namespace SendMsg {
         interface Data {
