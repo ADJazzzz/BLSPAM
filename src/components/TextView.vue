@@ -56,7 +56,7 @@ const rules = {
     },
     textinterval: {
         required: true,
-        message: '输入一个大于0，小于30的数字',
+        message: `输入一个大于0，小于的${biliStore.infoByuser?.property.danmu.length}的数字`,
         trigger: ['input', 'blur'],
         validator: () => {
             return moduleStore.moduleConfig.TextSpam.textinterval !== null
