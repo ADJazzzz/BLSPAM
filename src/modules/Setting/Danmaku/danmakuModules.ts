@@ -24,7 +24,7 @@ class danmakuModules extends BaseModule {
                                 (node.classList.contains('chat-colorful-bubble') &&
                                     node.classList.contains('has-bubble') &&
                                     node.classList.length === 4) ||
-                                    // 富哥
+                                // 富哥
                                 (node.classList.contains('has-bubble') &&
                                     node.classList.length === 3))
                         ) {

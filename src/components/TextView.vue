@@ -12,10 +12,12 @@ import {
 } from 'naive-ui'
 import { useUIStore } from '../stores/useUIStore'
 import { useModuleStore } from '../stores/useModuleStore'
+import { useBiliStore } from '../stores/useBiliStore'
 import stop from '../modules/Spamer/textSpamer'
 
 const uiStore = useUIStore()
 const moduleStore = useModuleStore()
+const biliStore = useBiliStore()
 const message = useMessage()
 const tStop = new stop('StopTextSpamer')
 
@@ -54,7 +56,7 @@ const rules = {
     },
     textinterval: {
         required: true,
-        message: '输入一个大于0，小于30的数字',
+        message: `输入一个大于0，小于的${biliStore.infoByuser?.property.danmu.length}的数字`,
         trigger: ['input', 'blur'],
         validator: () => {
             return moduleStore.moduleConfig.TextSpam.textinterval !== null
@@ -112,11 +114,14 @@ const rules = {
                                 v-model:value="moduleStore.moduleConfig.TextSpam.textinterval"
                                 placeholder="默认20"
                                 min="1"
-                                max="30"
+                                :max="biliStore.infoByuser?.property.danmu.length"
                                 :precision="0"
                             />
                         </template>
-                        <span>每次弹幕发送字数，最大为30</span>
+                        <span
+                            >每次弹幕发送字数, 最大为
+                            {{ biliStore.infoByuser?.property.danmu.length }}
+                        </span>
                     </n-popover>
                 </n-form-item>
                 <n-form-item label="时间限制" path="timelimit">

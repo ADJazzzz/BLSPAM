@@ -15,7 +15,8 @@ interface BApiMethod {
         statistics?: { appId: number; platform: number },
         fontsize?: number,
         reply_type?: number,
-        reply_uname?: string
+        reply_uname?: string,
+        data_extend?: { trackid: string }
     ) => Promise<LiveResponse.SendMsg | AxiosResponse>
     sendEmotion: (
         msg: string,
@@ -24,14 +25,16 @@ interface BApiMethod {
         color?: number,
         mode?: number,
         dm_type?: number,
-        emoticonOptions?: any,
-        fontsize?: number
+        fontsize?: number,
+        data_extend?: { trackid: string },
+        emoticonOptions?: any
     ) => Promise<LiveResponse.SendMsg | AxiosResponse>
     getEmoticons: (
         platform: string,
         room_id: number
     ) => Promise<LiveResponse.GetEmoticons | AxiosResponse>
     nav: () => Promise<UserResponse.Nav | AxiosResponse>
+    getInfoByUser: (room_id: number) => Promise<LiveResponse.GetInfoByUser | AxiosResponse>
 }
 
 export { BApiMethod }

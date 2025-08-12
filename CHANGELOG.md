@@ -1,5 +1,15 @@
 ## NEXT_VERSION
 
+## [1.4.2](https://github.com/ADJazzzz/BLSPAM/compare/1.4.1...1.4.2) 2025-08-12
+
+### 调整
+
+- 现在文字独轮车最大字数限制从API获取[(#34)](https://github.com/ADJazzzz/BLSPAM/issues/34)
+
+### 更新
+
+- 更新主要依赖项
+
 ## [1.4.1](https://github.com/ADJazzzz/BLSPAM/compare/1.4.0...1.4.1) 2025-05-18
 
 ### 修复
