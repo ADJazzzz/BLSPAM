@@ -14,6 +14,12 @@ declare namespace LiveResponse {
         ttl: number
         data: LiveInfoData.GetEmoticons.Data
     }
+    interface GetInfoByUser {
+        code: number
+        message: string
+        ttl: number
+        data: LiveInfoData.GetInfoByUser.Data
+    }
 }
 
 declare namespace UserResponse {

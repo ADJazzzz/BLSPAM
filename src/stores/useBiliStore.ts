@@ -7,6 +7,7 @@ export const useBiliStore = defineStore('bili', () => {
     const userInfo = ref<UserData.Nav.Data | null>(null)
     const emotionData = ref<LiveInfoData.GetEmoticons.EmotionData[]>([])
     const BilibiliLive = ref<Window['BilibiliLive'] | null>(null)
+    const infoByuser = ref<LiveInfoData.GetInfoByUser.Data | null>(null)
 
-    return { cookies, userInfo, emotionData, BilibiliLive }
+    return { cookies, userInfo, emotionData, BilibiliLive, infoByuser }
 })

@@ -12,11 +12,11 @@ class UserInfo extends BaseModule {
                 this.logger.log('UserInfo', response)
                 return Promise.resolve(response.data)
             } else {
-                this.logger.error('获取用户信息出错', response.message)
+                this.logger.error('获取登陆信息出错', response.message)
                 return Promise.reject(response.message)
             }
         } catch (error) {
-            this.logger.error('获取用户信息出错', error)
+            this.logger.error('获取登陆信息出错', error)
             return Promise.reject(error)
         }
     }
@@ -57,12 +57,34 @@ class UserInfo extends BaseModule {
         }
     }
 
+    private async getInfoByUser(): Promise<LiveInfoData.GetInfoByUser.Data> {
+        const roomID = useBiliStore().BilibiliLive?.ROOMID
+        if (!roomID) {
+            this.logger.error('获取用户信息出错', 'roomID 不存在')
+            return Promise.reject('roomID 不存在')
+        }
+        try {
+            const response = (await BILIAPI.getInfoByUser(roomID)) as LiveResponse.GetInfoByUser
+            if (response.code === 0) {
+                this.logger.log('infoByuser', response)
+                return Promise.resolve(response.data)
+            } else {
+                this.logger.error('获取用户信息出错', response.message)
+                return Promise.reject(response.message)
+            }
+        } catch (error) {
+            this.logger.error('获取用户信息出错', error)
+            return Promise.reject(error)
+        }
+    }
+
     public async run(): Promise<void> {
         useBiliStore().BilibiliLive = await this.getWindowBiliLive()
         if (useBiliStore().BilibiliLive) {
             useBiliStore().emotionData = await this.getEmotionData()
         }
         useBiliStore().userInfo = await this.getUserInfo()
+        useBiliStore().infoByuser = await this.getInfoByUser()
     }
 }
 

@@ -19,7 +19,8 @@ const BILIAPI: BApiMethod = {
         statistics = { appId: 100, platform: 5 },
         fontsize = 25,
         reply_type = 0,
-        reply_uname = ''
+        reply_uname = '',
+        data_extend = { trackid: '-99998' }
     ) => {
         const biliStore = useBiliStore()
         const bili_jct = (biliStore.cookies as BiliCookies).bili_jct
@@ -41,6 +42,7 @@ const BILIAPI: BApiMethod = {
                 statistics: JSON.stringify(statistics),
                 reply_type,
                 reply_uname,
+                data_extend: JSON.stringify(data_extend),
                 rnd: timestamp(),
                 csrf: bili_jct,
                 csrf_token: bili_jct
@@ -60,7 +62,8 @@ const BILIAPI: BApiMethod = {
         color = 16777215,
         mode = 1,
         dm_type = 1,
-        fontsize = 25
+        fontsize = 25,
+        data_extend = { trackid: '-99998' }
     ) => {
         const biliStore = useBiliStore()
         const bili_jct = (biliStore.cookies as BiliCookies).bili_jct
@@ -75,6 +78,7 @@ const BILIAPI: BApiMethod = {
                 mode,
                 dm_type,
                 fontsize,
+                data_extend: JSON.stringify(data_extend),
                 rnd: timestamp(),
                 csrf: bili_jct,
                 csrf_token: bili_jct
@@ -96,6 +100,13 @@ const BILIAPI: BApiMethod = {
 
     async nav() {
         const res = await axios.get('https://api.bilibili.com/x/web-interface/nav')
+        return res.data
+    },
+
+    async getInfoByUser(room_id) {
+        const res = await axios.get(
+            `https://api.live.bilibili.com/xlive/web-room/v1/index/getInfoByUser?room_id=${room_id}`
+        )
         return res.data
     }
 }
