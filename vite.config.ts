@@ -34,7 +34,7 @@ export default defineConfig({
                 externalGlobals: {
                     vue: cdn
                         .jsdelivr('Vue', 'dist/vue.global.prod.js')
-                        .concat('https://unpkg.com/vue-demi@latest/lib/index.iife.js')
+                        .concat('https://cdn.jsdelivr.net/npm/vue-demi/lib/index.iife.js')
                         .concat(util.dataUrl('window.Vue=Vue')),
                     pinia: cdn.jsdelivr('Pinia', 'dist/pinia.iife.prod.js'),
                     'naive-ui': cdn.jsdelivr('naive', 'dist/index.prod.js'),
