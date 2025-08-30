@@ -5,7 +5,7 @@ import mitt from 'mitt'
 import { modulesConfig, moduleEmitter } from '../types'
 import Storage from '../utils/storage'
 import * as defaultModules from '../modules/default'
-import * as otherModules from '../modules'
+import * as functionModules from '../modules'
 import Logger from '../utils/logger'
 
 export const useModuleStore = defineStore('modules', () => {
@@ -20,9 +20,9 @@ export const useModuleStore = defineStore('modules', () => {
         return Promise.all<Promise<void>[]>(promiseArray)
     }
 
-    function loadOtherModules(): Promise<void[]> {
+    function loadFunctionModules(): Promise<void[]> {
         const promiseArray: Promise<void>[] = []
-        for (const [name, module] of Object.entries(otherModules)) {
+        for (const [name, module] of Object.entries(functionModules)) {
             promiseArray.push(new module(name).run())
         }
         return Promise.all<Promise<void>[]>(promiseArray)
@@ -54,7 +54,7 @@ export const useModuleStore = defineStore('modules', () => {
 
         if (errorCount <= maxRetries) {
             try {
-                await loadOtherModules()
+                await loadFunctionModules()
             } catch (error) {
                 logger.error('加载模块出错', error)
             }
