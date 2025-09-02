@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NFlex, NSwitch, NButton } from 'naive-ui'
+import { NPageHeader, NFlex, NSwitch, NButton } from 'naive-ui'
 import InfoDialog from './Icons/InfoDialog.vue'
 import { useModuleStore } from '../stores/useModuleStore'
 import checkUpdate from '../modules/Setting/autoCheckUpdate'
@@ -9,6 +9,7 @@ const manualCheckUpdate = new checkUpdate('ManualCheckUpdate')
 </script>
 
 <template>
+    <n-page-header subtitle="设置" style="margin-bottom: 10px" />
     <n-flex vertical>
         <n-flex align="center"
             ><n-switch
@@ -30,7 +31,7 @@ const manualCheckUpdate = new checkUpdate('ManualCheckUpdate')
                 secondary
                 round
                 type="primary"
-                @click="manualCheckUpdate.CheckUpdate()"
+                @click="manualCheckUpdate.CheckUpdate('manual')"
                 >检测更新</n-button
             ></n-flex
         >

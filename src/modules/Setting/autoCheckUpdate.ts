@@ -44,7 +44,7 @@ class checkUpdate extends BaseModule {
         return 0
     }
 
-    public async CheckUpdate() {
+    public async CheckUpdate(updateType: string) {
         const currentVersion = this.getCurrentVersion()
         const getGitHubAPI: CheckUpdate.GitHub.GithubAPI = (await this.getLatestVersionRes())
             .response
@@ -52,6 +52,14 @@ class checkUpdate extends BaseModule {
         const compareRes = this.compareVersion(currentVersion, getGitHubAPI.tag_name)
         if (compareRes === 0) {
             this.logger.log('当前已是最新的版本')
+            if (updateType === 'manual') {
+                const { notification } = createDiscreteApi(['notification'])
+                notification.create({
+                    content: '当前已是最新的版本',
+                    closable: false,
+                    duration: 3000
+                })
+            }
         } else if (compareRes === -1) {
             this.logger.log(`发现新版本：${getGitHubAPI.tag_name}`)
             const { notification } = createDiscreteApi(['notification'])
@@ -84,18 +92,22 @@ class checkUpdate extends BaseModule {
                             default: () => '安装'
                         }
                     ),
-                    h(
-                        NButton,
-                        {
-                            text: true,
-                            type: 'error',
-                            onClick: () => {
-                                this.config.enable = false
-                                notification.destroyAll()
-                            }
-                        },
-                        { default: () => '关闭检测' }
-                    )
+                    ...(updateType === 'auto'
+                        ? [
+                              h(
+                                  NButton,
+                                  {
+                                      text: true,
+                                      type: 'error',
+                                      onClick: () => {
+                                          this.config.enable = false
+                                          notification.destroyAll()
+                                      }
+                                  },
+                                  { default: () => '关闭检测' }
+                              )
+                          ]
+                        : [])
                 ]
             })
         }
@@ -103,7 +115,7 @@ class checkUpdate extends BaseModule {
 
     public async run() {
         if (this.config.enable) {
-            await this.CheckUpdate()
+            await this.CheckUpdate('auto')
         }
     }
 }
