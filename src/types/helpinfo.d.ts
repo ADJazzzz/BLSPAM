@@ -10,6 +10,7 @@ interface HelpInfo {
         saveSpamerStatus: HelpInfoItem
         autoCheckUpdate: HelpInfoItem
         danmakuModules: HelpInfoItem
+        danmakuDetail: HelpInfoItem
     }
 }
 

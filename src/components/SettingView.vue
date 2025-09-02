@@ -25,6 +25,12 @@ const manualCheckUpdate = new checkUpdate('ManualCheckUpdate')
         /></n-flex>
         <n-flex align="center"
             ><n-switch
+                v-model:value="
+                    moduleStore.moduleConfig.setting.danmakuDetail.enable
+                " />显示弹幕详情<InfoDialog id="SettingView.danmakuDetail"
+        /></n-flex>
+        <n-flex align="center"
+            ><n-switch
                 v-model:value="moduleStore.moduleConfig.setting.autoCheckUpdate.enable"
             />自动检测更新<InfoDialog id="SettingView.autoCheckUpdate" /><n-button
                 strong

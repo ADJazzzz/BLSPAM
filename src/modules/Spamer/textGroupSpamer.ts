@@ -1,8 +1,9 @@
 import _ from 'lodash'
 import BILIAPI from '../../utils/bili'
+import { useDiscreteAPI } from '../../utils/ui'
 import { useBiliStore } from '../../stores/useBiliStore'
-import BaseModule from '../BaseModule'
 import { AxiosResponse } from '../../types'
+import BaseModule from '../BaseModule'
 
 class TextGroupSpamer extends BaseModule {
     config = this.moduleStore.moduleConfig.TextGroupSpam
@@ -44,10 +45,19 @@ class TextGroupSpamer extends BaseModule {
         const sendMsg = async (msg: string) => {
             try {
                 const response = (await BILIAPI.sendMsg(msg, roomid)) as AxiosResponse
+                const { notification } = useDiscreteAPI(
+                    ['notification'],
+                    !this.moduleStore.moduleConfig.setting.danmakuDetail.enable
+                )
                 if (response.data.code === 0) {
                     this.logger.log(`弹幕 ${msg} 发送成功`, response)
                 } else {
                     this.logger.error(`弹幕 ${msg} 发送失败`, response)
+                    notification.error({
+                        closable: false,
+                        content: `弹幕"${msg}"发送失败: ${response.data.message}`,
+                        duration: 3000
+                    })
                 }
             } catch (error) {
                 this.logger.error(`弹幕 ${msg} 发送失败`, error)

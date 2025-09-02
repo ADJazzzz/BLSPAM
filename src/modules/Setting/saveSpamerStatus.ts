@@ -1,4 +1,4 @@
-import { useDiscreteApi } from '../../utils/ui'
+import { useDiscreteAPI } from '../../utils/ui'
 import BaseModule from '../BaseModule'
 
 class SaveSpamerStatus extends BaseModule {
@@ -13,7 +13,7 @@ class SaveSpamerStatus extends BaseModule {
                     if ((this.moduleStore.moduleConfig as any)[module].enable) {
                         ;(this.moduleStore.emitter.emit as any)(module, { module })
 
-                        const { notification } = useDiscreteApi(['notification'])
+                        const { notification } = useDiscreteAPI(['notification'])
                         notification.create({
                             content: '将恢复独轮车开关状态，如需关闭请到控制面板关闭并刷新网页',
                             closable: false,

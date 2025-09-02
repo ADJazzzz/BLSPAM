@@ -30,6 +30,18 @@ const spHelpInfo: HelpInfo = {
                     h('span', '该功能默认关闭。')
                 ])
         },
+        danmakuDetail: {
+            title: '显示弹幕详情',
+            content: () =>
+                h('p', [
+                    h(
+                        'span',
+                        '启用后，将会在发送弹幕失败时直接显示相关通知，而不是只显示在控制台中。'
+                    ),
+                    h('br'),
+                    h('span', '该功能默认开启。')
+                ])
+        },
         autoCheckUpdate: {
             title: '自动检测更新',
             content: () =>

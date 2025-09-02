@@ -3,7 +3,7 @@ import { h } from 'vue'
 import { GM_xmlhttpRequest, GM_info, unsafeWindow } from '$'
 import { CheckUpdate } from '../../types'
 import BaseModule from '../BaseModule'
-import { useDiscreteApi } from '../../utils/ui'
+import { useDiscreteAPI } from '../../utils/ui'
 
 class checkUpdate extends BaseModule {
     config = this.moduleStore.moduleConfig.setting.autoCheckUpdate
@@ -51,8 +51,8 @@ class checkUpdate extends BaseModule {
             .response
 
         const compareRes = this.compareVersion(currentVersion, getGitHubAPI.tag_name)
-        const { notification } = useDiscreteApi(['notification'])
-        
+        const { notification } = useDiscreteAPI(['notification'])
+
         if (compareRes === 0) {
             this.logger.log('当前已是最新的版本')
             if (updateType === 'manual') {

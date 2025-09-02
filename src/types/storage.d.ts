@@ -32,6 +32,9 @@ interface modulesConfig {
         danmakuModules: {
             enable: boolean
         }
+        danmakuDetail: {
+            enable: boolean
+        }
     }
 }
 
