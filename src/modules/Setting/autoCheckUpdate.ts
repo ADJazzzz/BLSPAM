@@ -1,8 +1,9 @@
-import { createDiscreteApi, NButton } from 'naive-ui'
+import { NButton } from 'naive-ui'
 import { h } from 'vue'
 import { GM_xmlhttpRequest, GM_info, unsafeWindow } from '$'
 import { CheckUpdate } from '../../types'
 import BaseModule from '../BaseModule'
+import { useDiscreteApi } from '../../utils/ui'
 
 class checkUpdate extends BaseModule {
     config = this.moduleStore.moduleConfig.setting.autoCheckUpdate
@@ -50,10 +51,11 @@ class checkUpdate extends BaseModule {
             .response
 
         const compareRes = this.compareVersion(currentVersion, getGitHubAPI.tag_name)
+        const { notification } = useDiscreteApi(['notification'])
+        
         if (compareRes === 0) {
             this.logger.log('当前已是最新的版本')
             if (updateType === 'manual') {
-                const { notification } = createDiscreteApi(['notification'])
                 notification.create({
                     content: '当前已是最新的版本',
                     closable: false,
@@ -62,7 +64,6 @@ class checkUpdate extends BaseModule {
             }
         } else if (compareRes === -1) {
             this.logger.log(`发现新版本：${getGitHubAPI.tag_name}`)
-            const { notification } = createDiscreteApi(['notification'])
             notification.create({
                 title: `发现新版本：${getGitHubAPI.tag_name}`,
                 action: () => [

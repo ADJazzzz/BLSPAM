@@ -39,7 +39,7 @@ interface uiConfig {
     activeMenuIndex: menuIndex
     isShowPanel: boolean
     isCollapsed: boolean
-    theme: string
+    theme: 'dark' | 'light'
 }
 
 type textGroupTabPanels = {

@@ -1,9 +1,9 @@
-import { createDiscreteApi } from 'naive-ui'
-import BaseModule from '../../BaseModule'
 import { dq } from '../../../utils/dom'
 import BILIAPI from '../../../utils/bili'
+import { useDiscreteApi } from '../../../utils/ui'
 import { useBiliStore } from '../../../stores/useBiliStore'
 import { AxiosResponse } from '../../../types'
+import BaseModule from '../../BaseModule'
 
 class danmakuModules extends BaseModule {
     config = this.moduleStore.moduleConfig.setting.danmakuModules
@@ -105,7 +105,7 @@ class danmakuModules extends BaseModule {
                 const response = (await BILIAPI.sendMsg(msg, roomid)) as AxiosResponse
                 if (response.data.code === 0) {
                     this.logger.log(`弹幕 ${msg} 发送成功`, response)
-                    const { message } = createDiscreteApi(['message'])
+                    const { message } = useDiscreteApi(['message'])
                     message.success(`弹幕 ${msg} 发送成功`, { duration: 2500 })
                 } else {
                     this.logger.error(`弹幕 ${msg} 发送失败`, response)
@@ -119,7 +119,7 @@ class danmakuModules extends BaseModule {
     private async dmCopy(msg: string) {
         try {
             await navigator.clipboard.writeText(msg)
-            const { message } = createDiscreteApi(['message'])
+            const { message } = useDiscreteApi(['message'])
             message.success(`弹幕 ${msg} 已复制`, { duration: 2500 })
         } catch (error) {
             this.logger.log('复制到剪切板失败', error)
