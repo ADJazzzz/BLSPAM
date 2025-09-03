@@ -49,6 +49,9 @@ export default {
             },
             danmakuModules: {
                 enable: false
+            },
+            danmakuDetail: {
+                enable: true
             }
         }
     }

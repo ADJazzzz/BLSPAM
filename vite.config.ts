@@ -32,14 +32,10 @@ export default defineConfig({
             },
             build: {
                 externalGlobals: {
-                    vue: cdn.jsdelivr('Vue', 'dist/vue.global.prod.js').concat(
-                        await util.fn2dataUrl(() => {
-                            // @ts-expect-error: 脚本缺失这个回报错
-                            window.Vue = Vue
-                            // @ts-expect-error: 脚本缺失这个回报错
-                            window.VueDemi = Vue
-                        })
-                    ),
+                    vue: cdn
+                        .jsdelivr('Vue', 'dist/vue.global.prod.js')
+                        .concat('https://cdn.jsdelivr.net/npm/vue-demi/lib/index.iife.js')
+                        .concat(util.dataUrl('window.Vue=Vue')),
                     pinia: cdn.jsdelivr('Pinia', 'dist/pinia.iife.prod.js'),
                     'naive-ui': cdn.jsdelivr('naive', 'dist/index.prod.js'),
                     axios: cdn.jsdelivr('axios', 'dist/axios.min.js'),

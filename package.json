@@ -1,7 +1,7 @@
 {
     "name": "bilibili-live-spamer",
     "private": true,
-    "version": "1.4.2",
+    "version": "1.4.3",
     "type": "module",
     "scripts": {
         "dev": "vite",
@@ -15,7 +15,7 @@
         "mitt": "^3.0.1",
         "naive-ui": "^2.42.0",
         "pinia": "^3.0.3",
-        "vue": "^3.5.18"
+        "vue": "^3.5.21"
     },
     "devDependencies": {
         "@tsconfig/node22": "^22.0.2",
@@ -24,13 +24,13 @@
         "@vitejs/plugin-vue": "^6.0.1",
         "@vue/eslint-config-prettier": "^10.2.0",
         "@vue/eslint-config-typescript": "^14.6.0",
-        "eslint": "^9.33.0",
+        "eslint": "^9.34.0",
         "eslint-plugin-vue": "^10.4.0",
         "prettier": "^3.6.2",
-        "terser": "^5.43.1",
+        "terser": "^5.44.0",
         "typescript": "^5.7.2",
-        "vite": "^6.3.5",
-        "vite-plugin-monkey": "^5.0.9",
+        "vite": "^7.1.4",
+        "vite-plugin-monkey": "^7.1.2",
         "vue-tsc": "^2.2.0"
     }
 }
