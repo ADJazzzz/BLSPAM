@@ -83,6 +83,8 @@ class EmotionSpamer extends BaseModule {
     }
 
     public async run(): Promise<void> {
+        this.moduleStore.emitter.off('EmotionSpam')
+        this.cleanUP()
         this.moduleStore.emitter.on('EmotionSpam', async () => {
             const msg = this.config.msg
             const roomid = useBiliStore().BilibiliLive?.ROOMID

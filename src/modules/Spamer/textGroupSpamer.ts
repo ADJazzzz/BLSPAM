@@ -90,6 +90,8 @@ class TextGroupSpamer extends BaseModule {
     }
 
     public async run(): Promise<void> {
+        this.moduleStore.emitter.off('TextGroupSpam')
+        this.cleanUP()
         this.moduleStore.emitter.on('TextGroupSpam', async () => {
             const msg = this.formatMsg()
             const roomid = useBiliStore().BilibiliLive?.ROOMID
