@@ -1,5 +1,20 @@
 ## NEXT_VERSION
 
+## [1.4.3](https://github.com/ADJazzzz/BLSPAM/compare/1.4.2...1.4.3) 2025-09-03
+
+### 新增
+
+- 显示弹幕详情
+
+### 调整
+
+- 调整配置合并逻辑
+- 完善更新功能
+
+### 更新
+
+- 更新主要依赖项
+
 ## [1.4.2](https://github.com/ADJazzzz/BLSPAM/compare/1.4.1...1.4.2) 2025-08-12
 
 ### 调整
