@@ -1,9 +1,8 @@
-import { dq } from '../../../utils/dom'
-import BILIAPI from '../../../utils/bili'
-import { useDiscreteAPI } from '../../../utils/ui'
-import { useBiliStore } from '../../../stores/useBiliStore'
-import { AxiosResponse } from '../../../types'
-import BaseModule from '../../BaseModule'
+import { dq } from '@/utils/dom'
+import { BILIAPI } from '@/utils/bili'
+import { useDiscreteAPI } from '@/utils/ui'
+import { useBiliStore } from '@/stores/useBiliStore'
+import BaseModule from '@/modules/BaseModule'
 
 class danmakuModules extends BaseModule {
     config = this.moduleStore.moduleConfig.setting.danmakuModules
@@ -102,16 +101,16 @@ class danmakuModules extends BaseModule {
         const roomid = useBiliStore().BilibiliLive?.ROOMID
         if (roomid) {
             try {
-                const response = (await BILIAPI.sendMsg(msg, roomid)) as AxiosResponse
+                const response = await BILIAPI.sendMsg(msg, roomid)
                 const { message, notification } = useDiscreteAPI(['message', 'notification'])
-                if (response.data.code === 0) {
+                if (response.code === 0) {
                     this.logger.log(`弹幕 ${msg} 发送成功`, response)
                     message.success(`弹幕 ${msg} 发送成功`, { duration: 2500 })
                 } else {
                     this.logger.error(`弹幕 ${msg} 发送失败`, response)
                     notification.error({
                         closable: false,
-                        content: `弹幕"${msg}"发送失败: ${response.data.message}`,
+                        content: `弹幕"${msg}"发送失败: ${response.message}`,
                         duration: 3000
                     })
                 }

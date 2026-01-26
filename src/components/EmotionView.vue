@@ -13,10 +13,10 @@ import {
     NPageHeader,
     useMessage
 } from 'naive-ui'
-import { useBiliStore } from '../stores/useBiliStore'
-import { useModuleStore } from '../stores/useModuleStore'
-import { useUIStore } from '../stores/useUIStore'
-import stop from '../modules/Spamer/emotionSpamer'
+import { useBiliStore } from '@/stores/useBiliStore'
+import { useModuleStore } from '@/stores/useModuleStore'
+import { useUIStore } from '@/stores/useUIStore'
+import stop from '@/modules/Spamer/emotionSpamer'
 
 const biliStore = useBiliStore()
 const moduleStore = useModuleStore()

@@ -1,8 +1,14 @@
-declare namespace LiveInfoData {
-    namespace SendMsg {
+declare namespace BiliAPIResponse {
+    namespace MsgSend {
+        interface Response {
+            code: number
+            msg: string
+            message: string
+            data: Data
+        }
         interface Data {
             mode_info: ModeInfo
-            dm_v2: any
+            dm_v2: null | any
         }
         interface ModeInfo {
             mode: number
@@ -12,15 +18,15 @@ declare namespace LiveInfoData {
         }
         interface User {
             uid: number
-            base: Base
-            medal: Medal | null
+            base: UserBase
+            medal: UserMedal | null
             wealth: any | null
-            title: Title
+            title: UserTitle
             guard: any | null
             uhead_frame: any | null
             guard_leader: GuardLeader
         }
-        interface Base {
+        interface UserBase {
             name: string
             face: string
             name_color: number
@@ -40,7 +46,7 @@ declare namespace LiveInfoData {
             desc: string
             type: number
         }
-        interface Medal {
+        interface UserMedal {
             name: string
             level: number
             color_start: number
@@ -62,7 +68,7 @@ declare namespace LiveInfoData {
             v2_medal_color_level: string
             user_receive_count: number
         }
-        interface Title {
+        interface UserTitle {
             old_title_css_id: string
             title_css_id: string
         }
@@ -72,13 +78,19 @@ declare namespace LiveInfoData {
     }
 
     namespace GetEmoticons {
+        interface Response {
+            code: number
+            message: string
+            ttl: number
+            data: Data
+        }
         interface Data {
             fans_brand: number
-            data: EmotionData[]
-            purchase_url: any
+            data: EmoticonPackage[]
+            purchase_url: string | null
         }
-        interface EmotionData {
-            emoticons: Emoticons[]
+        interface EmoticonPackage {
+            emoticons: Emoticon[]
             pkg_id: number
             pkg_name: string
             pkg_type: number
@@ -88,10 +100,10 @@ declare namespace LiveInfoData {
             unlock_need_gift: number
             current_cover: string
             recently_used_emoticons: any[]
-            top_show: TopShow[]
-            top_show_recent: TopShowRecent[]
+            top_show: TopShow
+            top_show_recent: TopShow
         }
-        interface Emoticons {
+        interface Emoticon {
             emoji: string
             descript: string
             url: string
@@ -112,32 +124,22 @@ declare namespace LiveInfoData {
             emoticon_id: number
         }
         interface TopShow {
-            top_left: TopShowTopLeft
-            top_right: TopShowTopRight
+            top_left: TopShowItem
+            top_right: TopShowItem
         }
-        interface TopShowTopLeft {
-            image: string
-            text: string
-        }
-        interface TopShowTopRight {
-            image: string
-            text: string
-        }
-        interface TopShowRecent {
-            top_left: TopShowRecentTopLeft
-            top_right: TopShowRecentTopRight
-        }
-        interface TopShowRecentTopLeft {
-            image: string
-            text: string
-        }
-        interface TopShowRecentTopRight {
+        interface TopShowItem {
             image: string
             text: string
         }
     }
 
     namespace GetInfoByUser {
+        interface Response {
+            code: number
+            message: string
+            ttl: number
+            data: Data
+        }
         interface Data {
             user_level: UserLevel
             vip: Vip
@@ -155,36 +157,38 @@ declare namespace LiveInfoData {
             user_reward: UserReward
             shield_info: ShieldInfo
             super_chat_message: SuperChatMessage
-            lpl_info: LPLInfo
-            cd: CD
+            lpl_info: LplInfo
+            cd: Cd
             notice: Notice
             show_animation: boolean
-            play_together_info: any
+            play_together_info: any | null
             like_user_info_v3: LikeUserInfoV3
             function_card: FunctionCard
-            ab: AB
+            ab: Ab
             play_together_info_v2: PlayTogetherInfoV2
             wealth: Wealth
-            br: BR
+            br: Br
             watermark: string
-            group_medal: any
+            group_medal: any | null
             uinfo: Uinfo
             qoe_show: QoeShow
-            popular_rank_guide_card: any
+            popular_rank_guide_card: any | null
             super_chat_message_extend: SuperChatMessageExtend
             v2_watermark: V2Watermark
             forbid_live: ForbidLive
             super_bag_entrance: SuperBagEntrance
-            all_gift_bag_entrance_list: any
+            all_gift_bag_entrance_list: any | null
             super_power_rank: SuperPowerRank
             is_show_other_edit: number
             tab_icons: any[]
             is_show_other_edit_record: number
-            fans_club_poke_gift_notice: any
+            fans_club_poke_gift_notice: any | null
             cny_quiz_guide_pop_up: boolean
             other_edit_info: OtherEditInfo
             multi_voice_info: MultiVoiceInfo
             game_shop: GameShop
+            is_show_edit_policy: number
+            guard_notice: GuardNotice
         }
         interface UserLevel {
             level: number
@@ -210,12 +214,12 @@ declare namespace LiveInfoData {
             target_id: number
             privilege_type: number
             privilege_uname_color: string
-            buy_guard_notice: string | null
+            buy_guard_notice: any | null
             sub_level: number
             notice_status: number
             expired_time: string
             auto_renew: number
-            renew_remind: any
+            renew_remind: any | null
             benefit_alters: any[]
             guard_type: number
         }
@@ -231,11 +235,11 @@ declare namespace LiveInfoData {
         interface Property {
             uname_color: string
             bubble: number
-            danmu: Property_Danmu
+            danmu: Danmu
             bubble_color: string
             bubble_id: number
         }
-        interface Property_Danmu {
+        interface Danmu {
             mode: number
             color: number
             length: number
@@ -261,86 +265,19 @@ declare namespace LiveInfoData {
         interface Medal {
             cnt: number
             is_weared: boolean
-            curr_weared: Medal_CurrWeared
-            up_medal: Medal_UpMedal
-            lookup: Medal_Lookup
+            curr_weared: any | null
+            up_medal: UpMedal | null
+            lookup: any | null
             up_medal_v2: boolean
-            lookup_v2: Medal_LookupV2
-            curr_weared_v2: any
-            curr_show: Medal_CurrShow
+            lookup_v2: any | null
+            curr_weared_v2: any | null
+            curr_show: any | null
         }
-        interface Medal_CurrWeared {
-            target_id: number
-            target_name: string
-            medal_name: string
-            target_roomid: number
-            level: number
-            intimacy: number
-            next_intimacy: number
-            day_limit: number
-            today_feed: number
-            is_union: number
-            medal_color_start: number
-            medal_color_end: number
-            medal_color_border: number
-            is_lighted: number
-            guard_level: number
-            icon_id: number
-            score: number
-        }
-        interface Medal_UpMedal {
+        interface UpMedal {
             uid: number
             medal_name: string
             medal_color: number
             level: number
-        }
-        interface Medal_Lookup {
-            level: number
-            is_lighted: boolean
-        }
-        interface Medal_LookupV2 {
-            name: string
-            level: number
-            color_start: number
-            color_end: number
-            color_border: number
-            color: number
-            id: number
-            typ: number
-            is_light: number
-            ruid: number
-            guard_level: number
-            score: number
-            guard_icon: string
-            honor_icon: string
-            v2_medal_color_start: string
-            v2_medal_color_end: string
-            v2_medal_color_border: string
-            v2_medal_color_text: string
-            v2_medal_color_level: string
-            user_receive_count: number
-        }
-        interface Medal_CurrShow {
-            name: string
-            level: number
-            color_start: number
-            color_end: number
-            color_border: number
-            color: number
-            id: number
-            typ: number
-            is_light: number
-            ruid: number
-            guard_level: number
-            score: number
-            guard_icon: string
-            honor_icon: string
-            v2_medal_color_start: string
-            v2_medal_color_end: string
-            v2_medal_color_border: string
-            v2_medal_color_text: string
-            v2_medal_color_level: string
-            user_receive_count: number
         }
         interface ExtraConfig {
             show_bag: boolean
@@ -351,10 +288,10 @@ declare namespace LiveInfoData {
             red_notice: number
         }
         interface UserReward {
-            entry_effect: UserReward_EntryEffect
-            welcome: UserReward_Welcome
+            entry_effect: EntryEffect
+            welcome: Welcome
         }
-        interface UserReward_EntryEffect {
+        interface EntryEffect {
             id: number
             privilege_type: number
             priority: number
@@ -373,17 +310,17 @@ declare namespace LiveInfoData {
             effective_time: number
             web_dynamic_url: string
         }
-        interface UserReward_Welcome {
+        interface Welcome {
             allow_mock: number
         }
         interface ShieldInfo {
             shield_user_list: any[]
             keyword_list: any[]
-            shield_rules: ShieldInfo_ShieldRules
+            shield_rules: ShieldRules
             is_block: boolean
             block_expired: number
         }
-        interface ShieldInfo_ShieldRules {
+        interface ShieldRules {
             rank: number
             verify: number
             level: number
@@ -391,10 +328,10 @@ declare namespace LiveInfoData {
         interface SuperChatMessage {
             list: any[]
         }
-        interface LPLInfo {
+        interface LplInfo {
             lpl: number
         }
-        interface CD {
+        interface Cd {
             guide_free_medal_cost: number
             guide_light_medal: number
             guide_follow: number
@@ -402,15 +339,15 @@ declare namespace LiveInfoData {
             interact_toasts: any[]
         }
         interface Notice {
-            gift_red_dot: Notice_GiftRedDot
-            user_head_dot: Notice_UserHeadDot
+            gift_red_dot: GiftRedDot
+            user_head_dot: UserHeadDot
             glory_dress_on: boolean
         }
-        interface Notice_GiftRedDot {
+        interface GiftRedDot {
             module: string
             num: number
         }
-        interface Notice_UserHeadDot {
+        interface UserHeadDot {
             module: string
             num: number
         }
@@ -418,10 +355,10 @@ declare namespace LiveInfoData {
             hit_ab: number
         }
         interface FunctionCard {
-            send_gift_card: FunctionCard_SendGiftCard
-            wish_list_card: any
+            send_gift_card: SendGiftCard
+            wish_list_card: any | null
         }
-        interface FunctionCard_SendGiftCard {
+        interface SendGiftCard {
             card_experiment: number
             card_duration: number
             title: string
@@ -434,9 +371,9 @@ declare namespace LiveInfoData {
             follow_send_dm: number
             price_cap: number
             default_gift: number
-            gift_list: any
+            gift_list: number[]
         }
-        interface AB {
+        interface Ab {
             Giftpanel_touch: number
             bag_gift_support_batch_send: number
             blindbox_price_0227: number
@@ -474,7 +411,7 @@ declare namespace LiveInfoData {
             status: number
             dm_icon_key: string
         }
-        interface BR {
+        interface Br {
             is_br: number
             show_icon: boolean
             red_dot: boolean
@@ -486,43 +423,43 @@ declare namespace LiveInfoData {
         }
         interface Uinfo {
             uid: number
-            base: Uinfo_Base
-            medal: any
-            wealth: Uinfo_Wealth
-            title: any
-            guard: Uinfo_Guard
-            uhead_frame: any
-            guard_leader: any
+            base: UinfoBase
+            medal: any | null
+            wealth: UinfoWealth
+            title: any | null
+            guard: UinfoGuard
+            uhead_frame: any | null
+            guard_leader: any | null
         }
-        interface Uinfo_Base {
+        interface UinfoBase {
             name: string
             face: string
             name_color: number
             is_mystery: boolean
-            risk_ctrl_info: any
-            origin_info: any
-            official_info: any
+            risk_ctrl_info: any | null
+            origin_info: any | null
+            official_info: any | null
             name_color_str: string
         }
-        interface Uinfo_Wealth {
+        interface UinfoWealth {
             level: number
             dm_icon_key: string
         }
-        interface Uinfo_Guard {
+        interface UinfoGuard {
             level: number
             expired_str: string
         }
         interface QoeShow {
             show: boolean
-            qoe_info: any
+            qoe_info: any | null
         }
         interface SuperChatMessageExtend {
-            in_audit_list: any
-            audit_info: SuperChatMessageExtend_AuditInfo
+            in_audit_list: any | null
+            audit_info: AuditInfo
             entrance_mode: number
         }
-        interface SuperChatMessageExtend_AuditInfo {
-            ids: any
+        interface AuditInfo {
+            ids: any | null
             msg: string
         }
         interface V2Watermark {
@@ -557,11 +494,20 @@ declare namespace LiveInfoData {
             icon_url: string
             promotion_page_url: string
         }
+        interface GuardNotice {
+            url: string
+            delay_second: number
+            red_alarm: number
+        }
     }
-}
 
-declare namespace UserData {
     namespace Nav {
+        interface Response {
+            code: number
+            message: string
+            ttl: number
+            data: Data
+        }
         interface Data {
             isLogin: boolean
             email_verified: number
@@ -590,33 +536,30 @@ declare namespace UserData {
             wallet: Wallet
             has_shop: boolean
             shop_url: string
-            allowance_count: number
             answer_status: number
             is_senior_member: number
             wbi_img: WbiImg
             is_jury: boolean
-            name_render: any
+            name_render: any | null
+            legal_region: string
+            ip_region: string
         }
-
         interface LevelInfo {
             current_level: number
             current_min: number
             current_exp: number
-            next_exp: string
+            next_exp: string | number
         }
-
         interface Official {
             role: number
             title: string
             desc: string
             type: number
         }
-
         interface OfficialVerify {
             type: number
             desc: string
         }
-
         interface Pendant {
             pid: number
             name: string
@@ -626,7 +569,6 @@ declare namespace UserData {
             image_enhance_frame: string
             n_pid: number
         }
-
         interface VipLabel {
             path: string
             text: string
@@ -640,15 +582,16 @@ declare namespace UserData {
             img_label_uri_hant: string
             img_label_uri_hans_static: string
             img_label_uri_hant_static: string
+            label_id: number
+            label_goto: any | null
         }
-
         interface Vip {
             type: number
             status: number
             due_date: number
             vip_pay_type: number
             theme_type: number
-            label: Label
+            label: VipLabel
             avatar_subscript: number
             nickname_color: string
             role: number
@@ -657,32 +600,28 @@ declare namespace UserData {
             tv_vip_pay_type: number
             tv_due_date: number
             avatar_icon: AvatarIcon
-        }
-        interface Label {
-            path: string
-            text: string
-            label_theme: string
-            text_color: string
-            bg_style: number
-            bg_color: string
-            border_color: string
-            use_img_label: boolean
-            img_label_uri_hans: string
-            img_label_uri_hant: string
-            img_label_uri_hans_static: string
-            img_label_uri_hant_static: string
+            ott_info: OttInfo
+            super_vip: SuperVip
         }
         interface AvatarIcon {
-            icon_resource: object
+            icon_resource: Record<string, any>
         }
-
+        interface OttInfo {
+            vip_type: number
+            pay_type: number
+            pay_channel_id: string
+            status: number
+            overdue_time: number
+        }
+        interface SuperVip {
+            is_super_vip: boolean
+        }
         interface Wallet {
             mid: number
             bcoin_balance: number
             coupon_balance: number
             coupon_due_time: number
         }
-
         interface WbiImg {
             img_url: string
             sub_url: string
@@ -690,4 +629,4 @@ declare namespace UserData {
     }
 }
 
-export { LiveInfoData, UserData }
+export { BiliAPIResponse }

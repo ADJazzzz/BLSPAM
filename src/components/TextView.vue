@@ -10,10 +10,10 @@ import {
     NPageHeader,
     useMessage
 } from 'naive-ui'
-import { useUIStore } from '../stores/useUIStore'
-import { useModuleStore } from '../stores/useModuleStore'
-import { useBiliStore } from '../stores/useBiliStore'
-import stop from '../modules/Spamer/textSpamer'
+import { useUIStore } from '@/stores/useUIStore'
+import { useModuleStore } from '@/stores/useModuleStore'
+import { useBiliStore } from '@/stores/useBiliStore'
+import stop from '@/modules/Spamer/textSpamer'
 
 const uiStore = useUIStore()
 const moduleStore = useModuleStore()
@@ -42,7 +42,7 @@ const handleStartSpamer = () => {
     }
 }
 const handleStopSpamer = () => {
-    tStop.stop()
+    tStop.stop('text')
 }
 
 const rules = {
@@ -93,7 +93,7 @@ const rules = {
                                 clearable
                                 :show-button="false"
                                 v-model:value="moduleStore.moduleConfig.TextSpam.timeinterval"
-                                placeholder="默认3，单位为秒"
+                                placeholder="默认5，单位为秒"
                                 min="1"
                                 :precision="0"
                             >
@@ -101,7 +101,7 @@ const rules = {
                             </n-input-number>
                         </template>
                         <span
-                            >弹幕发送时间间隔，默认为3秒，也是b站最快的发弹幕频率，当然这里可以设置小于该值</span
+                            >弹幕发送时间间隔，默认为5秒，也是b站最快的发弹幕频率，当然这里可以设置小于该值</span
                         >
                     </n-popover>
                 </n-form-item>

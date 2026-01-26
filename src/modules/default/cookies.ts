@@ -1,5 +1,5 @@
-import { useBiliStore } from '../../stores/useBiliStore'
-import { BiliCookies } from '../../types/'
+import { useBiliStore } from '@/stores/useBiliStore'
+import { BiliCookies } from '@/types'
 import BaseModule from '../BaseModule'
 
 class Cookies extends BaseModule {
@@ -19,7 +19,7 @@ class Cookies extends BaseModule {
             if (Object.keys(cookieValues).length === cookieNames.length) {
                 resolve(cookieValues as BiliCookies)
             } else {
-                reject(new Error(`没找到cookies`))
+                reject(this.logger.error('没有找到所需的 Cookie 值，请确保已登录。'))
             }
         })
     }

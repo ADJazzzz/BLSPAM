@@ -17,17 +17,19 @@ const pollingQuery = (
                 return
             }
         }
+
         const timerPolling = setInterval(() => {
-            const ele: Element | null = element.querySelector(selectors)
+            const ele = element.querySelector(selectors)
             if (ele) {
-                clearTimeout(timerPolling)
+                clearInterval(timerPolling)
+                clearTimeout(timerTimeout)
                 resolve(ele)
             }
         }, interval)
+
         const timerTimeout = setTimeout(() => {
-            clearTimeout(timerPolling)
-            clearTimeout(timerTimeout)
-            reject()
+            clearInterval(timerPolling)
+            reject(new Error(`在${timeout}ms内未发现对应元素 "${selectors}"`))
         }, timeout)
     })
 }

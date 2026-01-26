@@ -1,9 +1,9 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import naive from 'naive-ui'
-import App from './App.vue'
-import { dce } from './utils/dom'
 import { unsafeWindow } from '$'
+import { dce } from './utils/dom'
+import App from './App.vue'
 import { useModuleStore } from './stores/useModuleStore'
 
 const pinia = createPinia()
@@ -19,6 +19,6 @@ unsafeWindow.onload = () => {
 
     const div = dce('div')
     div.id = 'BLSPAM'
-    document.body.append(div)
+    document.body.appendChild(div)
     app.mount(div)
 }

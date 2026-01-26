@@ -1,10 +1,18 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import monkey, { cdn, util } from 'vite-plugin-monkey'
+import svgLoader from 'vite-svg-loader'
+import { fileURLToPath, URL } from 'node:url'
 
 export default defineConfig({
+    resolve: {
+        alias: {
+            '@': fileURLToPath(new URL('./src', import.meta.url))
+        }
+    },
     plugins: [
         vue(),
+        svgLoader(),
         monkey({
             entry: 'src/main.ts',
             userscript: {
@@ -16,7 +24,7 @@ export default defineConfig({
                 supportURL: 'https://github.com/ADJazzzz/BLSPAM/issues',
                 license: 'MIT',
                 author: 'ADJazz',
-                copyright: '2023, ADJazz (https://github.com/ADJazzzz)',
+                copyright: '2026, ADJazz (https://github.com/ADJazzzz)',
                 downloadURL:
                     'https://github.com/ADJazzzz/BLSPAM/releases/latest/download/bilibili-live-spamer.min.user.js',
                 updateURL:
@@ -34,8 +42,7 @@ export default defineConfig({
                 externalGlobals: {
                     vue: cdn
                         .jsdelivr('Vue', 'dist/vue.global.prod.js')
-                        .concat('https://cdn.jsdelivr.net/npm/vue-demi/lib/index.iife.js')
-                        .concat(util.dataUrl('window.Vue=Vue')),
+                        .concat(util.dataUrl('window.Vue=Vue;window.VueDemi=Vue')),
                     pinia: cdn.jsdelivr('Pinia', 'dist/pinia.iife.prod.js'),
                     'naive-ui': cdn.jsdelivr('naive', 'dist/index.prod.js'),
                     axios: cdn.jsdelivr('axios', 'dist/axios.min.js'),

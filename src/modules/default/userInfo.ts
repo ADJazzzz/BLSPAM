@@ -1,13 +1,13 @@
-import BILIAPI from '../../utils/bili'
-import { UserData, LiveInfoData, UserResponse, LiveResponse } from '../../types'
+import { BILIAPI } from '@/utils/bili'
 import { useBiliStore } from '../../stores/useBiliStore'
 import { unsafeWindow } from '$'
 import BaseModule from '../BaseModule'
+import { BiliAPIResponse } from '@/types'
 
 class UserInfo extends BaseModule {
-    private async getLoginInfo(): Promise<UserData.Nav.Data> {
+    private async getLoginInfo() {
         try {
-            const response = (await BILIAPI.nav()) as UserResponse.Nav
+            const response = await BILIAPI.nav()
             if (response.code === 0) {
                 this.logger.log('LoginInfo', response)
                 return Promise.resolve(response.data)
@@ -34,15 +34,15 @@ class UserInfo extends BaseModule {
         })
     }
 
-    private async getEmotionData(): Promise<LiveInfoData.GetEmoticons.EmotionData[]> {
+    private async getEmotionData() {
         const roomID = useBiliStore().BilibiliLive?.ROOMID
         if (!roomID) {
             this.logger.error('获取用户信息出错', 'roomID 不存在')
             return Promise.reject('roomID 不存在')
         }
-        const EmotionData: LiveInfoData.GetEmoticons.EmotionData[] = []
+        const EmotionData: BiliAPIResponse.GetEmoticons.EmoticonPackage[] = []
         try {
-            const response = (await BILIAPI.getEmoticons('pc', roomID)) as LiveResponse.GetEmoticons
+            const response = await BILIAPI.getEmoticons('pc', roomID)
             if (response.code === 0) {
                 this.logger.log('EmotionData', response)
                 EmotionData.push(...response.data.data)
@@ -57,14 +57,14 @@ class UserInfo extends BaseModule {
         }
     }
 
-    private async getInfoByUser(): Promise<LiveInfoData.GetInfoByUser.Data> {
+    private async getInfoByUser() {
         const roomID = useBiliStore().BilibiliLive?.ROOMID
         if (!roomID) {
             this.logger.error('获取用户信息出错', 'roomID 不存在')
             return Promise.reject('roomID 不存在')
         }
         try {
-            const response = (await BILIAPI.getInfoByUser(roomID)) as LiveResponse.GetInfoByUser
+            const response = await BILIAPI.getInfoByUser(roomID)
             if (response.code === 0) {
                 this.logger.log('infoByuser', response)
                 return Promise.resolve(response.data)

@@ -4,10 +4,10 @@ import type { Component } from 'vue'
 import { NIcon, NMenu } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
 import { useUIStore } from '../stores/useUIStore'
-import TextIcon from './Icons/TextIcon.vue'
-import EmotionIcon from './Icons/EmotionIcon.vue'
-import TextGroupIcon from './Icons/TextGroupIcon.vue'
-import SettingIcon from './Icons/SettingIcon.vue'
+import TextIcon from '@/assets/TextIcon.svg?component'
+import EmotionIcon from '@/assets/EmotionIcon.svg?component'
+import FavoritesIcon from '@/assets/FavoritesIcon.svg?component'
+import SettingIcon from '@/assets/SettingIcon.svg?component'
 
 const uiStore = useUIStore()
 
@@ -22,14 +22,14 @@ const menuOptions: MenuOption[] = [
         icon: renderIcon(TextIcon)
     },
     {
-        label: '文字池',
-        key: 'TextGroupView',
-        icon: renderIcon(TextGroupIcon)
-    },
-    {
         label: '表情',
         key: 'EmotionView',
         icon: renderIcon(EmotionIcon)
+    },
+    {
+        label: '收藏夹',
+        key: 'FavoritesView',
+        icon: renderIcon(FavoritesIcon)
     },
     {
         label: '全局设置',

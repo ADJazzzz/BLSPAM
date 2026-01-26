@@ -1,7 +1,6 @@
-import BILIAPI from '../../utils/bili'
-import { useDiscreteAPI } from '../../utils/ui'
-import { useBiliStore } from '../../stores/useBiliStore'
-import { AxiosResponse } from '../../types'
+import { BILIAPI } from '@/utils/bili'
+import { useDiscreteAPI } from '@/utils/ui'
+import { useBiliStore } from '@/stores/useBiliStore'
 import BaseModule from '../BaseModule'
 
 class EmotionSpamer extends BaseModule {
@@ -29,18 +28,18 @@ class EmotionSpamer extends BaseModule {
 
         const sendEmotion = async (emotion: string) => {
             try {
-                const response = (await BILIAPI.sendEmotion(emotion, roomid)) as AxiosResponse
+                const response = await BILIAPI.sendEmotion(emotion, roomid)
                 const { notification } = useDiscreteAPI(
                     ['notification'],
                     !this.moduleStore.moduleConfig.setting.danmakuDetail.enable
                 )
-                if (response.data.code === 0) {
+                if (response.code === 0) {
                     this.logger.log(`表情 ${emotion} 发送成功`, response)
                 } else {
                     this.logger.error(`表情 ${emotion} 发送失败`, response)
                     notification.error({
                         closable: false,
-                        content: `表情"${emotion}"发送失败: ${response.data.message}`,
+                        content: `表情"${emotion}"发送失败: ${response.message}`,
                         duration: 3000
                     })
                 }

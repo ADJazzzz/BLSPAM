@@ -12,7 +12,7 @@ declare global {
             PARENT_AREA_ID: number
         }
         bililiveThemeV2: {
-            getTheme: () => 'dark' | 'light'
+            getTheme: () => 'light' | 'dark'
         }
     }
 }

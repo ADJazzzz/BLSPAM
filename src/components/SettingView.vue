@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { NPageHeader, NFlex, NSwitch, NButton } from 'naive-ui'
-import InfoDialog from './Icons/InfoDialog.vue'
-import { useModuleStore } from '../stores/useModuleStore'
-import checkUpdate from '../modules/Setting/autoCheckUpdate'
+import InfoDialog from './helpInfoDialog.vue'
+import { useModuleStore } from '@/stores/useModuleStore'
+import checkUpdate from '@/modules/Setting/autoCheckUpdate'
 
 const moduleStore = useModuleStore()
 const manualCheckUpdate = new checkUpdate('ManualCheckUpdate')
