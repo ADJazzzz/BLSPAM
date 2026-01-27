@@ -26,10 +26,20 @@ const handleDanmakuModeChange = () => {
         /></n-flex>
         <n-flex align="center"
             ><n-switch
-                v-model:value="
-                    moduleStore.moduleConfig.setting.danmakuModules.enable
-                " />弹幕+1和弹幕复制<InfoDialog id="SettingView.danmakuModules"
-        /> 目前模式为<NButton :focusable="false" quaternary size="tiny" type="info" @click="handleDanmakuModeChange">{{ moduleStore.moduleConfig.setting.danmakuModules.mode === 'menu' ? '菜单模式' : '直接渲染模式' }}</NButton></n-flex>
+                v-model:value="moduleStore.moduleConfig.setting.danmakuModules.enable"
+            />弹幕+1和弹幕复制<InfoDialog id="SettingView.danmakuModules" /> 目前模式为<NButton
+                :focusable="false"
+                quaternary
+                size="tiny"
+                type="info"
+                @click="handleDanmakuModeChange"
+                >{{
+                    moduleStore.moduleConfig.setting.danmakuModules.mode === 'menu'
+                        ? '菜单模式'
+                        : '直接渲染模式'
+                }}</NButton
+            ></n-flex
+        >
         <n-flex align="center"
             ><n-switch
                 v-model:value="

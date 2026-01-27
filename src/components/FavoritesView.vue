@@ -47,9 +47,7 @@ const handleTabsAdd = () => {
     } else {
         const newKey =
             Math.max(
-                ...moduleStore.moduleConfig.Favorites.favoritesTabPanels.map(
-                    (panels) => panels.key
-                )
+                ...moduleStore.moduleConfig.Favorites.favoritesTabPanels.map((panels) => panels.key)
             ) + 1
         const newName =
             Math.max(
