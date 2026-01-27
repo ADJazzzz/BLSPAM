@@ -1,7 +1,12 @@
+import { h, render, Fragment } from 'vue'
+import { NButton, NIcon, NConfigProvider, lightTheme, darkTheme } from 'naive-ui'
 import { dq } from '@/utils/dom'
 import { BILIAPI } from '@/utils/bili'
 import { useDiscreteAPI } from '@/utils/ui'
 import { useBiliStore } from '@/stores/useBiliStore'
+import { useUIStore } from '@/stores/useUIStore'
+import PlusIcon from './assets/PlusIcon.svg?component'
+import CopyIcon from './assets/CopyIcon.svg?component'
 import BaseModule from '@/modules/BaseModule'
 
 class danmakuModules extends BaseModule {
@@ -27,7 +32,12 @@ class danmakuModules extends BaseModule {
                                 (node.classList.contains('has-bubble') &&
                                     node.classList.length === 3))
                         ) {
-                            node.addEventListener('click', (event) => this.handleNodeClick(event))
+                            if (this.config.mode === 'menu') {
+                                const msg = node.dataset.danmaku || ''
+                                node.addEventListener('click', () => this.renderMenu(msg))
+                            } else {
+                                this.renderDirectly(node)
+                            }
                         }
                     })
                 })
@@ -35,14 +45,59 @@ class danmakuModules extends BaseModule {
         }
     }
 
-    private handleNodeClick(event: MouseEvent) {
-        const clickedElement = event.target
-        if (
-            clickedElement instanceof HTMLElement &&
-            clickedElement.classList.contains('danmaku-item-right')
-        ) {
-            this.renderMenu(clickedElement.innerText)
-        }
+    private renderDirectly(node: HTMLElement) {
+        const msg = node.dataset.danmaku || ''
+
+        const msgEle = node.querySelector('.danmaku-item-right')
+        if (!msgEle) return
+        const btnContainer = document.createElement('div')
+        btnContainer.style.cssText = 'display: inline-block; vertical-align: middle;'
+        msgEle.after(btnContainer)
+
+        render(
+            h(
+                NConfigProvider,
+                {
+                    theme: useUIStore().uiConfig.theme === 'dark' ? darkTheme : lightTheme,
+                    style: { marginLeft: '2px', paddingTop: '4px' }
+                },
+                {
+                    default: () =>
+                        h(Fragment, [
+                            h(
+                                NButton,
+                                {
+                                    text: true,
+                                    focusable: false,
+                                    bordered: false,
+                                    style: {
+                                        marginLeft: '2px'
+                                    },
+                                    onClick: (e: MouseEvent) => {
+                                        e.stopPropagation()
+                                        this.dmCopy(msg)
+                                    }
+                                },
+                                { default: () => h(NIcon, { component: CopyIcon, size: 16 }) }
+                            ),
+                            h(
+                                NButton,
+                                {
+                                    text: true,
+                                    focusable: false,
+                                    bordered: false,
+                                    onClick: (e: MouseEvent) => {
+                                        e.stopPropagation()
+                                        this.dmRepeat(msg)
+                                    }
+                                },
+                                { default: () => h(NIcon, { component: PlusIcon, size: 16 }) }
+                            )
+                        ])
+                }
+            ),
+            btnContainer
+        )
     }
 
     private renderMenu(msg: string) {

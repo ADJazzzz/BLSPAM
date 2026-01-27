@@ -6,6 +6,13 @@ import checkUpdate from '@/modules/Setting/autoCheckUpdate'
 
 const moduleStore = useModuleStore()
 const manualCheckUpdate = new checkUpdate('ManualCheckUpdate')
+const handleDanmakuModeChange = () => {
+    if (moduleStore.moduleConfig.setting.danmakuModules.mode === 'menu') {
+        moduleStore.moduleConfig.setting.danmakuModules.mode = 'direct'
+    } else {
+        moduleStore.moduleConfig.setting.danmakuModules.mode = 'menu'
+    }
+}
 </script>
 
 <template>
@@ -22,7 +29,7 @@ const manualCheckUpdate = new checkUpdate('ManualCheckUpdate')
                 v-model:value="
                     moduleStore.moduleConfig.setting.danmakuModules.enable
                 " />弹幕+1和弹幕复制<InfoDialog id="SettingView.danmakuModules"
-        /></n-flex>
+        /> 目前模式为<NButton :focusable="false" quaternary size="tiny" type="info" @click="handleDanmakuModeChange">{{ moduleStore.moduleConfig.setting.danmakuModules.mode === 'menu' ? '菜单模式' : '直接渲染模式' }}</NButton></n-flex>
         <n-flex align="center"
             ><n-switch
                 v-model:value="

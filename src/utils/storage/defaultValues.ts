@@ -48,7 +48,8 @@ export default {
                 enable: true
             },
             danmakuModules: {
-                enable: false
+                enable: false,
+                mode: 'menu'
             },
             danmakuDetail: {
                 enable: true

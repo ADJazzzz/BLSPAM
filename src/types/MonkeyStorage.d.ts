@@ -31,6 +31,7 @@ interface modulesConfig {
         }
         danmakuModules: {
             enable: boolean
+            mode: 'menu' | 'direct'
         }
         danmakuDetail: {
             enable: boolean
