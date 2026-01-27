@@ -1,5 +1,23 @@
 ## NEXT_VERSION
 
+## [1.5.0](https://github.com/ADJazzzz/BLSPAM/compare/1.4.3...1.5.0) 2026-01-27
+
+### 新增
+
+- 更直接的+1和弹幕复制[(#37)](https://github.com/ADJazzzz/BLSPAM/issues/37)
+- 为文字独轮车添加文本表情功能
+
+### 调整
+
+- 文字池独轮车现改为收藏夹，功能不变
+- 独轮车的默认时间间隔改为5秒
+- 整理了以前混乱的类型声明
+- 解决了一些已知问题
+
+### 更新
+
+- 更新主要依赖项
+
 ## [1.4.3](https://github.com/ADJazzzz/BLSPAM/compare/1.4.2...1.4.3) 2025-09-03
 
 ### 新增
