@@ -8,12 +8,15 @@ import {
     NPopover,
     NFlex,
     NPageHeader,
-    useMessage
+    useMessage,
+    NIcon,
+    NAvatar
 } from 'naive-ui'
-import { useUIStore } from '../stores/useUIStore'
-import { useModuleStore } from '../stores/useModuleStore'
-import { useBiliStore } from '../stores/useBiliStore'
-import stop from '../modules/Spamer/textSpamer'
+import { useUIStore } from '@/stores/useUIStore'
+import { useModuleStore } from '@/stores/useModuleStore'
+import { useBiliStore } from '@/stores/useBiliStore'
+import EmotionIcon from '@/assets/EmotionIcon.svg?component'
+import stop from '@/modules/Spamer/textSpamer'
 
 const uiStore = useUIStore()
 const moduleStore = useModuleStore()
@@ -42,7 +45,7 @@ const handleStartSpamer = () => {
     }
 }
 const handleStopSpamer = () => {
-    tStop.stop()
+    tStop.stop('text')
 }
 
 const rules = {
@@ -93,7 +96,7 @@ const rules = {
                                 clearable
                                 :show-button="false"
                                 v-model:value="moduleStore.moduleConfig.TextSpam.timeinterval"
-                                placeholder="默认3，单位为秒"
+                                placeholder="默认5，单位为秒"
                                 min="1"
                                 :precision="0"
                             >
@@ -101,7 +104,7 @@ const rules = {
                             </n-input-number>
                         </template>
                         <span
-                            >弹幕发送时间间隔，默认为3秒，也是b站最快的发弹幕频率，当然这里可以设置小于该值</span
+                            >弹幕发送时间间隔，默认为5秒，也是b站最快的发弹幕频率，当然这里可以设置小于该值</span
                         >
                     </n-popover>
                 </n-form-item>
@@ -152,6 +155,39 @@ const rules = {
                 v-model:value="moduleStore.moduleConfig.TextSpam.msg"
                 placeholder="车了可能会被禁，但不车就等于一直被禁"
             />
+            <n-popover trigger="click" placement="left" style="width: 500px">
+                <template #trigger>
+                    <n-button text style="padding-left: 4px">
+                        <n-icon :size="24">
+                            <EmotionIcon />
+                        </n-icon>
+                    </n-button>
+                </template>
+                <div
+                    style="
+                        display: grid;
+                        grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
+                        gap: 8px;
+                        padding: 8px;
+                    "
+                >
+                    <div
+                        v-for="data in biliStore.emotionData.find((data) => data.pkg_id === 100)
+                            ?.emoticons"
+                        :key="data.emoticon_id"
+                        :disabled="data.perm === 0"
+                    >
+                        <n-avatar
+                            :color="uiStore.uiConfig.theme === 'dark' ? '#48484E' : 'white'"
+                            :size="24"
+                            :src="data.url"
+                            object-fit="contain"
+                            style="cursor: pointer"
+                            @click="moduleStore.moduleConfig.TextSpam.msg += data.emoji"
+                        />
+                    </div>
+                </div>
+            </n-popover>
         </n-form-item>
         <n-flex
             justify="end"

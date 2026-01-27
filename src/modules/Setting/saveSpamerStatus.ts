@@ -1,4 +1,4 @@
-import { useDiscreteAPI } from '../../utils/ui'
+import { useDiscreteAPI } from '@/utils/ui'
 import BaseModule from '../BaseModule'
 
 class SaveSpamerStatus extends BaseModule {
@@ -26,7 +26,7 @@ class SaveSpamerStatus extends BaseModule {
         } else {
             this.moduleStore.moduleConfig.TextSpam.enable = false
             this.moduleStore.moduleConfig.EmotionSpam.enable = false
-            this.moduleStore.moduleConfig.TextGroupSpam.enable = false
+            this.moduleStore.moduleConfig.Favorites.enable = false
         }
     }
 }

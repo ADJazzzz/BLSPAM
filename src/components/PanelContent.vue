@@ -2,14 +2,14 @@
 import { defineComponent } from 'vue'
 import TextView from './TextView.vue'
 import EmotionView from './EmotionView.vue'
-import TextGroupView from './TextGroupView.vue'
+import FavoritesView from './FavoritesView.vue'
 import SettingView from './SettingView.vue'
-import { useUIStore } from '../stores/useUIStore'
+import { useUIStore } from '@/stores/useUIStore'
 
 export default defineComponent({
     components: {
         TextView,
-        TextGroupView,
+        FavoritesView,
         EmotionView,
         SettingView
     },

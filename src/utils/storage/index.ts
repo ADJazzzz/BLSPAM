@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { GM_getValue, GM_setValue } from '$'
 import defaultValues from './defaultValues'
-import { modulesConfig, uiConfig } from '../../types'
+import { modulesConfig, uiConfig } from '@/types'
 
 class Storage {
     private static mergeConfigs(current_config_item: any, default_config_item: any): any {

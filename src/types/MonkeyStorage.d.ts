@@ -15,11 +15,11 @@ interface modulesConfig {
         timelimit: number
     }
 
-    TextGroupSpam: {
+    Favorites: {
         enable: boolean
         timeinterval: number
-        textGroupTabsValue: number
-        textGroupTabPanels: textGroupTabPanels[]
+        favoritesTabsValue: number
+        favoritesTabPanels: favoritesTabPanels[]
     }
 
     setting: {
@@ -31,6 +31,7 @@ interface modulesConfig {
         }
         danmakuModules: {
             enable: boolean
+            mode: 'menu' | 'direct'
         }
         danmakuDetail: {
             enable: boolean
@@ -45,14 +46,14 @@ interface uiConfig {
     theme: 'dark' | 'light'
 }
 
-type textGroupTabPanels = {
+type favoritesTabPanels = {
     key: number
     name: number
     tab: string
     msg: string
 }
 
-type menuIndex = 'TextView' | 'EmotionView' | 'TextGroupView' | 'SettingView'
+type menuIndex = 'TextView' | 'EmotionView' | 'FavoritesView' | 'SettingView'
 
 type moduleEmitter = {
     TextSpam: {
@@ -61,7 +62,7 @@ type moduleEmitter = {
     EmotionSpam: {
         module: string
     }
-    TextGroupSpam: {
+    Favorites: {
         module: string
     }
 }

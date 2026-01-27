@@ -1,5 +1,5 @@
 import { h } from 'vue'
-import { HelpInfo } from '../../types'
+import { HelpInfo } from '@/types'
 
 const spHelpInfo: HelpInfo = {
     SettingView: {
@@ -7,7 +7,7 @@ const spHelpInfo: HelpInfo = {
             title: '保持独轮车开关状态',
             content: () =>
                 h('p', [
-                    h('span', '启用后，独轮车开关状态将会被保持，下次启动时会自动恢复。'),
+                    h('span', '启用后，独轮车开关状态将会被保持，下次进入任意直播间时会自动恢复。'),
                     h('br'),
                     h('span', '该功能默认关闭。')
                 ])
@@ -16,6 +16,8 @@ const spHelpInfo: HelpInfo = {
             title: '弹幕+1和弹幕复制',
             content: () =>
                 h('p', [
+                    h('span', '菜单模式：'),
+                    h('br'),
                     h(
                         'span',
                         '启用后，会在弹幕菜单中提供弹幕+1和弹幕复制功能。（点击弹幕列表即可触发弹幕菜单，该功能只支持文字弹幕）'
@@ -25,6 +27,13 @@ const spHelpInfo: HelpInfo = {
                         'span',
                         { style: { color: '#FF0000', fontWeight: 'bold' } },
                         '温馨提示：B站的弹幕菜单有问题，如果在太低的地方触发，它有可能会无法完全显示所有选项。'
+                    ),
+                    h('br'),
+                    h('span', '直接渲染模式：'),
+                    h('br'),
+                    h(
+                        'span',
+                        '启用后，会在弹幕列表中直接渲染弹幕+1和弹幕复制按钮。（该功能只支持文字弹幕）'
                     ),
                     h('br'),
                     h('span', '该功能默认关闭。')

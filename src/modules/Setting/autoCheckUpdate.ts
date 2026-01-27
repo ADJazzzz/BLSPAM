@@ -1,25 +1,24 @@
 import { NButton } from 'naive-ui'
 import { h } from 'vue'
 import { GM_xmlhttpRequest, GM_info, unsafeWindow } from '$'
-import { CheckUpdate } from '../../types'
+import { GitHubAPI } from '@/types'
 import BaseModule from '../BaseModule'
-import { useDiscreteAPI } from '../../utils/ui'
+import { useDiscreteAPI } from '@/utils/ui'
 
 class checkUpdate extends BaseModule {
     config = this.moduleStore.moduleConfig.setting.autoCheckUpdate
 
-    private async getLatestVersionRes(): Promise<CheckUpdate.MonkeyXMLHttpRequest.MonkeyXMLHttpRequestResponse> {
+    private async getLatestVersionRes(): Promise<{ response: GitHubAPI.ReleasesLatest.Response }> {
         return new Promise((resolve, reject) => {
             GM_xmlhttpRequest({
-                url: 'https://api.github.com/repos/ADJazzzz/BLSPAM/releases/latest',
-                nocache: true,
                 method: 'GET',
-                responseType: 'json',
-                onload: (res: CheckUpdate.MonkeyXMLHttpRequest.MonkeyXMLHttpRequestResponse) => {
-                    resolve(res)
-                },
-                onerror: (res: CheckUpdate.MonkeyXMLHttpRequest.MonkeyXMLHttpRequestResponse) => {
-                    reject(res)
+                url: 'https://api.github.com/repos/ADJazzzz/BLSPAM/releases/latest',
+                onload: (response) => {
+                    if (response.status === 200) {
+                        resolve({ response: JSON.parse(response.responseText) })
+                    } else {
+                        reject(this.logger.error('获取最新版本信息失败', response))
+                    }
                 }
             })
         })
@@ -47,7 +46,7 @@ class checkUpdate extends BaseModule {
 
     public async CheckUpdate(updateType: string) {
         const currentVersion = this.getCurrentVersion()
-        const getGitHubAPI: CheckUpdate.GitHub.GithubAPI = (await this.getLatestVersionRes())
+        const getGitHubAPI: GitHubAPI.ReleasesLatest.Response = (await this.getLatestVersionRes())
             .response
 
         const compareRes = this.compareVersion(currentVersion, getGitHubAPI.tag_name)

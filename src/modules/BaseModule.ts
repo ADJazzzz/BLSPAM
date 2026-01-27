@@ -1,5 +1,5 @@
-import Logger from '../utils/logger'
-import { useModuleStore } from '../stores/useModuleStore'
+import Logger from '@/utils/logger'
+import { useModuleStore } from '@/stores/useModuleStore'
 
 class BaseModule {
     public moduleName: string

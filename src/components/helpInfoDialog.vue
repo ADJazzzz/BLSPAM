@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { NIcon, useDialog } from 'naive-ui'
 import _ from 'lodash'
-import { HelpInfoItem } from '../../types'
-import spHelpInfo from '../../utils/helpinfo'
+import { HelpInfoItem } from '@/types'
+import spHelpInfo from '@/utils/ui/helpInfo'
 
 const dialog = useDialog()
 const props = defineProps<{

@@ -2,11 +2,11 @@ import { defineStore } from 'pinia'
 import { reactive, watch } from 'vue'
 import _ from 'lodash'
 import mitt from 'mitt'
-import { modulesConfig, moduleEmitter } from '../types'
-import Storage from '../utils/storage'
-import * as defaultModules from '../modules/default'
-import * as functionModules from '../modules'
-import Logger from '../utils/logger'
+import { modulesConfig, moduleEmitter } from '@/types'
+import Storage from '@/utils/storage'
+import * as defaultModules from '@/modules/default'
+import * as functionModules from '@/modules'
+import Logger from '@/utils/logger'
 
 export const useModuleStore = defineStore('modules', () => {
     const moduleConfig: modulesConfig = reactive(Storage.getModuleConfig())
@@ -40,7 +40,7 @@ export const useModuleStore = defineStore('modules', () => {
                 await loadDefaultModules()
                 break
             } catch (error) {
-                logger.error(`重试次数: ${retryCount + 1}`, error)
+                logger.warn(`重试次数: ${retryCount + 1}`, error)
                 errorCount++
                 retryCount++
                 if (retryCount <= maxRetries) {

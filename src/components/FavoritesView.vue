@@ -15,15 +15,15 @@ import {
     useDialog
 } from 'naive-ui'
 import _ from 'lodash'
-import { useModuleStore } from '../stores/useModuleStore'
-import { useUIStore } from '../stores/useUIStore'
-import stop from '../modules/Spamer/textGroupSpamer'
+import { useModuleStore } from '@/stores/useModuleStore'
+import { useUIStore } from '@/stores/useUIStore'
+import stop from '@/modules/Spamer/textSpamer'
 
 const moduleStore = useModuleStore()
 const uiStore = useUIStore()
 const message = useMessage()
 const dialog = useDialog()
-const tgStop = new stop('StopTextGroupSpamer')
+const favStop = new stop('StopFavoritesSpamer')
 
 const rules = {
     timeinterval: {
@@ -31,43 +31,41 @@ const rules = {
         message: '最小为1',
         trigger: ['input', 'blur'],
         validator: () => {
-            return moduleStore.moduleConfig.TextGroupSpam.timeinterval !== null
+            return moduleStore.moduleConfig.Favorites.timeinterval !== null
         }
     }
 }
 const handleTabsValueUpdate = (value: number) => {
-    moduleStore.moduleConfig.TextGroupSpam.textGroupTabsValue = value
+    moduleStore.moduleConfig.Favorites.favoritesTabsValue = value
 }
 const closeDisable = computed(() => {
-    return moduleStore.moduleConfig.TextGroupSpam.textGroupTabPanels.length > 1
+    return moduleStore.moduleConfig.Favorites.favoritesTabPanels.length > 1
 })
 const handleTabsAdd = () => {
-    if (moduleStore.moduleConfig.TextGroupSpam.enable) {
+    if (moduleStore.moduleConfig.Favorites.enable) {
         message.error('停车后才能添加')
     } else {
         const newKey =
             Math.max(
-                ...moduleStore.moduleConfig.TextGroupSpam.textGroupTabPanels.map(
-                    (panels) => panels.key
-                )
+                ...moduleStore.moduleConfig.Favorites.favoritesTabPanels.map((panels) => panels.key)
             ) + 1
         const newName =
             Math.max(
-                ...moduleStore.moduleConfig.TextGroupSpam.textGroupTabPanels.map(
+                ...moduleStore.moduleConfig.Favorites.favoritesTabPanels.map(
                     (panels) => panels.name
                 )
             ) + 1
-        moduleStore.moduleConfig.TextGroupSpam.textGroupTabPanels.push({
+        moduleStore.moduleConfig.Favorites.favoritesTabPanels.push({
             key: newKey,
             name: newName,
             tab: '',
             msg: ''
         })
-        moduleStore.moduleConfig.TextGroupSpam.textGroupTabsValue = newName
+        moduleStore.moduleConfig.Favorites.favoritesTabsValue = newName
     }
 }
 const handleTabsClose = (name: number) => {
-    if (moduleStore.moduleConfig.TextGroupSpam.enable) {
+    if (moduleStore.moduleConfig.Favorites.enable) {
         message.error('停车后才能删除')
     } else {
         dialog.warning({
@@ -76,15 +74,15 @@ const handleTabsClose = (name: number) => {
             positiveText: '确定',
             negativeText: '再想想',
             onPositiveClick: () => {
-                _.remove(moduleStore.moduleConfig.TextGroupSpam.textGroupTabPanels, { name })
-                moduleStore.moduleConfig.TextGroupSpam.textGroupTabsValue = name - 1
+                _.remove(moduleStore.moduleConfig.Favorites.favoritesTabPanels, { name })
+                moduleStore.moduleConfig.Favorites.favoritesTabsValue = name - 1
             }
         })
     }
 }
 const handleStartSpamer = () => {
     const panelsWithEmptyMsg = _.filter(
-        moduleStore.moduleConfig.TextGroupSpam.textGroupTabPanels,
+        moduleStore.moduleConfig.Favorites.favoritesTabPanels,
         (panels) => _.isEmpty(panels.msg)
     )
 
@@ -93,23 +91,23 @@ const handleStartSpamer = () => {
             message.error(`${panels.tab}还没填内容呢`)
         })
     } else {
-        if (moduleStore.moduleConfig.TextGroupSpam.timeinterval === null) {
+        if (moduleStore.moduleConfig.Favorites.timeinterval === null) {
             message.error('没参数你车什么?')
         } else {
             uiStore.uiConfig.isShowPanel = false
-            moduleStore.moduleConfig.TextGroupSpam.enable = true
-            moduleStore.emitter.emit('TextGroupSpam', {
-                module: 'TextGroupSpam'
+            moduleStore.moduleConfig.Favorites.enable = true
+            moduleStore.emitter.emit('Favorites', {
+                module: 'Favorites'
             })
         }
     }
 }
 const handleStopSpamer = () => {
-    tgStop.stop()
+    favStop.stop('favorites')
 }
 const handleSendToText = () => {
-    const currentTabValue = moduleStore.moduleConfig.TextGroupSpam.textGroupTabsValue
-    const currentPanel = moduleStore.moduleConfig.TextGroupSpam.textGroupTabPanels.find(
+    const currentTabValue = moduleStore.moduleConfig.Favorites.favoritesTabsValue
+    const currentPanel = moduleStore.moduleConfig.Favorites.favoritesTabPanels.find(
         (panel) => panel.name === currentTabValue
     )
     if (currentPanel) {
@@ -126,9 +124,9 @@ const handleSendToText = () => {
 </script>
 
 <template>
-    <n-form :rules="rules" :disabled="moduleStore.moduleConfig.TextGroupSpam.enable">
+    <n-form :rules="rules" :disabled="moduleStore.moduleConfig.Favorites.enable">
         <n-page-header
-            subtitle="文字池独轮车：循环发送所有弹幕组内容。当然，也可以当成一个收藏夹😀"
+            subtitle="收藏夹：这是一个收藏夹，当然你也可以车收藏夹😊"
             style="margin-bottom: 10px"
         />
         <n-form-item :show-label="false">
@@ -139,8 +137,8 @@ const handleSendToText = () => {
                             <n-input-number
                                 clearable
                                 :show-button="false"
-                                v-model:value="moduleStore.moduleConfig.TextGroupSpam.timeinterval"
-                                placeholder="默认3，单位为秒"
+                                v-model:value="moduleStore.moduleConfig.Favorites.timeinterval"
+                                placeholder="默认5，单位为秒"
                                 min="1"
                                 :precision="0"
                             >
@@ -148,7 +146,7 @@ const handleSendToText = () => {
                             </n-input-number>
                         </template>
                         <span
-                            >弹幕发送时间间隔，默认为3秒，也是b站最快的发弹幕频率，当然这里可以设置小于该值</span
+                            >弹幕发送时间间隔，默认为5秒，也是b站最快的发弹幕频率，当然这里可以设置小于该值</span
                         >
                     </n-popover>
                 </n-form-item>
@@ -157,7 +155,7 @@ const handleSendToText = () => {
         <n-form-item :show-feedback="false" :show-label="false">
             <n-tabs
                 type="card"
-                v-model:value="moduleStore.moduleConfig.TextGroupSpam.textGroupTabsValue"
+                v-model:value="moduleStore.moduleConfig.Favorites.favoritesTabsValue"
                 @update:value="handleTabsValueUpdate"
                 addable
                 :closable="closeDisable"
@@ -165,7 +163,7 @@ const handleSendToText = () => {
                 @close="handleTabsClose"
             >
                 <n-tab-pane
-                    v-for="panels in moduleStore.moduleConfig.TextGroupSpam.textGroupTabPanels"
+                    v-for="panels in moduleStore.moduleConfig.Favorites.favoritesTabPanels"
                     :key="panels.key"
                     :name="panels.name"
                     :tab="panels.tab"
@@ -192,7 +190,7 @@ const handleSendToText = () => {
                             clearable
                             show-count
                             type="textarea"
-                            placeholder="默认每次弹幕发送字数为20，超出20将自动分割到下一条弹幕"
+                            placeholder="默认每次弹幕发送字数为你文字独轮车设置的间隔，超出相应值将自动分割到下一条弹幕"
                         />
                     </n-form-item>
                 </n-tab-pane>
@@ -201,7 +199,7 @@ const handleSendToText = () => {
         <n-flex
             justify="end"
             style="margin-top: 10px"
-            v-if="!moduleStore.moduleConfig.TextGroupSpam.enable"
+            v-if="!moduleStore.moduleConfig.Favorites.enable"
         >
             <n-button round type="info" @click="handleSendToText">发送到文字独轮车</n-button>
             <n-button round @click="uiStore.uiConfig.isShowPanel = false">取消</n-button>
@@ -210,7 +208,7 @@ const handleSendToText = () => {
         <n-flex
             justify="end"
             style="margin-top: 10px"
-            v-if="moduleStore.moduleConfig.TextGroupSpam.enable"
+            v-if="moduleStore.moduleConfig.Favorites.enable"
         >
             <n-button round @click="uiStore.uiConfig.isShowPanel = false">取消</n-button>
             <n-button round type="error" @click="handleStopSpamer">停车</n-button>
