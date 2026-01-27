@@ -8,11 +8,14 @@ import {
     NPopover,
     NFlex,
     NPageHeader,
-    useMessage
+    useMessage,
+    NIcon,
+    NAvatar
 } from 'naive-ui'
 import { useUIStore } from '@/stores/useUIStore'
 import { useModuleStore } from '@/stores/useModuleStore'
 import { useBiliStore } from '@/stores/useBiliStore'
+import EmotionIcon from '@/assets/EmotionIcon.svg?component'
 import stop from '@/modules/Spamer/textSpamer'
 
 const uiStore = useUIStore()
@@ -152,6 +155,27 @@ const rules = {
                 v-model:value="moduleStore.moduleConfig.TextSpam.msg"
                 placeholder="车了可能会被禁，但不车就等于一直被禁"
             />
+<n-popover trigger="click" placement="left" style="width: 500px;">
+    <template #trigger>
+    <n-button text style="padding-left: 4px;">
+        <n-icon :size="24">
+            <EmotionIcon />
+        </n-icon>
+    </n-button>
+    </template>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(32px, 1fr)); gap: 8px; padding: 8px;">
+        <div v-for="data in biliStore.emotionData.find((data) => data.pkg_id === 100)?.emoticons" :key="data.emoticon_id" :disabled="data.perm === 0">
+            <n-avatar
+                        :color="uiStore.uiConfig.theme === 'dark' ? '#48484E' : 'white'"
+                        :size="24"
+                        :src="data.url"
+                        object-fit="contain"
+                        style="cursor: pointer;"
+                        @click="moduleStore.moduleConfig.TextSpam.msg += data.emoji"
+                    />
+        </div>
+    </div>
+</n-popover>
         </n-form-item>
         <n-flex
             justify="end"
