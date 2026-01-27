@@ -83,6 +83,8 @@
 - [lodash](https://lodash.com)
 - [mitt](https://github.com/developit/mitt)
 - [bilibili API collect](https://github.com/SocialSisterYi/bilibili-API-collect)
+- [twemoji](https://github.com/twitter/twemoji)
+- [xicons](https://github.com/07akioni/xicons)
 
 😘感谢这些组件为本项目极大地提高了开发效率
 
