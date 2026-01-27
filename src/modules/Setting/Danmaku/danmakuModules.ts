@@ -59,6 +59,14 @@ class danmakuModules extends BaseModule {
                 NConfigProvider,
                 {
                     theme: useUIStore().uiConfig.theme === 'dark' ? darkTheme : lightTheme,
+                    themeOverrides: {
+                        Button: {
+                            textColorHover: '#409eff',
+                            textColorFocus: '#409eff',
+                            textColorTextHover: '#409eff',
+                            textColorTextFocus: '#409eff'
+                        }
+                    },
                     style: { marginLeft: '2px', paddingTop: '4px' }
                 },
                 {
