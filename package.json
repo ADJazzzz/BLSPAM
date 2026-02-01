@@ -10,7 +10,7 @@
         "format": "prettier --write src/"
     },
     "dependencies": {
-        "axios": "^1.13.3",
+        "axios": "^1.13.4",
         "lodash": "^4.17.23",
         "mitt": "^3.0.1",
         "naive-ui": "^2.43.2",
@@ -19,7 +19,7 @@
     },
     "devDependencies": {
         "@types/lodash": "^4.17.23",
-        "@types/node": "^25.0.10",
+        "@types/node": "~25.0.10",
         "@vitejs/plugin-vue": "^6.0.3",
         "prettier": "^3.8.1",
         "terser": "^5.46.0",
