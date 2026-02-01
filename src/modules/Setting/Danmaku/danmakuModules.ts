@@ -67,7 +67,7 @@ class danmakuModules extends BaseModule {
                             textColorTextFocus: '#409eff'
                         }
                     },
-                    style: { marginLeft: '2px', paddingTop: '4px' }
+                    style: { marginLeft: '2px', paddingTop: '5px' }
                 },
                 {
                     default: () =>
@@ -78,9 +78,6 @@ class danmakuModules extends BaseModule {
                                     text: true,
                                     focusable: false,
                                     bordered: false,
-                                    style: {
-                                        marginLeft: '2px'
-                                    },
                                     onClick: (e: MouseEvent) => {
                                         e.stopPropagation()
                                         this.dmCopy(msg)
