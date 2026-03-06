@@ -11,6 +11,12 @@ interface SpamConfig {
     timeinterval: number
 }
 
+interface TextRunOptions extends SpamConfig {
+    textinterval: number
+    storytellerMode: boolean
+    sequentialMode: boolean
+}
+
 class TextSpamer extends BaseModule {
     private textConfig = this.moduleStore.moduleConfig.TextSpam
     private favoritesConfig = this.moduleStore.moduleConfig.Favorites
@@ -30,13 +36,30 @@ class TextSpamer extends BaseModule {
         return msg.match(new RegExp(`.{1,${maxLength}}`, 'g')) || []
     }
 
-    private formatTextMsgsByLine(): string[] {
-        return this.textConfig.msg
+    private clampTextInterval(textinterval: number): number {
+        const raw = Number.isFinite(textinterval) ? Math.floor(textinterval) : 1
+        const minLimited = Math.max(raw, 1)
+        const danmuLengthLimit = useBiliStore().danmuLengthLimit
+
+        if (!danmuLengthLimit || danmuLengthLimit < 1) {
+            return minLimited
+        }
+
+        return Math.min(minLimited, danmuLengthLimit)
+    }
+
+    private formatTextMsgsByLine(msg: string, textinterval: number): string[] {
+        return msg
             .split(/\r?\n/)
             .map((line) => line.trim())
             .filter((line) => line.length > 0)
-            .map((line) => line.slice(0, this.textConfig.textinterval))
+            .map((line) => line.slice(0, textinterval))
             .filter((line) => line.length > 0)
+    }
+
+    private formatTextMsgsByStory(msg: string, textinterval: number): string[] {
+        const flattened = msg.replace(/\r?\n/g, '')
+        return this.sliceMsg(flattened, textinterval).filter((line) => line.length > 0)
     }
 
     private formatFavorites(): string[] {
@@ -133,13 +156,30 @@ class TextSpamer extends BaseModule {
         this.cleanUP()
         if (!this.roomId) return
 
-        const msgs = this.formatTextMsgsByLine()
+        const runOptions: TextRunOptions = {
+            enable: this.textConfig.enable,
+            timeinterval: this.textConfig.timeinterval,
+            textinterval: this.clampTextInterval(this.textConfig.textinterval),
+            storytellerMode: this.textConfig.storytellerMode,
+            sequentialMode: this.textConfig.sequentialMode
+        }
+
+        this.textConfig.textinterval = runOptions.textinterval
+
+        const msgs = runOptions.storytellerMode
+            ? this.formatTextMsgsByStory(this.textConfig.msg, runOptions.textinterval)
+            : this.formatTextMsgsByLine(this.textConfig.msg, runOptions.textinterval)
+
         if (msgs.length === 0) return
 
-        const timeinterval = this.formatTime(this.textConfig.timeinterval)
+        const timeinterval = this.formatTime(runOptions.timeinterval)
         const timelimit = this.formatTime(this.textConfig.timelimit)
 
-        this.createRandomSender(msgs, this.roomId, timeinterval, this.textConfig)
+        if (runOptions.sequentialMode) {
+            this.createCycleSender(msgs, this.roomId, timeinterval, this.textConfig)
+        } else {
+            this.createRandomSender(msgs, this.roomId, timeinterval, this.textConfig)
+        }
 
         if (timelimit > 0) {
             this.timeLimitId = setTimeout(() => {

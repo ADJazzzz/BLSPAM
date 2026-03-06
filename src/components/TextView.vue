@@ -48,6 +48,16 @@ const handleStopSpamer = () => {
     tStop.stop('text')
 }
 
+const toggleStorytellerMode = () => {
+    moduleStore.moduleConfig.TextSpam.storytellerMode =
+        !moduleStore.moduleConfig.TextSpam.storytellerMode
+}
+
+const toggleSequentialMode = () => {
+    moduleStore.moduleConfig.TextSpam.sequentialMode =
+        !moduleStore.moduleConfig.TextSpam.sequentialMode
+}
+
 const rules = {
     timeinterval: {
         required: true,
@@ -146,6 +156,49 @@ const rules = {
                 </n-form-item>
             </n-flex>
         </n-form-item>
+
+        <n-form-item :show-label="false">
+            <n-flex align="center" style="gap: 8px; width: 100%">
+                <button
+                    type="button"
+                    :disabled="moduleStore.moduleConfig.TextSpam.enable"
+                    @click="toggleStorytellerMode"
+                    :style="{
+                        padding: '4px 10px',
+                        borderRadius: '999px',
+                        border: '1px solid #bfbfbf',
+                        cursor: moduleStore.moduleConfig.TextSpam.enable ? 'not-allowed' : 'pointer',
+                        color: moduleStore.moduleConfig.TextSpam.storytellerMode ? '#fff' : '#333',
+                        backgroundColor: moduleStore.moduleConfig.TextSpam.storytellerMode
+                            ? '#18a058'
+                            : '#fff'
+                    }"
+                >
+                    说书模式 {{ moduleStore.moduleConfig.TextSpam.storytellerMode ? '开' : '关' }}
+                </button>
+                <button
+                    type="button"
+                    :disabled="moduleStore.moduleConfig.TextSpam.enable"
+                    @click="toggleSequentialMode"
+                    :style="{
+                        padding: '4px 10px',
+                        borderRadius: '999px',
+                        border: '1px solid #bfbfbf',
+                        cursor: moduleStore.moduleConfig.TextSpam.enable ? 'not-allowed' : 'pointer',
+                        color: moduleStore.moduleConfig.TextSpam.sequentialMode ? '#fff' : '#333',
+                        backgroundColor: moduleStore.moduleConfig.TextSpam.sequentialMode
+                            ? '#18a058'
+                            : '#fff'
+                    }"
+                >
+                    按顺序发送 {{ moduleStore.moduleConfig.TextSpam.sequentialMode ? '开' : '关' }}
+                </button>
+                <span style="font-size: 12px; color: #909399"
+                    >提示：运行中修改开关不会立即生效，下次点击“开车”生效</span
+                >
+            </n-flex>
+        </n-form-item>
+
         <n-form-item label="发送内容" path="msg">
             <n-input
                 round
@@ -207,5 +260,3 @@ const rules = {
         </n-flex>
     </n-form>
 </template>
-
-

@@ -5,6 +5,8 @@ interface modulesConfig {
         timeinterval: number
         textinterval: number
         timelimit: number
+        storytellerMode: boolean
+        sequentialMode: boolean
     }
 
     EmotionSpam: {

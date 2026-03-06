@@ -18,7 +18,9 @@ export default {
             msg: '车',
             timeinterval: 5,
             textinterval: 20,
-            timelimit: 0
+            timelimit: 0,
+            storytellerMode: false,
+            sequentialMode: false
         },
         EmotionSpam: {
             enable: false,
