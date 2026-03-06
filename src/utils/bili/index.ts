@@ -104,6 +104,12 @@ export const BILIAPI: BiliAPIMethods = {
         )
         return res.data
     },
+    getCurrentUserDanmuLengthLimit: async (room_id) => {
+        const res = await axios.get<BiliAPIResponse.GetInfoByUser.Response>(
+            `https://api.live.bilibili.com/xlive/web-room/v1/index/getInfoByUser?room_id=${room_id}`
+        )
+        return res.data.data.property.danmu.length
+    },
     nav: async () => {
         const res = await axios.get<BiliAPIResponse.Nav.Response>(
             'https://api.bilibili.com/x/web-interface/nav'
@@ -111,3 +117,7 @@ export const BILIAPI: BiliAPIMethods = {
         return res.data
     }
 }
+
+
+
+

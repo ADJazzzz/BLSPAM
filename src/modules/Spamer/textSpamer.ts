@@ -30,6 +30,15 @@ class TextSpamer extends BaseModule {
         return msg.match(new RegExp(`.{1,${maxLength}}`, 'g')) || []
     }
 
+    private formatTextMsgsByLine(): string[] {
+        return this.textConfig.msg
+            .split(/\r?\n/)
+            .map((line) => line.trim())
+            .filter((line) => line.length > 0)
+            .map((line) => line.slice(0, this.textConfig.textinterval))
+            .filter((line) => line.length > 0)
+    }
+
     private formatFavorites(): string[] {
         return _.flatMap(this.favoritesConfig.favoritesTabPanels, (item) => {
             if (!item.msg) return []
@@ -100,16 +109,37 @@ class TextSpamer extends BaseModule {
         this.intervalId = setInterval(sendNext, timeinterval)
     }
 
+    private createRandomSender(
+        msgs: string[],
+        roomid: number,
+        timeinterval: number,
+        config: SpamConfig
+    ): void {
+        const sendNext = async () => {
+            if (!config.enable) {
+                this.cleanUP()
+                return
+            }
+
+            const randomIndex = Math.floor(Math.random() * msgs.length)
+            await this.sendMsg(msgs[randomIndex], roomid)
+        }
+
+        sendNext()
+        this.intervalId = setInterval(sendNext, timeinterval)
+    }
+
     private async startTextSpam(): Promise<void> {
         this.cleanUP()
         if (!this.roomId) return
 
-        const formattedMsg = this.formatMsg(this.textConfig.msg)
-        const msgs = this.sliceMsg(formattedMsg, this.textConfig.textinterval)
+        const msgs = this.formatTextMsgsByLine()
+        if (msgs.length === 0) return
+
         const timeinterval = this.formatTime(this.textConfig.timeinterval)
         const timelimit = this.formatTime(this.textConfig.timelimit)
 
-        this.createCycleSender(msgs, this.roomId, timeinterval, this.textConfig)
+        this.createRandomSender(msgs, this.roomId, timeinterval, this.textConfig)
 
         if (timelimit > 0) {
             this.timeLimitId = setTimeout(() => {

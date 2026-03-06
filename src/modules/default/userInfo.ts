@@ -1,5 +1,6 @@
 import { BILIAPI } from '@/utils/bili'
 import { useBiliStore } from '../../stores/useBiliStore'
+import { useModuleStore } from '@/stores/useModuleStore'
 import { unsafeWindow } from '$'
 import BaseModule from '../BaseModule'
 import { BiliAPIResponse } from '@/types'
@@ -78,13 +79,43 @@ class UserInfo extends BaseModule {
         }
     }
 
-    public async run(): Promise<void> {
-        useBiliStore().BilibiliLive = await this.getWindowBiliLive()
-        if (useBiliStore().BilibiliLive) {
-            useBiliStore().emotionData = await this.getEmotionData()
+    private syncTextIntervalWithDanmuLimit(limit: number | null): void {
+        if (!limit || limit < 1) {
+            return
         }
-        useBiliStore().loginInfo = await this.getLoginInfo()
-        useBiliStore().infoByuser = await this.getInfoByUser()
+
+        const moduleStore = useModuleStore()
+        const currentInterval = moduleStore.moduleConfig.TextSpam.textinterval
+
+        if (currentInterval === 20 || currentInterval < 1 || currentInterval > limit) {
+            moduleStore.moduleConfig.TextSpam.textinterval = limit
+        }
+    }
+
+    public async run(): Promise<void> {
+        const biliStore = useBiliStore()
+
+        biliStore.BilibiliLive = await this.getWindowBiliLive()
+        if (biliStore.BilibiliLive) {
+            biliStore.emotionData = await this.getEmotionData()
+        }
+
+        biliStore.loginInfo = await this.getLoginInfo()
+        biliStore.infoByuser = await this.getInfoByUser()
+
+        const roomID = biliStore.BilibiliLive?.ROOMID
+        let danmuLengthLimit = biliStore.infoByuser?.property.danmu.length ?? null
+
+        if (roomID) {
+            try {
+                danmuLengthLimit = await BILIAPI.getCurrentUserDanmuLengthLimit(roomID)
+            } catch (error) {
+                this.logger.warn('获取当前用户弹幕字数上限失败，回退到 getInfoByUser', error)
+            }
+        }
+
+        biliStore.danmuLengthLimit = danmuLengthLimit
+        this.syncTextIntervalWithDanmuLimit(danmuLengthLimit)
     }
 }
 

@@ -41,7 +41,9 @@ interface BiliAPIMethods {
         room_id: number
     ) => Promise<BiliAPIResponse.GetEmoticons.Response>
     getInfoByUser: (room_id: number) => Promise<BiliAPIResponse.GetInfoByUser.Response>
+    getCurrentUserDanmuLengthLimit: (room_id: number) => Promise<number>
     nav: () => Promise<BiliAPIResponse.Nav.Response>
 }
 
 export { BiliAPIMethods }
+
