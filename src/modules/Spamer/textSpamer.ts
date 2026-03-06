@@ -65,12 +65,17 @@ class TextSpamer extends BaseModule {
     }
 
     private formatFavorites(options: FavoritesRunOptions): string[] {
-        return _.flatMap(this.favoritesConfig.favoritesTabPanels, (item) => {
-            if (!item.msg) return []
-            return options.storytellerMode
-                ? this.formatMsgsByStory(item.msg, options.textinterval)
-                : this.formatMsgsByLine(item.msg, options.textinterval)
-        })
+        const currentPanel = this.favoritesConfig.favoritesTabPanels.find(
+            (panel) => panel.name === this.favoritesConfig.favoritesTabsValue
+        )
+
+        if (!currentPanel?.msg) {
+            return []
+        }
+
+        return options.storytellerMode
+            ? this.formatMsgsByStory(currentPanel.msg, options.textinterval)
+            : this.formatMsgsByLine(currentPanel.msg, options.textinterval)
     }
 
     private formatTime(seconds: number): number {
@@ -235,3 +240,4 @@ class TextSpamer extends BaseModule {
 }
 
 export default TextSpamer
+

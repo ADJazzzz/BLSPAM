@@ -81,25 +81,28 @@ const handleTabsClose = (name: number) => {
     }
 }
 const handleStartSpamer = () => {
-    const panelsWithEmptyMsg = _.filter(
-        moduleStore.moduleConfig.Favorites.favoritesTabPanels,
-        (panels) => _.isEmpty(panels.msg)
+    const currentPanel = moduleStore.moduleConfig.Favorites.favoritesTabPanels.find(
+        (panel) => panel.name === moduleStore.moduleConfig.Favorites.favoritesTabsValue
     )
 
-    if (!_.isEmpty(panelsWithEmptyMsg)) {
-        _.forEach(panelsWithEmptyMsg, (panels) => {
-            message.error(`${panels.tab}还没填内容呢`)
-        })
+    if (!currentPanel) {
+        message.error('未找到当前标签页')
+        return
+    }
+
+    if (_.isEmpty(currentPanel.msg)) {
+        message.error(`${currentPanel.tab || '当前标签页'}还没填内容呢`)
+        return
+    }
+
+    if (moduleStore.moduleConfig.Favorites.timeinterval === null) {
+        message.error('没参数你车什么?')
     } else {
-        if (moduleStore.moduleConfig.Favorites.timeinterval === null) {
-            message.error('没参数你车什么?')
-        } else {
-            uiStore.uiConfig.isShowPanel = false
-            moduleStore.moduleConfig.Favorites.enable = true
-            moduleStore.emitter.emit('Favorites', {
-                module: 'Favorites'
-            })
-        }
+        uiStore.uiConfig.isShowPanel = false
+        moduleStore.moduleConfig.Favorites.enable = true
+        moduleStore.emitter.emit('Favorites', {
+            module: 'Favorites'
+        })
     }
 }
 const handleStopSpamer = () => {
@@ -268,3 +271,4 @@ const toggleSequentialMode = () => {
         </n-flex>
     </n-form>
 </template>
+
