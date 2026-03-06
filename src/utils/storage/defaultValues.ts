@@ -33,6 +33,8 @@ export default {
             enable: false,
             timeinterval: 5,
             favoritesTabsValue: 1,
+            storytellerMode: false,
+            sequentialMode: false,
             favoritesTabPanels: [
                 {
                     key: 1,

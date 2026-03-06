@@ -22,6 +22,8 @@ interface modulesConfig {
         timeinterval: number
         favoritesTabsValue: number
         favoritesTabPanels: favoritesTabPanels[]
+        storytellerMode: boolean
+        sequentialMode: boolean
     }
 
     setting: {

@@ -121,6 +121,16 @@ const handleSendToText = () => {
         message.error('未找到当前标签页')
     }
 }
+
+const toggleStorytellerMode = () => {
+    moduleStore.moduleConfig.Favorites.storytellerMode =
+        !moduleStore.moduleConfig.Favorites.storytellerMode
+}
+
+const toggleSequentialMode = () => {
+    moduleStore.moduleConfig.Favorites.sequentialMode =
+        !moduleStore.moduleConfig.Favorites.sequentialMode
+}
 </script>
 
 <template>
@@ -152,6 +162,49 @@ const handleSendToText = () => {
                 </n-form-item>
             </n-flex>
         </n-form-item>
+
+        <n-form-item :show-label="false">
+            <n-flex align="center" style="gap: 8px; width: 100%">
+                <button
+                    type="button"
+                    :disabled="moduleStore.moduleConfig.Favorites.enable"
+                    @click="toggleStorytellerMode"
+                    :style="{
+                        padding: '4px 10px',
+                        borderRadius: '999px',
+                        border: '1px solid #bfbfbf',
+                        cursor: moduleStore.moduleConfig.Favorites.enable ? 'not-allowed' : 'pointer',
+                        color: moduleStore.moduleConfig.Favorites.storytellerMode ? '#fff' : '#333',
+                        backgroundColor: moduleStore.moduleConfig.Favorites.storytellerMode
+                            ? '#18a058'
+                            : '#fff'
+                    }"
+                >
+                    说书模式 {{ moduleStore.moduleConfig.Favorites.storytellerMode ? '开' : '关' }}
+                </button>
+                <button
+                    type="button"
+                    :disabled="moduleStore.moduleConfig.Favorites.enable"
+                    @click="toggleSequentialMode"
+                    :style="{
+                        padding: '4px 10px',
+                        borderRadius: '999px',
+                        border: '1px solid #bfbfbf',
+                        cursor: moduleStore.moduleConfig.Favorites.enable ? 'not-allowed' : 'pointer',
+                        color: moduleStore.moduleConfig.Favorites.sequentialMode ? '#fff' : '#333',
+                        backgroundColor: moduleStore.moduleConfig.Favorites.sequentialMode
+                            ? '#18a058'
+                            : '#fff'
+                    }"
+                >
+                    按顺序发送 {{ moduleStore.moduleConfig.Favorites.sequentialMode ? '开' : '关' }}
+                </button>
+                <span style="font-size: 12px; color: #909399"
+                    >提示：运行中修改开关不会立即生效，下次点击“开车”生效</span
+                >
+            </n-flex>
+        </n-form-item>
+
         <n-form-item :show-feedback="false" :show-label="false">
             <n-tabs
                 type="card"
