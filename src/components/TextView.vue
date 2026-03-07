@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed, ref, nextTick, onMounted, onUpdated, onBeforeUnmount } from 'vue'
 import {
     NButton,
     NForm,
@@ -12,6 +13,7 @@ import {
     NIcon,
     NAvatar
 } from 'naive-ui'
+import type { InputInst } from 'naive-ui'
 import { useUIStore } from '@/stores/useUIStore'
 import { useModuleStore } from '@/stores/useModuleStore'
 import { useBiliStore } from '@/stores/useBiliStore'
@@ -23,6 +25,151 @@ const moduleStore = useModuleStore()
 const biliStore = useBiliStore()
 const message = useMessage()
 const tStop = new stop('StopTextSpamer')
+
+const textInputRef = ref<InputInst | null>(null)
+const textPreviewInputRef = ref<InputInst | null>(null)
+
+const textTextareaEl = ref<HTMLTextAreaElement | null>(null)
+const textPreviewTextareaEl = ref<HTMLTextAreaElement | null>(null)
+
+const textOverlayStyle = ref<Record<string, string>>({})
+const textOverlayViewportStyle = ref<Record<string, string>>({})
+const textOverlayTransform = ref('translateY(0px)')
+
+let textScrollListener: ((event: Event) => void) | null = null
+let textPreviewScrollListener: ((event: Event) => void) | null = null
+let textSyncing = false
+
+const textinterval = computed(() => Math.max(1, Number(moduleStore.moduleConfig.TextSpam.textinterval || 1)))
+
+const textPreviewLines = computed(() => {
+    return moduleStore.moduleConfig.TextSpam.msg.split(/\r?\n/).map((line) => ({
+        keep: line.slice(0, textinterval.value),
+        overflow: line.slice(textinterval.value)
+    }))
+})
+
+const setTextOverlayTransform = (scrollTop: number) => {
+    textOverlayTransform.value = `translateY(${-scrollTop}px)`
+}
+
+const updateTextOverlayStyle = () => {
+    const textarea = textInputRef.value?.textareaElRef
+    const wrapper = textInputRef.value?.wrapperElRef
+    const previewTextarea = textPreviewInputRef.value?.textareaElRef
+    const previewWrapper = textPreviewInputRef.value?.wrapperElRef
+
+    if (!textarea || !wrapper || !previewTextarea || !previewWrapper) return
+
+    const style = getComputedStyle(textarea)
+    const suffix = wrapper.querySelector('.n-input__suffix') as HTMLElement | null
+    const suffixWidth = suffix?.offsetWidth ?? 0
+    const suffixHeight = suffix?.offsetHeight ?? 0
+
+    const previewHost = previewWrapper.closest('.preview-overlay-wrap') as HTMLElement | null
+    if (previewHost) {
+        const hostRect = previewHost.getBoundingClientRect()
+        const textareaRect = previewTextarea.getBoundingClientRect()
+        textOverlayViewportStyle.value = {
+            top: `${textareaRect.top - hostRect.top}px`,
+            left: `${textareaRect.left - hostRect.left}px`,
+            width: `${textareaRect.width}px`,
+            height: `${textareaRect.height}px`
+        }
+    }
+
+    textOverlayStyle.value = {
+        fontSize: style.fontSize,
+        lineHeight: style.lineHeight,
+        fontFamily: style.fontFamily,
+        letterSpacing: style.letterSpacing,
+        paddingTop: style.paddingTop,
+        paddingRight: `calc(${style.paddingRight} + ${suffixWidth}px)`,
+        paddingBottom: `calc(${style.paddingBottom} + ${suffixHeight}px)`,
+        paddingLeft: style.paddingLeft,
+        boxSizing: 'border-box'
+    }
+}
+
+const syncMainToPreview = (event: Event) => {
+    const target = event.target as HTMLTextAreaElement | null
+    if (!target || !textPreviewTextareaEl.value || textSyncing) return
+
+    textSyncing = true
+    textPreviewTextareaEl.value.scrollTop = target.scrollTop
+    setTextOverlayTransform(target.scrollTop)
+    requestAnimationFrame(() => {
+        textSyncing = false
+    })
+}
+
+const syncPreviewToMain = (event: Event) => {
+    const target = event.target as HTMLTextAreaElement | null
+    if (!target || !textTextareaEl.value || textSyncing) return
+
+    textSyncing = true
+    textTextareaEl.value.scrollTop = target.scrollTop
+    setTextOverlayTransform(target.scrollTop)
+    requestAnimationFrame(() => {
+        textSyncing = false
+    })
+}
+
+const bindTextScroll = () => {
+    const main = textInputRef.value?.textareaElRef ?? null
+    const preview = textPreviewInputRef.value?.textareaElRef ?? null
+
+    if (main !== textTextareaEl.value) {
+        if (textTextareaEl.value && textScrollListener) {
+            textTextareaEl.value.removeEventListener('scroll', textScrollListener)
+        }
+        textTextareaEl.value = main
+        if (main) {
+            textScrollListener = (event: Event) => syncMainToPreview(event)
+            main.addEventListener('scroll', textScrollListener, { passive: true })
+        } else {
+            textScrollListener = null
+        }
+    }
+
+    if (preview !== textPreviewTextareaEl.value) {
+        if (textPreviewTextareaEl.value && textPreviewScrollListener) {
+            textPreviewTextareaEl.value.removeEventListener('scroll', textPreviewScrollListener)
+        }
+        textPreviewTextareaEl.value = preview
+        if (preview) {
+            preview.readOnly = true
+            textPreviewScrollListener = (event: Event) => syncPreviewToMain(event)
+            preview.addEventListener('scroll', textPreviewScrollListener, { passive: true })
+        } else {
+            textPreviewScrollListener = null
+        }
+    }
+
+    updateTextOverlayStyle()
+    const currentScrollTop = main?.scrollTop ?? 0
+    if (preview) {
+        preview.scrollTop = currentScrollTop
+    }
+    setTextOverlayTransform(currentScrollTop)
+}
+
+onMounted(() => {
+    nextTick(() => bindTextScroll())
+})
+
+onUpdated(() => {
+    bindTextScroll()
+})
+
+onBeforeUnmount(() => {
+    if (textTextareaEl.value && textScrollListener) {
+        textTextareaEl.value.removeEventListener('scroll', textScrollListener)
+    }
+    if (textPreviewTextareaEl.value && textPreviewScrollListener) {
+        textPreviewTextareaEl.value.removeEventListener('scroll', textPreviewScrollListener)
+    }
+})
 
 const handleStartSpamer = () => {
     if (
@@ -200,14 +347,50 @@ const rules = {
         </n-form-item>
 
         <n-form-item label="发送内容" path="msg">
-            <n-input
-                round
-                clearable
-                type="textarea"
-                show-count
-                v-model:value="moduleStore.moduleConfig.TextSpam.msg"
-                placeholder="车了可能会被禁，但不车就等于一直被禁"
-            />
+            <div style="width: 100%">
+                <n-input
+                    ref="textInputRef"
+                    round
+                    clearable
+                    type="textarea"
+                    show-count
+                    v-model:value="moduleStore.moduleConfig.TextSpam.msg"
+                    placeholder="车了可能会被禁，但不车就等于一直被禁"
+                />
+
+                <div v-if="!moduleStore.moduleConfig.TextSpam.storytellerMode" class="preview-wrap">
+                    <div class="preview-title">超长灰显预览（超过数量间隔的部分会被丢弃）</div>
+                    <div class="preview-overlay-wrap">
+                        <n-input
+                            ref="textPreviewInputRef"
+                            round
+                            type="textarea"
+                            readonly
+                            :show-count="true"
+                            :value="moduleStore.moduleConfig.TextSpam.msg"
+                            class="preview-base"
+                        />
+                        <div
+                            class="preview-overlay-viewport"
+                            :style="textOverlayViewportStyle"
+                            aria-hidden="true"
+                        >
+                            <div
+                                class="preview-overlay"
+                                :style="{
+                                    ...textOverlayStyle,
+                                    transform: textOverlayTransform
+                                }"
+                            >
+                                <div class="preview-line" v-for="(line, idx) in textPreviewLines" :key="idx">
+                                    <span>{{ line.keep }}</span><span class="overflow">{{ line.overflow }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <n-popover trigger="click" placement="left" style="width: 500px">
                 <template #trigger>
                     <n-button text style="padding-left: 4px">
@@ -260,3 +443,56 @@ const rules = {
         </n-flex>
     </n-form>
 </template>
+
+<style scoped>
+.preview-wrap {
+    margin-top: 8px;
+}
+
+.preview-title {
+    margin-bottom: 4px;
+    font-size: 12px;
+    color: #909399;
+}
+
+.preview-overlay-wrap {
+    position: relative;
+    width: 100%;
+}
+
+.preview-base {
+    width: 100%;
+}
+
+.preview-base :deep(textarea) {
+    color: transparent;
+    caret-color: transparent;
+    overflow-x: hidden;
+}
+
+.preview-base :deep(.n-input__suffix) {
+    visibility: hidden;
+}
+
+.preview-overlay-viewport {
+    position: absolute;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.preview-overlay {
+    position: relative;
+    width: 100%;
+    min-height: 100%;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.preview-line {
+    min-height: 1.6em;
+}
+
+.overflow {
+    color: #b5b5b5;
+}
+</style>
