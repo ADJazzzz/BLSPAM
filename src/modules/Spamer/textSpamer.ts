@@ -21,6 +21,7 @@ interface FavoritesRunOptions extends SpamConfig {
     textinterval: number
     storytellerMode: boolean
     sequentialMode: boolean
+    sendingTabName: number | null
 }
 
 class TextSpamer extends BaseModule {
@@ -65,8 +66,9 @@ class TextSpamer extends BaseModule {
     }
 
     private formatFavorites(options: FavoritesRunOptions): string[] {
+        const targetTabName = options.sendingTabName ?? this.favoritesConfig.favoritesTabsValue
         const currentPanel = this.favoritesConfig.favoritesTabPanels.find(
-            (panel) => panel.name === this.favoritesConfig.favoritesTabsValue
+            (panel) => panel.name === targetTabName
         )
 
         if (!currentPanel?.msg) {
@@ -205,7 +207,8 @@ class TextSpamer extends BaseModule {
             timeinterval: this.favoritesConfig.timeinterval,
             textinterval: this.clampTextInterval(this.textConfig.textinterval),
             storytellerMode: this.favoritesConfig.storytellerMode,
-            sequentialMode: this.favoritesConfig.sequentialMode
+            sequentialMode: this.favoritesConfig.sequentialMode,
+            sendingTabName: this.favoritesConfig.sendingTabName
         }
 
         const msgs = this.formatFavorites(runOptions)
@@ -225,6 +228,9 @@ class TextSpamer extends BaseModule {
         const log = area === 'text' ? '文字独轮车已停止' : '收藏夹独轮车已停止'
 
         config.enable = false
+        if (area === 'favorites') {
+            this.favoritesConfig.sendingTabName = null
+        }
         this.cleanUP()
         this.logger.log(log)
     }
@@ -240,4 +246,3 @@ class TextSpamer extends BaseModule {
 }
 
 export default TextSpamer
-

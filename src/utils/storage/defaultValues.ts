@@ -35,6 +35,7 @@ export default {
             favoritesTabsValue: 1,
             storytellerMode: false,
             sequentialMode: false,
+            sendingTabName: null,
             favoritesTabPanels: [
                 {
                     key: 1,

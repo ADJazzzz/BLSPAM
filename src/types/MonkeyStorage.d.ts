@@ -72,3 +72,4 @@ type moduleEmitter = {
 }
 
 export { modulesConfig, uiConfig, menuIndex, moduleEmitter }
+

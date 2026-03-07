@@ -80,6 +80,14 @@ const handleTabsClose = (name: number) => {
         })
     }
 }
+
+const isSendingPanel = (panelName: number) => {
+    return (
+        moduleStore.moduleConfig.Favorites.enable &&
+        moduleStore.moduleConfig.Favorites.sendingTabName === panelName
+    )
+}
+
 const handleStartSpamer = () => {
     const currentPanel = moduleStore.moduleConfig.Favorites.favoritesTabPanels.find(
         (panel) => panel.name === moduleStore.moduleConfig.Favorites.favoritesTabsValue
@@ -99,6 +107,7 @@ const handleStartSpamer = () => {
         message.error('没参数你车什么?')
     } else {
         uiStore.uiConfig.isShowPanel = false
+        moduleStore.moduleConfig.Favorites.sendingTabName = currentPanel.name
         moduleStore.moduleConfig.Favorites.enable = true
         moduleStore.emitter.emit('Favorites', {
             module: 'Favorites'
@@ -137,7 +146,7 @@ const toggleSequentialMode = () => {
 </script>
 
 <template>
-    <n-form :rules="rules" :disabled="moduleStore.moduleConfig.Favorites.enable">
+    <n-form :rules="rules">
         <n-page-header
             subtitle="收藏夹：这是一个收藏夹，当然你也可以车收藏夹😊"
             style="margin-bottom: 10px"
@@ -150,6 +159,7 @@ const toggleSequentialMode = () => {
                             <n-input-number
                                 clearable
                                 :show-button="false"
+                                :disabled="moduleStore.moduleConfig.Favorites.enable"
                                 v-model:value="moduleStore.moduleConfig.Favorites.timeinterval"
                                 placeholder="默认5，单位为秒"
                                 min="1"
@@ -231,6 +241,7 @@ const toggleSequentialMode = () => {
                     >
                         <n-input
                             v-model:value="panels.tab"
+                            :disabled="isSendingPanel(panels.name)"
                             clearable
                             placeholder="最好写一下标题吧"
                         />
@@ -242,6 +253,7 @@ const toggleSequentialMode = () => {
                     >
                         <n-input
                             v-model:value="panels.msg"
+                            :disabled="isSendingPanel(panels.name)"
                             round
                             clearable
                             show-count
@@ -271,4 +283,3 @@ const toggleSequentialMode = () => {
         </n-flex>
     </n-form>
 </template>
-
