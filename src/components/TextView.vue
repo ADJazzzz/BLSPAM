@@ -517,7 +517,9 @@ const rules = {
 
                     <div v-if="!moduleStore.moduleConfig.TextSpam.storytellerMode" class="preview-wrap">
                         <div class="preview-title">
-                            逐行发送模式预览 - 橙色文字代表超过本行字数上限会被自动舍弃
+                            预览：逐行发送文本 - 出现
+                            <span class="preview-highlight-warning">橙色文字</span>
+                            表示该文字超出每行字数上限，会被自动舍弃。必要时请考虑换行
                         </div>
                         <div class="preview-overlay-wrap">
                             <n-input
@@ -613,6 +615,10 @@ const rules = {
     margin-bottom: 4px;
     font-size: 12px;
     color: #909399;
+}
+
+.preview-highlight-warning {
+    color: #f47a4d;
 }
 
 .preview-overlay-wrap {
