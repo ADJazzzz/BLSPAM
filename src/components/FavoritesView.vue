@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, nextTick, onMounted, onUpdated, onBeforeUnmount } from 'vue'
+import { computed, ref, nextTick, onMounted, onBeforeUnmount, watch } from 'vue'
 import {
     NForm,
     NFormItem,
@@ -30,13 +30,14 @@ const favoritesMainInputRefs = ref<Record<number, InputInst | null>>({})
 const favoritesPreviewInputRefs = ref<Record<number, InputInst | null>>({})
 const favoritesOverlayStyles = ref<Record<number, Record<string, string>>>({})
 const favoritesOverlayViewportStyles = ref<Record<number, Record<string, string>>>({})
-const favoritesOverlayTransforms = ref<Record<number, string>>({})
 
 const favoritesMainTextareas = new Map<number, HTMLTextAreaElement>()
 const favoritesPreviewTextareas = new Map<number, HTMLTextAreaElement>()
 const favoritesMainListeners = new Map<number, (event: Event) => void>()
 const favoritesPreviewListeners = new Map<number, (event: Event) => void>()
+const favoritesOverlayElements = new Map<number, HTMLDivElement>()
 const favoritesSyncing = new Set<number>()
+let favoritesRelayoutTimer: ReturnType<typeof setTimeout> | null = null
 
 const rules = {
     timeinterval: {
@@ -61,8 +62,34 @@ const getPreviewLines = (msg: string) => {
     }))
 }
 
+const getOffsetToAncestor = (el: HTMLElement, ancestor: HTMLElement) => {
+    let top = 0
+    let left = 0
+    let current: HTMLElement | null = el
+
+    while (current && current !== ancestor) {
+        top += current.offsetTop
+        left += current.offsetLeft
+        current = current.offsetParent as HTMLElement | null
+    }
+
+    if (current !== ancestor) {
+        const hostRect = ancestor.getBoundingClientRect()
+        const elRect = el.getBoundingClientRect()
+        return {
+            top: elRect.top - hostRect.top,
+            left: elRect.left - hostRect.left
+        }
+    }
+
+    return { top, left }
+}
+
 const setOverlayTransform = (panelName: number, scrollTop: number) => {
-    favoritesOverlayTransforms.value[panelName] = `translateY(${-scrollTop}px)`
+    const overlay = favoritesOverlayElements.get(panelName)
+    if (overlay) {
+        overlay.style.transform = `translateY(${-scrollTop}px)`
+    }
 }
 
 const updateOverlayStyle = (panelName: number) => {
@@ -79,15 +106,17 @@ const updateOverlayStyle = (panelName: number) => {
     const suffixHeight = suffix?.offsetHeight ?? 0
 
     const previewHost = previewWrapper.closest('.preview-overlay-wrap') as HTMLElement | null
-    if (previewHost) {
-        const hostRect = previewHost.getBoundingClientRect()
-        const textareaRect = previewTextarea.getBoundingClientRect()
-        favoritesOverlayViewportStyles.value[panelName] = {
-            top: `${textareaRect.top - hostRect.top}px`,
-            left: `${textareaRect.left - hostRect.left}px`,
-            width: `${textareaRect.width}px`,
-            height: `${textareaRect.height}px`
-        }
+    if (!previewHost) return
+    const { top, left } = getOffsetToAncestor(previewTextarea, previewHost)
+    const width = previewTextarea.offsetWidth
+    const height = previewTextarea.offsetHeight
+    if (width <= 1 || height <= 1) return
+
+    favoritesOverlayViewportStyles.value[panelName] = {
+        top: `${top}px`,
+        left: `${left}px`,
+        width: `${width}px`,
+        height: `${height}px`
     }
 
     favoritesOverlayStyles.value[panelName] = {
@@ -188,19 +217,79 @@ const setPreviewInputRef = (panelName: number, inst: InputInst | null) => {
     bindPanelScroll(panelName)
 }
 
-onMounted(() => {
+const setOverlayElement = (panelName: number, el: Element | null) => {
+    if (el instanceof HTMLDivElement) {
+        favoritesOverlayElements.set(panelName, el)
+        const mainScrollTop = favoritesMainTextareas.get(panelName)?.scrollTop ?? 0
+        setOverlayTransform(panelName, mainScrollTop)
+    } else {
+        favoritesOverlayElements.delete(panelName)
+    }
+}
+
+const bindActivePanelScroll = () => {
+    const activePanelName = moduleStore.moduleConfig.Favorites.favoritesTabsValue
+    bindPanelScroll(activePanelName)
+}
+
+const scheduleFavoritesRelayout = () => {
+    if (favoritesRelayoutTimer) {
+        clearTimeout(favoritesRelayoutTimer)
+        favoritesRelayoutTimer = null
+    }
+
     nextTick(() => {
-        moduleStore.moduleConfig.Favorites.favoritesTabPanels.forEach((panel) => {
-            bindPanelScroll(panel.name)
-        })
+        bindActivePanelScroll()
+        requestAnimationFrame(() => bindActivePanelScroll())
+        favoritesRelayoutTimer = setTimeout(() => {
+            bindActivePanelScroll()
+            favoritesRelayoutTimer = null
+        }, 360)
     })
+}
+
+onMounted(() => {
+    scheduleFavoritesRelayout()
 })
 
-onUpdated(() => {
-    moduleStore.moduleConfig.Favorites.favoritesTabPanels.forEach((panel) => {
-        bindPanelScroll(panel.name)
-    })
-})
+watch(
+    () => moduleStore.moduleConfig.Favorites.favoritesTabsValue,
+    () => {
+        scheduleFavoritesRelayout()
+    }
+)
+
+watch(
+    () => moduleStore.moduleConfig.Favorites.storytellerMode,
+    () => {
+        scheduleFavoritesRelayout()
+    }
+)
+
+watch(
+    () => moduleStore.moduleConfig.Favorites.favoritesTabPanels.length,
+    () => {
+        scheduleFavoritesRelayout()
+    }
+)
+
+watch(
+    () => uiStore.uiConfig.isShowPanel,
+    (show) => {
+        if (show && uiStore.uiConfig.activeMenuIndex === 'FavoritesView') {
+            scheduleFavoritesRelayout()
+        }
+    }
+)
+
+watch(
+    () => uiStore.uiConfig.activeMenuIndex,
+    (menu) => {
+        if (menu === 'FavoritesView' && uiStore.uiConfig.isShowPanel) {
+            scheduleFavoritesRelayout()
+        }
+    }
+)
 
 onBeforeUnmount(() => {
     favoritesMainTextareas.forEach((textarea, panelName) => {
@@ -216,6 +305,10 @@ onBeforeUnmount(() => {
             textarea.removeEventListener('scroll', listener)
         }
     })
+    if (favoritesRelayoutTimer) {
+        clearTimeout(favoritesRelayoutTimer)
+        favoritesRelayoutTimer = null
+    }
 })
 
 const handleTabsValueUpdate = (value: number) => {
@@ -451,7 +544,13 @@ const toggleSequentialMode = () => {
                                 placeholder="默认每次弹幕发送字数为你文字独轮车设置的间隔，超出相应值将自动分割到下一条弹幕"
                             />
 
-                            <div v-if="!moduleStore.moduleConfig.Favorites.storytellerMode" class="preview-wrap">
+                            <div
+                                v-if="
+                                    !moduleStore.moduleConfig.Favorites.storytellerMode &&
+                                    panels.name === moduleStore.moduleConfig.Favorites.favoritesTabsValue
+                                "
+                                class="preview-wrap"
+                            >
                                 <div class="preview-title">
                                     超长灰显预览（超过数量间隔的部分会被丢弃）
                                 </div>
@@ -471,12 +570,10 @@ const toggleSequentialMode = () => {
                                         aria-hidden="true"
                                     >
                                         <div
+                                            :ref="(el) => setOverlayElement(panels.name, el)"
                                             class="preview-overlay"
                                             :style="{
-                                                ...(favoritesOverlayStyles[panels.name] || {}),
-                                                transform:
-                                                    favoritesOverlayTransforms[panels.name] ||
-                                                    'translateY(0px)'
+                                                ...(favoritesOverlayStyles[panels.name] || {})
                                             }"
                                         >
                                             <div

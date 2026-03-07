@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, nextTick, onMounted, onUpdated, onBeforeUnmount } from 'vue'
+import { computed, ref, nextTick, onMounted, onUpdated, onBeforeUnmount, watch } from 'vue'
 import {
     NButton,
     NForm,
@@ -39,6 +39,7 @@ const textOverlayTransform = ref('translateY(0px)')
 let textScrollListener: ((event: Event) => void) | null = null
 let textPreviewScrollListener: ((event: Event) => void) | null = null
 let textSyncing = false
+let textRelayoutTimer: ReturnType<typeof setTimeout> | null = null
 
 const textinterval = computed(() => Math.max(1, Number(moduleStore.moduleConfig.TextSpam.textinterval || 1)))
 
@@ -51,6 +52,29 @@ const textPreviewLines = computed(() => {
 
 const setTextOverlayTransform = (scrollTop: number) => {
     textOverlayTransform.value = `translateY(${-scrollTop}px)`
+}
+
+const getOffsetToAncestor = (el: HTMLElement, ancestor: HTMLElement) => {
+    let top = 0
+    let left = 0
+    let current: HTMLElement | null = el
+
+    while (current && current !== ancestor) {
+        top += current.offsetTop
+        left += current.offsetLeft
+        current = current.offsetParent as HTMLElement | null
+    }
+
+    if (current !== ancestor) {
+        const hostRect = ancestor.getBoundingClientRect()
+        const elRect = el.getBoundingClientRect()
+        return {
+            top: elRect.top - hostRect.top,
+            left: elRect.left - hostRect.left
+        }
+    }
+
+    return { top, left }
 }
 
 const updateTextOverlayStyle = () => {
@@ -67,15 +91,17 @@ const updateTextOverlayStyle = () => {
     const suffixHeight = suffix?.offsetHeight ?? 0
 
     const previewHost = previewWrapper.closest('.preview-overlay-wrap') as HTMLElement | null
-    if (previewHost) {
-        const hostRect = previewHost.getBoundingClientRect()
-        const textareaRect = previewTextarea.getBoundingClientRect()
-        textOverlayViewportStyle.value = {
-            top: `${textareaRect.top - hostRect.top}px`,
-            left: `${textareaRect.left - hostRect.left}px`,
-            width: `${textareaRect.width}px`,
-            height: `${textareaRect.height}px`
-        }
+    if (!previewHost) return
+    const { top, left } = getOffsetToAncestor(previewTextarea, previewHost)
+    const width = previewTextarea.offsetWidth
+    const height = previewTextarea.offsetHeight
+    if (width <= 1 || height <= 1) return
+
+    textOverlayViewportStyle.value = {
+        top: `${top}px`,
+        left: `${left}px`,
+        width: `${width}px`,
+        height: `${height}px`
     }
 
     textOverlayStyle.value = {
@@ -154,13 +180,47 @@ const bindTextScroll = () => {
     setTextOverlayTransform(currentScrollTop)
 }
 
+const scheduleTextRelayout = () => {
+    if (textRelayoutTimer) {
+        clearTimeout(textRelayoutTimer)
+        textRelayoutTimer = null
+    }
+
+    nextTick(() => {
+        bindTextScroll()
+        requestAnimationFrame(() => bindTextScroll())
+        textRelayoutTimer = setTimeout(() => {
+            bindTextScroll()
+            textRelayoutTimer = null
+        }, 360)
+    })
+}
+
 onMounted(() => {
-    nextTick(() => bindTextScroll())
+    scheduleTextRelayout()
 })
 
 onUpdated(() => {
     bindTextScroll()
 })
+
+watch(
+    () => uiStore.uiConfig.isShowPanel,
+    (show) => {
+        if (show && uiStore.uiConfig.activeMenuIndex === 'TextView') {
+            scheduleTextRelayout()
+        }
+    }
+)
+
+watch(
+    () => uiStore.uiConfig.activeMenuIndex,
+    (menu) => {
+        if (menu === 'TextView' && uiStore.uiConfig.isShowPanel) {
+            scheduleTextRelayout()
+        }
+    }
+)
 
 onBeforeUnmount(() => {
     if (textTextareaEl.value && textScrollListener) {
@@ -168,6 +228,10 @@ onBeforeUnmount(() => {
     }
     if (textPreviewTextareaEl.value && textPreviewScrollListener) {
         textPreviewTextareaEl.value.removeEventListener('scroll', textPreviewScrollListener)
+    }
+    if (textRelayoutTimer) {
+        clearTimeout(textRelayoutTimer)
+        textRelayoutTimer = null
     }
 })
 
