@@ -510,7 +510,7 @@ const rules = {
 
                     <div v-if="!moduleStore.moduleConfig.TextSpam.storytellerMode" class="preview-wrap">
                         <div class="preview-title">
-                            逐行发送模式预览 - 灰色文字代表超过本行字数上限会被自动舍弃
+                            逐行发送模式预览 - 橙色文字代表超过本行字数上限会被自动舍弃
                         </div>
                         <div class="preview-overlay-wrap">
                             <n-input
@@ -646,7 +646,7 @@ const rules = {
 }
 
 .overflow {
-    color: #b5b5b5;
+    color: #f47a4d;
 }
 
 .emoji-trigger {
