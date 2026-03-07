@@ -296,6 +296,13 @@ watch(
 )
 
 watch(
+    () => moduleStore.moduleConfig.TextSpam.storytellerMode,
+    () => {
+        scheduleTextRelayout()
+    }
+)
+
+watch(
     () => uiStore.uiConfig.activeMenuIndex,
     (menu) => {
         if (menu === 'TextView' && uiStore.uiConfig.isShowPanel) {
