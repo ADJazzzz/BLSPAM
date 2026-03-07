@@ -308,7 +308,7 @@ const rules = {
 <template>
     <n-form :rules="rules" :disabled="moduleStore.moduleConfig.TextSpam.enable">
         <n-page-header subtitle="文字独轮车" style="margin-bottom: 10px" />
-        <n-form-item :show-label="false">
+        <n-form-item :show-label="false" :show-feedback="false">
             <n-flex align="center">
                 <n-form-item label="时间间隔" path="timeinterval">
                     <n-popover trigger="hover" style="max-width: 300px" placement="bottom">
@@ -404,90 +404,91 @@ const rules = {
                 >
                     按顺序发送 {{ moduleStore.moduleConfig.TextSpam.sequentialMode ? '开' : '关' }}
                 </button>
-                <span style="font-size: 12px; color: #909399"
-                    >提示：运行中修改开关不会立即生效，下次点击“开车”生效</span
-                >
             </n-flex>
         </n-form-item>
 
         <n-form-item label="发送内容" path="msg">
-            <div style="width: 100%">
-                <n-input
-                    ref="textInputRef"
-                    round
-                    clearable
-                    type="textarea"
-                    show-count
-                    v-model:value="moduleStore.moduleConfig.TextSpam.msg"
-                    placeholder="车了可能会被禁，但不车就等于一直被禁"
-                />
+            <n-flex align="flex-start" :wrap="false" style="width: 100%; gap: 8px">
+                <div style="width: 100%">
+                    <n-input
+                        ref="textInputRef"
+                        round
+                        clearable
+                        type="textarea"
+                        show-count
+                        v-model:value="moduleStore.moduleConfig.TextSpam.msg"
+                        placeholder="车了可能会被禁，但不车就等于一直被禁"
+                    />
 
-                <div v-if="!moduleStore.moduleConfig.TextSpam.storytellerMode" class="preview-wrap">
-                    <div class="preview-title">超长灰显预览（超过数量间隔的部分会被丢弃）</div>
-                    <div class="preview-overlay-wrap">
-                        <n-input
-                            ref="textPreviewInputRef"
-                            round
-                            type="textarea"
-                            readonly
-                            :show-count="true"
-                            :value="moduleStore.moduleConfig.TextSpam.msg"
-                            class="preview-base"
-                        />
-                        <div
-                            class="preview-overlay-viewport"
-                            :style="textOverlayViewportStyle"
-                            aria-hidden="true"
-                        >
+                    <div v-if="!moduleStore.moduleConfig.TextSpam.storytellerMode" class="preview-wrap">
+                        <div class="preview-title">
+                            逐行发送模式预览 - 灰色文字代表超过本行字数上限会被自动舍弃
+                        </div>
+                        <div class="preview-overlay-wrap">
+                            <n-input
+                                ref="textPreviewInputRef"
+                                round
+                                type="textarea"
+                                readonly
+                                :show-count="true"
+                                :value="moduleStore.moduleConfig.TextSpam.msg"
+                                class="preview-base"
+                            />
                             <div
-                                class="preview-overlay"
-                                :style="{
-                                    ...textOverlayStyle,
-                                    transform: textOverlayTransform
-                                }"
+                                class="preview-overlay-viewport"
+                                :style="textOverlayViewportStyle"
+                                aria-hidden="true"
                             >
-                                <div class="preview-line" v-for="(line, idx) in textPreviewLines" :key="idx">
-                                    <span>{{ line.keep }}</span><span class="overflow">{{ line.overflow }}</span>
+                                <div
+                                    class="preview-overlay"
+                                    :style="{
+                                        ...textOverlayStyle,
+                                        transform: textOverlayTransform
+                                    }"
+                                >
+                                    <div class="preview-line" v-for="(line, idx) in textPreviewLines" :key="idx">
+                                        <span>{{ line.keep }}</span><span class="overflow">{{ line.overflow }}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <n-popover trigger="click" placement="left" style="width: 500px">
-                <template #trigger>
-                    <n-button text style="padding-left: 4px">
-                        <n-icon :size="24">
-                            <EmotionIcon />
-                        </n-icon>
-                    </n-button>
-                </template>
-                <div
-                    style="
-                        display: grid;
-                        grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
-                        gap: 8px;
-                        padding: 8px;
-                    "
-                >
+                <n-popover trigger="click" placement="left" style="width: 500px">
+                    <template #trigger>
+                        <n-button text class="emoji-trigger">
+                            <n-icon :size="24">
+                                <EmotionIcon />
+                            </n-icon>
+                        </n-button>
+                    </template>
                     <div
-                        v-for="data in biliStore.emotionData.find((data) => data.pkg_id === 100)
-                            ?.emoticons"
-                        :key="data.emoticon_id"
-                        :disabled="data.perm === 0"
+                        style="
+                            display: grid;
+                            grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
+                            gap: 8px;
+                            padding: 8px;
+                        "
                     >
-                        <n-avatar
-                            :color="uiStore.uiConfig.theme === 'dark' ? '#48484E' : 'white'"
-                            :size="24"
-                            :src="data.url"
-                            object-fit="contain"
-                            style="cursor: pointer"
-                            @click="moduleStore.moduleConfig.TextSpam.msg += data.emoji"
-                        />
+                        <div
+                            v-for="data in biliStore.emotionData.find((data) => data.pkg_id === 100)
+                                ?.emoticons"
+                            :key="data.emoticon_id"
+                            :disabled="data.perm === 0"
+                        >
+                            <n-avatar
+                                :color="uiStore.uiConfig.theme === 'dark' ? '#48484E' : 'white'"
+                                :size="24"
+                                :src="data.url"
+                                object-fit="contain"
+                                style="cursor: pointer"
+                                @click="moduleStore.moduleConfig.TextSpam.msg += data.emoji"
+                            />
+                        </div>
                     </div>
-                </div>
-            </n-popover>
+                </n-popover>
+            </n-flex>
         </n-form-item>
         <n-flex
             justify="end"
@@ -558,5 +559,10 @@ const rules = {
 
 .overflow {
     color: #b5b5b5;
+}
+
+.emoji-trigger {
+    padding-left: 4px;
+    margin-top: 2px;
 }
 </style>

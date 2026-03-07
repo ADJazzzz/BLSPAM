@@ -11,6 +11,8 @@ import {
     NTabPane,
     NButton,
     NPageHeader,
+    NIcon,
+    NAvatar,
     useMessage,
     useDialog
 } from 'naive-ui'
@@ -18,10 +20,13 @@ import type { InputInst } from 'naive-ui'
 import _ from 'lodash'
 import { useModuleStore } from '@/stores/useModuleStore'
 import { useUIStore } from '@/stores/useUIStore'
+import { useBiliStore } from '@/stores/useBiliStore'
+import EmotionIcon from '@/assets/EmotionIcon.svg?component'
 import stop from '@/modules/Spamer/textSpamer'
 
 const moduleStore = useModuleStore()
 const uiStore = useUIStore()
+const biliStore = useBiliStore()
 const message = useMessage()
 const dialog = useDialog()
 const favStop = new stop('StopFavoritesSpamer')
@@ -432,7 +437,7 @@ const toggleSequentialMode = () => {
             subtitle="收藏夹：这是一个收藏夹，当然你也可以车收藏夹😊"
             style="margin-bottom: 10px"
         />
-        <n-form-item :show-label="false">
+        <n-form-item :show-label="false" :show-feedback="false">
             <n-flex>
                 <n-form-item label="时间间隔" path="timeinterval">
                     <n-popover trigger="hover" style="max-width: 300px" placement="bottom">
@@ -493,9 +498,6 @@ const toggleSequentialMode = () => {
                 >
                     按顺序发送 {{ moduleStore.moduleConfig.Favorites.sequentialMode ? '开' : '关' }}
                 </button>
-                <span style="font-size: 12px; color: #909399"
-                    >提示：运行中修改开关不会立即生效，下次点击“开车”生效</span
-                >
             </n-flex>
         </n-form-item>
 
@@ -532,63 +534,101 @@ const toggleSequentialMode = () => {
                         show-require-mark
                         :validation-status="panels.msg === '' ? 'error' : undefined"
                     >
-                        <div style="width: 100%">
-                            <n-input
-                                :ref="(inst) => setMainInputRef(panels.name, inst as InputInst | null)"
-                                v-model:value="panels.msg"
-                                :disabled="isSendingPanel(panels.name)"
-                                round
-                                clearable
-                                show-count
-                                type="textarea"
-                                placeholder="默认每次弹幕发送字数为你文字独轮车设置的间隔，超出相应值将自动分割到下一条弹幕"
-                            />
+                        <n-flex align="flex-start" :wrap="false" style="width: 100%; gap: 8px">
+                            <div style="width: 100%">
+                                <n-input
+                                    :ref="(inst) => setMainInputRef(panels.name, inst as InputInst | null)"
+                                    v-model:value="panels.msg"
+                                    :disabled="isSendingPanel(panels.name)"
+                                    round
+                                    clearable
+                                    show-count
+                                    type="textarea"
+                                    placeholder="默认每次弹幕发送字数为你文字独轮车设置的间隔，超出相应值将自动分割到下一条弹幕"
+                                />
 
-                            <div
-                                v-if="
-                                    !moduleStore.moduleConfig.Favorites.storytellerMode &&
-                                    panels.name === moduleStore.moduleConfig.Favorites.favoritesTabsValue
-                                "
-                                class="preview-wrap"
-                            >
-                                <div class="preview-title">
-                                    超长灰显预览（超过数量间隔的部分会被丢弃）
-                                </div>
-                                <div class="preview-overlay-wrap">
-                                    <n-input
-                                        :ref="(inst) => setPreviewInputRef(panels.name, inst as InputInst | null)"
-                                        round
-                                        type="textarea"
-                                        readonly
-                                        :show-count="true"
-                                        :value="panels.msg"
-                                        class="preview-base"
-                                    />
-                                    <div
-                                        class="preview-overlay-viewport"
-                                        :style="favoritesOverlayViewportStyles[panels.name] || {}"
-                                        aria-hidden="true"
-                                    >
+                                <div
+                                    v-if="
+                                        !moduleStore.moduleConfig.Favorites.storytellerMode &&
+                                        panels.name === moduleStore.moduleConfig.Favorites.favoritesTabsValue
+                                    "
+                                    class="preview-wrap"
+                                >
+                                    <div class="preview-title">
+                                        逐行发送模式预览 - 灰色文字代表超过本行字数上限会被自动舍弃
+                                    </div>
+                                    <div class="preview-overlay-wrap">
+                                        <n-input
+                                            :ref="(inst) =>
+                                                setPreviewInputRef(panels.name, inst as InputInst | null)
+                                            "
+                                            round
+                                            type="textarea"
+                                            readonly
+                                            :show-count="true"
+                                            :value="panels.msg"
+                                            class="preview-base"
+                                        />
                                         <div
-                                            :ref="(el) => setOverlayElement(panels.name, el)"
-                                            class="preview-overlay"
-                                            :style="{
-                                                ...(favoritesOverlayStyles[panels.name] || {})
-                                            }"
+                                            class="preview-overlay-viewport"
+                                            :style="favoritesOverlayViewportStyles[panels.name] || {}"
+                                            aria-hidden="true"
                                         >
                                             <div
-                                                class="preview-line"
-                                                v-for="(line, idx) in getPreviewLines(panels.msg)"
-                                                :key="`${panels.name}-${idx}`"
+                                                :ref="(el) => setOverlayElement(panels.name, el)"
+                                                class="preview-overlay"
+                                                :style="{
+                                                    ...(favoritesOverlayStyles[panels.name] || {})
+                                                }"
                                             >
-                                                <span>{{ line.keep }}</span
-                                                ><span class="overflow">{{ line.overflow }}</span>
+                                                <div
+                                                    class="preview-line"
+                                                    v-for="(line, idx) in getPreviewLines(panels.msg)"
+                                                    :key="`${panels.name}-${idx}`"
+                                                >
+                                                    <span>{{ line.keep }}</span
+                                                    ><span class="overflow">{{ line.overflow }}</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+
+                            <n-popover trigger="click" placement="left" style="width: 500px">
+                                <template #trigger>
+                                    <n-button text class="emoji-trigger" :disabled="isSendingPanel(panels.name)">
+                                        <n-icon :size="24">
+                                            <EmotionIcon />
+                                        </n-icon>
+                                    </n-button>
+                                </template>
+                                <div
+                                    style="
+                                        display: grid;
+                                        grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
+                                        gap: 8px;
+                                        padding: 8px;
+                                    "
+                                >
+                                    <div
+                                        v-for="data in biliStore.emotionData.find((data) => data.pkg_id === 100)
+                                            ?.emoticons"
+                                        :key="data.emoticon_id"
+                                        :disabled="data.perm === 0"
+                                    >
+                                        <n-avatar
+                                            :color="uiStore.uiConfig.theme === 'dark' ? '#48484E' : 'white'"
+                                            :size="24"
+                                            :src="data.url"
+                                            object-fit="contain"
+                                            style="cursor: pointer"
+                                            @click="panels.msg += data.emoji"
+                                        />
+                                    </div>
+                                </div>
+                            </n-popover>
+                        </n-flex>
                     </n-form-item>
                 </n-tab-pane>
             </n-tabs>
@@ -663,5 +703,10 @@ const toggleSequentialMode = () => {
 
 .overflow {
     color: #b5b5b5;
+}
+
+.emoji-trigger {
+    padding-left: 4px;
+    margin-top: 2px;
 }
 </style>

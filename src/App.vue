@@ -95,7 +95,9 @@ new MutationObserver((_mutationsList, observer) => {
     }
 }).observe(document.body, { childList: true, subtree: true })
 // n-config-provider 的 preflight-style-disabled 属性不知道为什么不生效，只能这样了
-GM_addStyle('body { font-size: 12px }')
+GM_addStyle(`
+body { font-size: 12px }
+`)
 </script>
 
 <template>
