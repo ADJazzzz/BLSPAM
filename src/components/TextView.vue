@@ -31,12 +31,14 @@ const textPreviewInputRef = ref<InputInst | null>(null)
 
 const textTextareaEl = ref<HTMLTextAreaElement | null>(null)
 const textPreviewTextareaEl = ref<HTMLTextAreaElement | null>(null)
+const textSelectionRange = ref<{ start: number; end: number } | null>(null)
 
 const textOverlayStyle = ref<Record<string, string>>({})
 const textOverlayViewportStyle = ref<Record<string, string>>({})
 const textOverlayTransform = ref('translateY(0px)')
 
 let textScrollListener: ((event: Event) => void) | null = null
+let textCursorListener: ((event: Event) => void) | null = null
 let textPreviewScrollListener: ((event: Event) => void) | null = null
 let textSyncing = false
 let textRelayoutTimer: ReturnType<typeof setTimeout> | null = null
@@ -141,6 +143,53 @@ const syncPreviewToMain = (event: Event) => {
     })
 }
 
+const updateTextSelectionRange = (event?: Event) => {
+    const target = (event?.target as HTMLTextAreaElement | null) ?? textTextareaEl.value
+    if (!target) return
+
+    const maxLength = target.value.length
+    const rawStart = target.selectionStart ?? maxLength
+    const rawEnd = target.selectionEnd ?? rawStart
+    const start = Math.max(0, Math.min(rawStart, maxLength))
+    const end = Math.max(start, Math.min(rawEnd, maxLength))
+    textSelectionRange.value = { start, end }
+}
+
+const insertEmojiToText = (emoji: string) => {
+    const text = moduleStore.moduleConfig.TextSpam.msg || ''
+    const activeTextarea = textTextareaEl.value
+    const preserveScrollTop = activeTextarea?.scrollTop ?? 0
+    const preserveScrollLeft = activeTextarea?.scrollLeft ?? 0
+    const activeRange =
+        activeTextarea && document.activeElement === activeTextarea
+            ? {
+                  start: activeTextarea.selectionStart ?? text.length,
+                  end: activeTextarea.selectionEnd ?? text.length
+              }
+            : null
+    const range = activeRange ?? textSelectionRange.value ?? { start: text.length, end: text.length }
+    const start = Math.max(0, Math.min(range.start, text.length))
+    const end = Math.max(start, Math.min(range.end, text.length))
+
+    moduleStore.moduleConfig.TextSpam.msg = `${text.slice(0, start)}${emoji}${text.slice(end)}`
+    const cursor = start + emoji.length
+    textSelectionRange.value = { start: cursor, end: cursor }
+
+    nextTick(() => {
+        const textarea = textTextareaEl.value
+        if (!textarea) return
+        const restoreCursor = () => {
+            textarea.focus()
+            textarea.setSelectionRange(cursor, cursor)
+            textarea.scrollTop = preserveScrollTop
+            textarea.scrollLeft = preserveScrollLeft
+            updateTextSelectionRange()
+        }
+        restoreCursor()
+        requestAnimationFrame(() => restoreCursor())
+    })
+}
+
 const bindTextScroll = () => {
     const main = textInputRef.value?.textareaElRef ?? null
     const preview = textPreviewInputRef.value?.textareaElRef ?? null
@@ -149,12 +198,25 @@ const bindTextScroll = () => {
         if (textTextareaEl.value && textScrollListener) {
             textTextareaEl.value.removeEventListener('scroll', textScrollListener)
         }
+        if (textTextareaEl.value && textCursorListener) {
+            textTextareaEl.value.removeEventListener('click', textCursorListener)
+            textTextareaEl.value.removeEventListener('keyup', textCursorListener)
+            textTextareaEl.value.removeEventListener('select', textCursorListener)
+            textTextareaEl.value.removeEventListener('input', textCursorListener)
+        }
         textTextareaEl.value = main
         if (main) {
             textScrollListener = (event: Event) => syncMainToPreview(event)
             main.addEventListener('scroll', textScrollListener, { passive: true })
+            textCursorListener = (event: Event) => updateTextSelectionRange(event)
+            main.addEventListener('click', textCursorListener, { passive: true })
+            main.addEventListener('keyup', textCursorListener, { passive: true })
+            main.addEventListener('select', textCursorListener, { passive: true })
+            main.addEventListener('input', textCursorListener, { passive: true })
+            updateTextSelectionRange()
         } else {
             textScrollListener = null
+            textCursorListener = null
         }
     }
 
@@ -225,6 +287,12 @@ watch(
 onBeforeUnmount(() => {
     if (textTextareaEl.value && textScrollListener) {
         textTextareaEl.value.removeEventListener('scroll', textScrollListener)
+    }
+    if (textTextareaEl.value && textCursorListener) {
+        textTextareaEl.value.removeEventListener('click', textCursorListener)
+        textTextareaEl.value.removeEventListener('keyup', textCursorListener)
+        textTextareaEl.value.removeEventListener('select', textCursorListener)
+        textTextareaEl.value.removeEventListener('input', textCursorListener)
     }
     if (textPreviewTextareaEl.value && textPreviewScrollListener) {
         textPreviewTextareaEl.value.removeEventListener('scroll', textPreviewScrollListener)
@@ -483,7 +551,7 @@ const rules = {
                                 :src="data.url"
                                 object-fit="contain"
                                 style="cursor: pointer"
-                                @click="moduleStore.moduleConfig.TextSpam.msg += data.emoji"
+                                @click="insertEmojiToText(data.emoji)"
                             />
                         </div>
                     </div>

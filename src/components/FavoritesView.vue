@@ -35,11 +35,13 @@ const favoritesMainInputRefs = ref<Record<number, InputInst | null>>({})
 const favoritesPreviewInputRefs = ref<Record<number, InputInst | null>>({})
 const favoritesOverlayStyles = ref<Record<number, Record<string, string>>>({})
 const favoritesOverlayViewportStyles = ref<Record<number, Record<string, string>>>({})
+const favoritesSelectionRanges = ref<Record<number, { start: number; end: number }>>({})
 
 const favoritesMainTextareas = new Map<number, HTMLTextAreaElement>()
 const favoritesPreviewTextareas = new Map<number, HTMLTextAreaElement>()
 const favoritesMainListeners = new Map<number, (event: Event) => void>()
 const favoritesPreviewListeners = new Map<number, (event: Event) => void>()
+const favoritesCursorListeners = new Map<number, (event: Event) => void>()
 const favoritesOverlayElements = new Map<number, HTMLDivElement>()
 const favoritesSyncing = new Set<number>()
 let favoritesRelayoutTimer: ReturnType<typeof setTimeout> | null = null
@@ -165,6 +167,48 @@ const syncPreviewToMain = (event: Event, panelName: number) => {
     })
 }
 
+const updateFavoriteSelectionRange = (panelName: number, event?: Event) => {
+    const target =
+        (event?.target as HTMLTextAreaElement | null) ?? favoritesMainTextareas.get(panelName) ?? null
+    if (!target) return
+
+    const maxLength = target.value.length
+    const rawStart = target.selectionStart ?? maxLength
+    const rawEnd = target.selectionEnd ?? rawStart
+    const start = Math.max(0, Math.min(rawStart, maxLength))
+    const end = Math.max(start, Math.min(rawEnd, maxLength))
+    favoritesSelectionRanges.value[panelName] = { start, end }
+}
+
+const insertEmojiToFavorite = (panelName: number, emoji: string) => {
+    const panel = moduleStore.moduleConfig.Favorites.favoritesTabPanels.find((item) => item.name === panelName)
+    if (!panel) return
+
+    const text = panel.msg || ''
+    const activeTextarea = favoritesMainTextareas.get(panelName) ?? null
+    const activeRange =
+        activeTextarea && document.activeElement === activeTextarea
+            ? {
+                  start: activeTextarea.selectionStart ?? text.length,
+                  end: activeTextarea.selectionEnd ?? text.length
+              }
+            : null
+    const range = activeRange ?? favoritesSelectionRanges.value[panelName] ?? { start: text.length, end: text.length }
+    const start = Math.max(0, Math.min(range.start, text.length))
+    const end = Math.max(start, Math.min(range.end, text.length))
+
+    panel.msg = `${text.slice(0, start)}${emoji}${text.slice(end)}`
+    const cursor = start + emoji.length
+    favoritesSelectionRanges.value[panelName] = { start: cursor, end: cursor }
+
+    nextTick(() => {
+        const textarea = favoritesMainTextareas.get(panelName)
+        if (!textarea) return
+        textarea.focus()
+        textarea.setSelectionRange(cursor, cursor)
+    })
+}
+
 const bindPanelScroll = (panelName: number) => {
     const main = favoritesMainInputRefs.value[panelName]?.textareaElRef ?? null
     const preview = favoritesPreviewInputRefs.value[panelName]?.textareaElRef ?? null
@@ -172,17 +216,34 @@ const bindPanelScroll = (panelName: number) => {
     const currentMain = favoritesMainTextareas.get(panelName) ?? null
     if (main !== currentMain) {
         const oldMainListener = favoritesMainListeners.get(panelName)
+        const oldCursorListener = favoritesCursorListeners.get(panelName)
         if (currentMain && oldMainListener) {
             currentMain.removeEventListener('scroll', oldMainListener)
         }
+        if (currentMain && oldCursorListener) {
+            currentMain.removeEventListener('click', oldCursorListener)
+            currentMain.removeEventListener('keyup', oldCursorListener)
+            currentMain.removeEventListener('select', oldCursorListener)
+            currentMain.removeEventListener('input', oldCursorListener)
+            currentMain.removeEventListener('blur', oldCursorListener)
+        }
         favoritesMainTextareas.delete(panelName)
         favoritesMainListeners.delete(panelName)
+        favoritesCursorListeners.delete(panelName)
 
         if (main) {
             const listener = (event: Event) => syncMainToPreview(event, panelName)
+            const cursorListener = (event: Event) => updateFavoriteSelectionRange(panelName, event)
             main.addEventListener('scroll', listener, { passive: true })
+            main.addEventListener('click', cursorListener, { passive: true })
+            main.addEventListener('keyup', cursorListener, { passive: true })
+            main.addEventListener('select', cursorListener, { passive: true })
+            main.addEventListener('input', cursorListener, { passive: true })
+            main.addEventListener('blur', cursorListener, { passive: true })
             favoritesMainTextareas.set(panelName, main)
             favoritesMainListeners.set(panelName, listener)
+            favoritesCursorListeners.set(panelName, cursorListener)
+            updateFavoriteSelectionRange(panelName)
         }
     }
 
@@ -299,8 +360,16 @@ watch(
 onBeforeUnmount(() => {
     favoritesMainTextareas.forEach((textarea, panelName) => {
         const listener = favoritesMainListeners.get(panelName)
+        const cursorListener = favoritesCursorListeners.get(panelName)
         if (listener) {
             textarea.removeEventListener('scroll', listener)
+        }
+        if (cursorListener) {
+            textarea.removeEventListener('click', cursorListener)
+            textarea.removeEventListener('keyup', cursorListener)
+            textarea.removeEventListener('select', cursorListener)
+            textarea.removeEventListener('input', cursorListener)
+            textarea.removeEventListener('blur', cursorListener)
         }
     })
 
@@ -358,7 +427,32 @@ const handleTabsClose = (name: number) => {
             positiveText: '确定',
             negativeText: '再想想',
             onPositiveClick: () => {
+                const mainTextarea = favoritesMainTextareas.get(name)
+                const mainListener = favoritesMainListeners.get(name)
+                const cursorListener = favoritesCursorListeners.get(name)
+                const previewTextarea = favoritesPreviewTextareas.get(name)
+                const previewListener = favoritesPreviewListeners.get(name)
+                if (mainTextarea && mainListener) {
+                    mainTextarea.removeEventListener('scroll', mainListener)
+                }
+                if (mainTextarea && cursorListener) {
+                    mainTextarea.removeEventListener('click', cursorListener)
+                    mainTextarea.removeEventListener('keyup', cursorListener)
+                    mainTextarea.removeEventListener('select', cursorListener)
+                    mainTextarea.removeEventListener('input', cursorListener)
+                    mainTextarea.removeEventListener('blur', cursorListener)
+                }
+                if (previewTextarea && previewListener) {
+                    previewTextarea.removeEventListener('scroll', previewListener)
+                }
                 _.remove(moduleStore.moduleConfig.Favorites.favoritesTabPanels, { name })
+                delete favoritesSelectionRanges.value[name]
+                favoritesMainListeners.delete(name)
+                favoritesPreviewListeners.delete(name)
+                favoritesCursorListeners.delete(name)
+                favoritesMainTextareas.delete(name)
+                favoritesPreviewTextareas.delete(name)
+                favoritesOverlayElements.delete(name)
                 moduleStore.moduleConfig.Favorites.favoritesTabsValue = name - 1
             }
         })
@@ -623,7 +717,7 @@ const toggleSequentialMode = () => {
                                             :src="data.url"
                                             object-fit="contain"
                                             style="cursor: pointer"
-                                            @click="panels.msg += data.emoji"
+                                            @click="insertEmojiToFavorite(panels.name, data.emoji)"
                                         />
                                     </div>
                                 </div>
