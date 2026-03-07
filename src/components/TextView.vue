@@ -53,7 +53,9 @@ const textPreviewLines = computed(() => {
 })
 
 const setTextOverlayTransform = (scrollTop: number) => {
-    textOverlayTransform.value = `translateY(${-scrollTop}px)`
+    const transform = `translateY(${-scrollTop}px)`
+    if (textOverlayTransform.value === transform) return
+    textOverlayTransform.value = transform
 }
 
 const getOffsetToAncestor = (el: HTMLElement, ancestor: HTMLElement) => {
@@ -79,6 +81,24 @@ const getOffsetToAncestor = (el: HTMLElement, ancestor: HTMLElement) => {
     return { top, left }
 }
 
+const isSameStyleRecord = (
+    current: Record<string, string>,
+    next: Record<string, string>
+) => {
+    const currentKeys = Object.keys(current)
+    const nextKeys = Object.keys(next)
+    if (currentKeys.length !== nextKeys.length) return false
+    return nextKeys.every((key) => current[key] === next[key])
+}
+
+const setStyleIfChanged = (
+    styleRef: { value: Record<string, string> },
+    nextStyle: Record<string, string>
+) => {
+    if (isSameStyleRecord(styleRef.value, nextStyle)) return
+    styleRef.value = nextStyle
+}
+
 const updateTextOverlayStyle = () => {
     const textarea = textInputRef.value?.textareaElRef
     const wrapper = textInputRef.value?.wrapperElRef
@@ -99,14 +119,14 @@ const updateTextOverlayStyle = () => {
     const height = previewTextarea.offsetHeight
     if (width <= 1 || height <= 1) return
 
-    textOverlayViewportStyle.value = {
+    setStyleIfChanged(textOverlayViewportStyle, {
         top: `${top}px`,
         left: `${left}px`,
         width: `${width}px`,
         height: `${height}px`
-    }
+    })
 
-    textOverlayStyle.value = {
+    setStyleIfChanged(textOverlayStyle, {
         fontSize: style.fontSize,
         lineHeight: style.lineHeight,
         fontFamily: style.fontFamily,
@@ -116,7 +136,7 @@ const updateTextOverlayStyle = () => {
         paddingBottom: `calc(${style.paddingBottom} + ${suffixHeight}px)`,
         paddingLeft: style.paddingLeft,
         boxSizing: 'border-box'
-    }
+    })
 }
 
 const syncMainToPreview = (event: Event) => {

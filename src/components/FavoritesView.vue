@@ -92,6 +92,26 @@ const getOffsetToAncestor = (el: HTMLElement, ancestor: HTMLElement) => {
     return { top, left }
 }
 
+const isSameStyleRecord = (
+    current: Record<string, string>,
+    next: Record<string, string>
+) => {
+    const currentKeys = Object.keys(current)
+    const nextKeys = Object.keys(next)
+    if (currentKeys.length !== nextKeys.length) return false
+    return nextKeys.every((key) => current[key] === next[key])
+}
+
+const setPanelStyleIfChanged = (
+    styleRef: { value: Record<number, Record<string, string>> },
+    panelName: number,
+    nextStyle: Record<string, string>
+) => {
+    const currentStyle = styleRef.value[panelName]
+    if (currentStyle && isSameStyleRecord(currentStyle, nextStyle)) return
+    styleRef.value[panelName] = nextStyle
+}
+
 const setOverlayTransform = (panelName: number, scrollTop: number) => {
     const overlay = favoritesOverlayElements.get(panelName)
     if (overlay) {
@@ -119,14 +139,14 @@ const updateOverlayStyle = (panelName: number) => {
     const height = previewTextarea.offsetHeight
     if (width <= 1 || height <= 1) return
 
-    favoritesOverlayViewportStyles.value[panelName] = {
+    setPanelStyleIfChanged(favoritesOverlayViewportStyles, panelName, {
         top: `${top}px`,
         left: `${left}px`,
         width: `${width}px`,
         height: `${height}px`
-    }
+    })
 
-    favoritesOverlayStyles.value[panelName] = {
+    setPanelStyleIfChanged(favoritesOverlayStyles, panelName, {
         fontSize: style.fontSize,
         lineHeight: style.lineHeight,
         fontFamily: style.fontFamily,
@@ -136,7 +156,7 @@ const updateOverlayStyle = (panelName: number) => {
         paddingBottom: `calc(${style.paddingBottom} + ${suffixHeight}px)`,
         paddingLeft: style.paddingLeft,
         boxSizing: 'border-box'
-    }
+    })
 }
 
 const syncMainToPreview = (event: Event, panelName: number) => {
