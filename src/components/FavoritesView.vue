@@ -437,7 +437,7 @@ const toggleSequentialMode = () => {
             subtitle="收藏夹：这是一个收藏夹，当然你也可以车收藏夹😊"
             style="margin-bottom: 10px"
         />
-        <n-form-item :show-label="false" :show-feedback="false">
+        <n-form-item :show-label="false">
             <n-flex>
                 <n-form-item label="时间间隔" path="timeinterval">
                     <n-popover trigger="hover" style="max-width: 300px" placement="bottom">
@@ -462,7 +462,7 @@ const toggleSequentialMode = () => {
             </n-flex>
         </n-form-item>
 
-        <n-form-item :show-label="false">
+        <n-form-item label="模式选择">
             <n-flex align="center" style="gap: 8px; width: 100%">
                 <button
                     type="button"

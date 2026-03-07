@@ -308,7 +308,7 @@ const rules = {
 <template>
     <n-form :rules="rules" :disabled="moduleStore.moduleConfig.TextSpam.enable">
         <n-page-header subtitle="文字独轮车" style="margin-bottom: 10px" />
-        <n-form-item :show-label="false" :show-feedback="false">
+        <n-form-item :show-label="false">
             <n-flex align="center">
                 <n-form-item label="时间间隔" path="timeinterval">
                     <n-popover trigger="hover" style="max-width: 300px" placement="bottom">
@@ -368,7 +368,7 @@ const rules = {
             </n-flex>
         </n-form-item>
 
-        <n-form-item :show-label="false">
+        <n-form-item label="模式选择">
             <n-flex align="center" style="gap: 8px; width: 100%">
                 <button
                     type="button"
