@@ -191,6 +191,7 @@ const handleSendToText = () => {
                             show-count
                             type="textarea"
                             placeholder="默认每次弹幕发送字数为你文字独轮车设置的间隔，超出相应值将自动分割到下一条弹幕"
+                            rows="5"
                         />
                     </n-form-item>
                 </n-tab-pane>

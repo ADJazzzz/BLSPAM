@@ -154,6 +154,7 @@ const rules = {
                 show-count
                 v-model:value="moduleStore.moduleConfig.TextSpam.msg"
                 placeholder="车了可能会被禁，但不车就等于一直被禁"
+                rows="5"
             />
             <n-popover trigger="click" placement="left" style="width: 500px">
                 <template #trigger>
