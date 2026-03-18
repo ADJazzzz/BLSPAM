@@ -627,6 +627,51 @@ declare namespace BiliAPIResponse {
             sub_url: string
         }
     }
+
+    namespace MasterInfo {
+        interface Response {
+            code: number
+            msg: string
+            message: string
+            data: Data
+        }
+        interface Data {
+            info: Info
+            exp: Exp
+            follower_num: number
+            room_id: number
+            medal_name: string
+            glory_count: number
+            pendant: string
+            link_group_num: number
+            room_news: RoomNews
+        }
+        interface Info {
+            uid: number
+            uname: string
+            face: string
+            official_verify: OfficialVerify
+            gender: number
+        }
+        interface OfficialVerify {
+            type: number
+            desc: string
+        }
+        interface Exp {
+            master_level: MasterLevel
+        }
+        interface MasterLevel {
+            level: number
+            color: number
+            current: [number, number]
+            next: [number, number]
+        }
+        interface RoomNews {
+            content: string
+            ctime: string
+            ctime_text: string
+        }
+    }
 }
 
 export { BiliAPIResponse }

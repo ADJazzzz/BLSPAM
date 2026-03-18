@@ -109,5 +109,11 @@ export const BILIAPI: BiliAPIMethods = {
             'https://api.bilibili.com/x/web-interface/nav'
         )
         return res.data
+    },
+    masterInfo: async (uid) => {
+        const res = await axios.get<BiliAPIResponse.MasterInfo.Response>(
+            `https://api.live.bilibili.com/live_user/v1/Master/info?uid=${uid}`
+        )
+        return res.data
     }
 }

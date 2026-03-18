@@ -3,7 +3,7 @@ import { reactive, watch } from 'vue'
 import _ from 'lodash'
 import { uiConfig, menuIndex } from '@/types'
 import Storage from '@/utils/storage'
-import { unsafeWindow } from '$'
+import { GM_addValueChangeListener, unsafeWindow } from '$'
 
 export const useUIStore = defineStore('ui', () => {
     const uiConfig: uiConfig = reactive(Storage.getUiConfig())
@@ -43,10 +43,29 @@ export const useUIStore = defineStore('ui', () => {
         window.setInterval(sync, 1000)
     }
 
+    const applyRoomInfo = (roomInfo: any) => {
+        if (!Array.isArray(roomInfo)) return
+        uiConfig.roomInfo = roomInfo
+    }
+    const multiSync = () => {
+        if (typeof GM_addValueChangeListener === 'function') {
+            GM_addValueChangeListener('ui', (_key, _oldValue, newValue, remote) => {
+                if (!remote) return
+                applyRoomInfo(newValue?.roomInfo)
+            })
+        }
+    }
+
     watch(
         uiConfig,
-        _.debounce((newUiConfig: uiConfig) => Storage.setUiConfig(newUiConfig), 350)
+        _.debounce((newUiConfig: uiConfig) => {
+            const latestUiConfig = Storage.getUiConfig()
+            Storage.setUiConfig({
+                ...newUiConfig,
+                roomInfo: latestUiConfig.roomInfo
+            })
+        }, 350)
     )
 
-    return { uiConfig, updateMenuValue, startThemeSync }
+    return { uiConfig, updateMenuValue, startThemeSync, multiSync }
 })

@@ -10,7 +10,8 @@ export default {
         activeMenuIndex: 'TextView',
         isShowPanel: false,
         isCollapsed: true,
-        theme: 'light'
+        theme: 'light',
+        roomInfo: []
     },
     modules: {
         TextSpam: {

@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { h, render } from 'vue'
+import { h, render, watchEffect } from 'vue'
 import {
     NButton,
     NIcon,
     NBadge,
+    NPopover,
     NConfigProvider,
     NMessageProvider,
     NDialogProvider,
@@ -24,55 +25,108 @@ import PanelMenu from './components/PanelMenu.vue'
 import PanelContent from './components/PanelContent.vue'
 import Logger from './utils/logger'
 import { GM_addStyle } from '$'
+import { formatRoomInfoText, getRoomStatusText } from './utils/ui'
 
 const logger = new Logger('App')
 const uiStore = useUIStore()
 const moduleStore = useModuleStore()
 uiStore.uiConfig.isShowPanel = false
 uiStore.startThemeSync()
+uiStore.multiSync()
+
+const getRoomInfoText = () => {
+    const list = uiStore.uiConfig.roomInfo
+
+    if (list.length) return formatRoomInfoText(list)
+
+    const roomID = useBiliStore().BilibiliLive?.ROOMID
+    const uname = useBiliStore().masterInfo?.info?.uname
+    if (uname && roomID) {
+        return formatRoomInfoText([
+            {
+                uname,
+                roomid: roomID,
+                statusText: getRoomStatusText(moduleStore.moduleConfig)
+            }
+        ])
+    }
+
+    return formatRoomInfoText([])
+}
 
 const renderAppBtn = (ctrEleName: string, appStyle: object) => {
     pollingQuery(document, ctrEleName, 300, 1200, true).then((eleContent) => {
-        const buttonNode = h(
-            NButton,
-            {
-                class: 'blspam_app_btn',
-                text: true,
-                style: appStyle,
-                focusable: false,
-                bordered: false,
-                onClick: () => {
-                    if (!useBiliStore().loginInfo?.isLogin) {
-                        uiStore.uiConfig.isShowPanel = false
-                    } else {
-                        uiStore.uiConfig.isShowPanel = true
-                    }
+        watchEffect(() => {
+            const roomInfoText = getRoomInfoText()
+            const buttonNode = h(
+                NConfigProvider,
+                {
+                    theme: uiStore.uiConfig.theme === 'dark' ? darkTheme : lightTheme
+                },
+                {
+                    default: () =>
+                        h(
+                            NButton,
+                            {
+                                class: 'blspam_app_btn',
+                                text: true,
+                                style: appStyle,
+                                focusable: false,
+                                bordered: false,
+                                onClick: () => {
+                                    if (!useBiliStore().loginInfo?.isLogin) {
+                                        uiStore.uiConfig.isShowPanel = false
+                                    } else {
+                                        uiStore.uiConfig.isShowPanel = true
+                                    }
+                                }
+                            },
+                            {
+                                default: () =>
+                                    h(
+                                        NPopover,
+                                        {
+                                            trigger: 'hover'
+                                        },
+                                        {
+                                            trigger: () =>
+                                                h(
+                                                    NBadge,
+                                                    {
+                                                        dot: true,
+                                                        processing: true,
+                                                        offset: [-1, 2],
+                                                        type:
+                                                            moduleStore.moduleConfig.TextSpam
+                                                                .enable ||
+                                                            moduleStore.moduleConfig.EmotionSpam
+                                                                .enable ||
+                                                            moduleStore.moduleConfig.Favorites
+                                                                .enable
+                                                                ? 'success'
+                                                                : useBiliStore().loginInfo
+                                                                        ?.isLogin &&
+                                                                    useBiliStore().cookies
+                                                                  ? 'info'
+                                                                  : 'error'
+                                                    },
+                                                    {
+                                                        default: () =>
+                                                            h(NIcon, {
+                                                                component: AppIcon,
+                                                                size: 24
+                                                            })
+                                                    }
+                                                ),
+                                            default: () => roomInfoText
+                                        }
+                                    )
+                            }
+                        )
                 }
-            },
-            {
-                default: () =>
-                    h(
-                        NBadge,
-                        {
-                            dot: true,
-                            processing: true,
-                            offset: [-1, 2],
-                            type:
-                                moduleStore.moduleConfig.TextSpam.enable ||
-                                moduleStore.moduleConfig.EmotionSpam.enable ||
-                                moduleStore.moduleConfig.Favorites.enable
-                                    ? 'success'
-                                    : useBiliStore().loginInfo?.isLogin && useBiliStore().cookies
-                                      ? 'info'
-                                      : 'error'
-                        },
-                        {
-                            default: () => h(NIcon, { component: AppIcon, size: 24 })
-                        }
-                    )
-            }
-        )
-        render(buttonNode, eleContent)
+            )
+            render(buttonNode, eleContent)
+        })
     })
 }
 const handleUpdateCollapse = (collapsed: boolean) => {

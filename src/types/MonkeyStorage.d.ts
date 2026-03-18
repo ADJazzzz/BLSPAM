@@ -44,6 +44,13 @@ interface uiConfig {
     isShowPanel: boolean
     isCollapsed: boolean
     theme: 'dark' | 'light'
+    roomInfo: roomInfoItem[]
+}
+
+type roomInfoItem = {
+    uname: string
+    roomid: number
+    statusText: string
 }
 
 type favoritesTabPanels = {
@@ -67,4 +74,4 @@ type moduleEmitter = {
     }
 }
 
-export { modulesConfig, uiConfig, menuIndex, moduleEmitter }
+export { modulesConfig, uiConfig, menuIndex, moduleEmitter, roomInfoItem }
