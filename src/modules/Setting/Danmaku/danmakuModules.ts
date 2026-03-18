@@ -99,7 +99,6 @@ class danmakuModules extends BaseModule {
                                 NButton,
                                 {
                                     text: true,
-                                    focusable: false,
                                     bordered: false,
                                     onClick: (e: MouseEvent) => {
                                         e.stopPropagation()
@@ -112,7 +111,6 @@ class danmakuModules extends BaseModule {
                                 NButton,
                                 {
                                     text: true,
-                                    focusable: false,
                                     bordered: false,
                                     onClick: (e: MouseEvent) => {
                                         e.stopPropagation()
