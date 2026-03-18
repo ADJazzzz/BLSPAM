@@ -23,12 +23,13 @@ import AppIcon from './assets/AppIcon.svg?component'
 import PanelMenu from './components/PanelMenu.vue'
 import PanelContent from './components/PanelContent.vue'
 import Logger from './utils/logger'
-import { unsafeWindow, GM_addStyle } from '$'
+import { GM_addStyle } from '$'
 
 const logger = new Logger('App')
 const uiStore = useUIStore()
 const moduleStore = useModuleStore()
 uiStore.uiConfig.isShowPanel = false
+uiStore.startThemeSync()
 
 const renderAppBtn = (ctrEleName: string, appStyle: object) => {
     pollingQuery(document, ctrEleName, 300, 1200, true).then((eleContent) => {
@@ -45,7 +46,6 @@ const renderAppBtn = (ctrEleName: string, appStyle: object) => {
                         uiStore.uiConfig.isShowPanel = false
                     } else {
                         uiStore.uiConfig.isShowPanel = true
-                        handleUpdateTheme()
                     }
                 }
             },
@@ -74,10 +74,6 @@ const renderAppBtn = (ctrEleName: string, appStyle: object) => {
         )
         render(buttonNode, eleContent)
     })
-}
-const handleUpdateTheme = () => {
-    const biliTheme = unsafeWindow.bililiveThemeV2.getTheme()
-    uiStore.uiConfig.theme = biliTheme
 }
 const handleUpdateCollapse = (collapsed: boolean) => {
     uiStore.uiConfig.isCollapsed = collapsed
