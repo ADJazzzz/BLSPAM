@@ -1,5 +1,32 @@
 ## NEXT_VERSION
 
+## [1.6.0](https://github.com/ADJazzzz/BLSPAM/compare/1.5.0...1.6.0) 2026-03-19
+
+### 新增
+
+- 多房间运行提示[(#42)](https://github.com/ADJazzzz/BLSPAM/issues/42)
+- 独立显示房间表情[(#43)](https://github.com/ADJazzzz/BLSPAM/issues/43)
+- 独立显示所选表情[(#43)](https://github.com/ADJazzzz/BLSPAM/issues/43)
+
+### 修复
+
+- 在回复弹幕中+1和复制没有带上@他人[(#40)](https://github.com/ADJazzzz/BLSPAM/issues/40)
+- 在直接渲染模式中复制失焦
+- 在活动直播间中无法获取正确主题
+- 表情独轮车页面在最后表情选择页为房间表情时，在其他直播间打开后表情选择页为空
+
+### 调整
+
+- 加一和复制按钮样式
+- 文本输入框默认行数现在默认为`5`
+- 各直播间表情独立储存
+- 更新自动构建版本
+
+### 更新
+
+- 主要依赖项
+- README文档
+
 ## [1.5.0](https://github.com/ADJazzzz/BLSPAM/compare/1.4.3...1.5.0) 2026-01-27
 
 ### 新增
