@@ -22,11 +22,11 @@
         "@types/node": "~25.0.10",
         "@vitejs/plugin-vue": "^6.0.5",
         "prettier": "^3.8.1",
-        "terser": "^5.46.0",
+        "terser": "^5.46.1",
         "typescript": "^5.9.3",
         "vite": "^7.3.1",
         "vite-plugin-monkey": "^7.1.9",
         "vite-svg-loader": "^5.1.1",
-        "vue-tsc": "^3.2.5"
+        "vue-tsc": "^3.2.6"
     }
 }
