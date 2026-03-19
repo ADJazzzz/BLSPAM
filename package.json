@@ -1,7 +1,7 @@
 {
     "name": "bilibili-live-spamer",
     "private": true,
-    "version": "1.5.0",
+    "version": "1.6.0",
     "type": "module",
     "scripts": {
         "dev": "vite",
@@ -10,23 +10,23 @@
         "format": "prettier --write src/"
     },
     "dependencies": {
-        "axios": "^1.13.3",
+        "axios": "^1.13.6",
         "lodash": "^4.17.23",
         "mitt": "^3.0.1",
-        "naive-ui": "^2.43.2",
+        "naive-ui": "^2.44.1",
         "pinia": "^3.0.4",
-        "vue": "^3.5.27"
+        "vue": "^3.5.30"
     },
     "devDependencies": {
-        "@types/lodash": "^4.17.23",
-        "@types/node": "^25.0.10",
-        "@vitejs/plugin-vue": "^6.0.3",
+        "@types/lodash": "^4.17.24",
+        "@types/node": "~25.0.10",
+        "@vitejs/plugin-vue": "^6.0.5",
         "prettier": "^3.8.1",
-        "terser": "^5.46.0",
+        "terser": "^5.46.1",
         "typescript": "^5.9.3",
         "vite": "^7.3.1",
         "vite-plugin-monkey": "^7.1.9",
-        "vite-svg-loader": "^5.1.0",
-        "vue-tsc": "^3.2.4"
+        "vite-svg-loader": "^5.1.1",
+        "vue-tsc": "^3.2.6"
     }
 }

@@ -42,6 +42,7 @@ interface BiliAPIMethods {
     ) => Promise<BiliAPIResponse.GetEmoticons.Response>
     getInfoByUser: (room_id: number) => Promise<BiliAPIResponse.GetInfoByUser.Response>
     nav: () => Promise<BiliAPIResponse.Nav.Response>
+    masterInfo: (uid: number) => Promise<BiliAPIResponse.MasterInfo.Response>
 }
 
 export { BiliAPIMethods }

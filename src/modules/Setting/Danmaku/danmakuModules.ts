@@ -32,11 +32,36 @@ class danmakuModules extends BaseModule {
                                 (node.classList.contains('has-bubble') &&
                                     node.classList.length === 3))
                         ) {
+                            const { message } = useDiscreteAPI(['message'])
+                            const danmaku = node.dataset.danmaku
+                            const replyMid = node.dataset.replymid
+                            if (danmaku === undefined || replyMid === undefined) {
+                                this.logger.error('弹幕节点数据异常，请检查以下节点:', node)
+                                message.error('发生错误，详情查看控制台👀')
+                                return
+                            }
+
+                            let msg = danmaku
+                            if (replyMid !== '0') {
+                                const replyUname = node
+                                    .querySelector<HTMLElement>('[data-uname]')
+                                    ?.getAttribute('data-uname')
+                                if (replyUname) {
+                                    msg = `@${replyUname} ${danmaku}`
+                                } else {
+                                    this.logger.error(
+                                        '弹幕节点数据异常，未找到回复用户名，请检查以下节点:',
+                                        node
+                                    )
+                                    message.error('发生错误，详情查看控制台👀')
+                                    return
+                                }
+                            }
+
                             if (this.config.mode === 'menu') {
-                                const msg = node.dataset.danmaku || ''
                                 node.addEventListener('click', () => this.renderMenu(msg))
                             } else {
-                                this.renderDirectly(node)
+                                this.renderDirectly(node, msg)
                             }
                         }
                     })
@@ -45,9 +70,7 @@ class danmakuModules extends BaseModule {
         }
     }
 
-    private renderDirectly(node: HTMLElement) {
-        const msg = node.dataset.danmaku || ''
-
+    private renderDirectly(node: HTMLElement, msg: string) {
         const msgEle = node.querySelector('.danmaku-item-right')
         if (!msgEle) return
         const btnContainer = document.createElement('div')
@@ -59,7 +82,15 @@ class danmakuModules extends BaseModule {
                 NConfigProvider,
                 {
                     theme: useUIStore().uiConfig.theme === 'dark' ? darkTheme : lightTheme,
-                    style: { marginLeft: '2px', paddingTop: '4px' }
+                    themeOverrides: {
+                        Button: {
+                            textColorHover: '#409eff',
+                            textColorFocus: '#409eff',
+                            textColorTextHover: '#409eff',
+                            textColorTextFocus: '#409eff'
+                        }
+                    },
+                    style: { marginLeft: '2px', paddingTop: '5px' }
                 },
                 {
                     default: () =>
@@ -68,11 +99,7 @@ class danmakuModules extends BaseModule {
                                 NButton,
                                 {
                                     text: true,
-                                    focusable: false,
                                     bordered: false,
-                                    style: {
-                                        marginLeft: '2px'
-                                    },
                                     onClick: (e: MouseEvent) => {
                                         e.stopPropagation()
                                         this.dmCopy(msg)
@@ -84,7 +111,6 @@ class danmakuModules extends BaseModule {
                                 NButton,
                                 {
                                     text: true,
-                                    focusable: false,
                                     bordered: false,
                                     onClick: (e: MouseEvent) => {
                                         e.stopPropagation()

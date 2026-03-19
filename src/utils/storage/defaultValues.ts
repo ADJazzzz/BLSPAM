@@ -10,7 +10,8 @@ export default {
         activeMenuIndex: 'TextView',
         isShowPanel: false,
         isCollapsed: true,
-        theme: 'light'
+        theme: 'light',
+        roomInfo: []
     },
     modules: {
         TextSpam: {
@@ -24,7 +25,7 @@ export default {
             enable: false,
             timeinterval: 5,
             emotionViewSelectedID: 1,
-            msg: [],
+            msgByRoom: {},
             timelimit: 0
         },
         Favorites: {

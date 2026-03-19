@@ -8,6 +8,7 @@ export const useBiliStore = defineStore('bili', () => {
     const emotionData = ref<BiliAPIResponse.GetEmoticons.EmoticonPackage[]>([])
     const BilibiliLive = ref<Window['BilibiliLive'] | null>(null)
     const infoByuser = ref<BiliAPIResponse.GetInfoByUser.Data | null>(null)
+    const masterInfo = ref<BiliAPIResponse.MasterInfo.Data | null>(null)
 
-    return { cookies, loginInfo, emotionData, BilibiliLive, infoByuser }
+    return { cookies, loginInfo, emotionData, BilibiliLive, infoByuser, masterInfo }
 })
