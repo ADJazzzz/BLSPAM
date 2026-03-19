@@ -34,19 +34,33 @@ const roomEmotionPackages = computed(() =>
 const commonEmotionPackages = computed(() =>
     allEmotionPackages.value.filter((data) => data.pkg_type !== 2)
 )
-const currentRoomID = computed(() =>
-    String(biliStore.masterInfo?.room_id)
+const currentRoomID = computed<number | null>(
+    () => biliStore.BilibiliLive?.ROOMID ?? biliStore.masterInfo?.room_id ?? null
 )
-const currentRoomEmotionMsg = computed(
-    () => moduleStore.moduleConfig.EmotionSpam.msgByRoom[currentRoomID.value] ?? []
+const currentRoomKey = computed<string | null>(() =>
+    currentRoomID.value !== null ? String(currentRoomID.value) : null
 )
+const currentRoomEmotionMsg = computed(() => {
+    if (!currentRoomKey.value) return []
+    return moduleStore.moduleConfig.EmotionSpam.msgByRoom[currentRoomKey.value] ?? []
+})
 const selectedEmotionPackage = computed(() => {
     const selectedID = moduleStore.moduleConfig.EmotionSpam.emotionViewSelectedID
     return allEmotionPackages.value.find((data) => data.pkg_id === selectedID) ?? null
 })
+const selectedEmotionList = computed(() => {
+    const allEmotions = allEmotionPackages.value.flatMap((pkg) => pkg.emoticons)
+    return currentRoomEmotionMsg.value
+        .map((unique) => allEmotions.find((emotion) => emotion.emoticon_unique === unique))
+        .filter((emotion): emotion is NonNullable<typeof emotion> => Boolean(emotion))
+})
 
 const updateCurrentRoomEmotionMsg = (value: (string | number)[]) => {
-    moduleStore.moduleConfig.EmotionSpam.msgByRoom[currentRoomID.value] = value.map(String)
+    if (!currentRoomKey.value) return
+    moduleStore.moduleConfig.EmotionSpam.msgByRoom[currentRoomKey.value] = value.map(String)
+}
+const handleRemoveSelectedEmotion = (unique: string) => {
+    updateCurrentRoomEmotionMsg(currentRoomEmotionMsg.value.filter((item) => item !== unique))
 }
 
 const handleClick = (id: number) => {
@@ -109,11 +123,58 @@ watch(
 
 <template>
     <n-page-header subtitle="表情独轮车，好用爱用" style="margin-bottom: 10px" />
+    <div id="selectedEmo" style="margin-bottom: 10px">
+        <n-flex justify="space-between" align="center" style="margin-bottom: 6px">
+            <span>已选表情</span>
+            <n-button
+                text
+                type="info"
+                size="small"
+                :disabled="
+                    !currentRoomKey ||
+                    currentRoomEmotionMsg.length === 0 ||
+                    moduleStore.moduleConfig.EmotionSpam.enable
+                "
+                @click="updateCurrentRoomEmotionMsg([])"
+            >
+                清空当前房间所有已选表情
+            </n-button>
+        </n-flex>
+        <n-flex v-if="selectedEmotionList.length > 0" wrap>
+            <n-flex
+                v-for="emotion in selectedEmotionList"
+                :key="emotion.emoticon_id"
+                align="center"
+                style="padding: 4px 6px"
+            >
+                <n-popover>
+                    <template #trigger>
+                        <n-avatar
+                            :color="uiStore.uiConfig.theme === 'dark' ? '#101014' : 'white'"
+                            :size="36"
+                            :src="emotion.url"
+                            object-fit="contain"
+                        />
+                    </template>
+                    <span>{{ emotion.emoji }}</span>
+                </n-popover>
+                <n-button
+                    text
+                    type="error"
+                    size="tiny"
+                    :disabled="moduleStore.moduleConfig.EmotionSpam.enable"
+                    @click="handleRemoveSelectedEmotion(emotion.emoticon_unique)"
+                >
+                    ❌
+                </n-button>
+            </n-flex>
+        </n-flex>
+        <span v-else style="color: #909399">当前房间暂无已选表情</span>
+    </div>
+    <n-divider style="margin: 5px 0" />
     <div id="emotionTab">
         <div v-if="roomEmotionPackages.length > 0" style="margin-bottom: 8px">
-            <div style="margin-bottom: 4px">
-                房间表情
-            </div>
+            <div style="margin-bottom: 4px">房间表情</div>
             <n-flex justify="start">
                 <div
                     style="padding: 0 5px"
@@ -150,7 +211,7 @@ watch(
             </n-flex>
         </div>
     </div>
-    <n-divider style="margin: 15px 0" />
+    <n-divider style="margin: 8px 0" />
     <div
         id="emotionContent"
         v-if="moduleStore.moduleConfig.EmotionSpam.emotionViewSelectedID !== null"
@@ -158,6 +219,7 @@ watch(
         <n-checkbox-group
             :value="currentRoomEmotionMsg"
             @update:value="updateCurrentRoomEmotionMsg"
+            :disabled="!currentRoomKey"
         >
             <n-flex style="padding-top: 5px">
                 <n-checkbox
@@ -228,13 +290,6 @@ watch(
             style="margin-top: 10px"
             v-if="!moduleStore.moduleConfig.EmotionSpam.enable"
         >
-            <n-button
-                :disabled="currentRoomEmotionMsg.length === 0"
-                round
-                type="info"
-                @click="updateCurrentRoomEmotionMsg([])"
-                >清空</n-button
-            >
             <n-button round @click="uiStore.uiConfig.isShowPanel = false">取消</n-button>
             <n-button round type="primary" @click="handleStartSpamer">开车</n-button>
         </n-flex>
