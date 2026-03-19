@@ -34,6 +34,13 @@ class Storage {
         // 递归处理
         Object.keys(default_config_item).forEach((key) => {
             if (_.isPlainObject(default_config_item[key])) {
+                // 空对象默认值表示字典类型，保留当前配置中的动态键
+                if (Object.keys(default_config_item[key]).length === 0) {
+                    result[key] = _.isPlainObject(current_config_item?.[key])
+                        ? current_config_item[key]
+                        : default_config_item[key]
+                    return
+                }
                 // 对嵌套对象递归合并
                 result[key] = this.mergeConfigs(cleanConfig[key], default_config_item[key])
             } else {

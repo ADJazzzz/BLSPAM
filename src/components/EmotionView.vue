@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed, watch } from 'vue'
 import {
     NAvatar,
     NDivider,
@@ -24,11 +25,32 @@ const uiStore = useUIStore()
 const message = useMessage()
 const emStop = new stop('StopEmotionSpamer')
 
+const allEmotionPackages = computed(() =>
+    biliStore.emotionData.filter((data) => data.pkg_id !== 100)
+)
+const roomEmotionPackages = computed(() =>
+    allEmotionPackages.value.filter((data) => data.pkg_type === 2)
+)
+const commonEmotionPackages = computed(() =>
+    allEmotionPackages.value.filter((data) => data.pkg_type !== 2)
+)
+const currentRoomID = computed(() =>
+    String(biliStore.masterInfo?.room_id)
+)
+const currentRoomEmotionMsg = computed(
+    () => moduleStore.moduleConfig.EmotionSpam.msgByRoom[currentRoomID.value] ?? []
+)
+const selectedEmotionPackage = computed(() => {
+    const selectedID = moduleStore.moduleConfig.EmotionSpam.emotionViewSelectedID
+    return allEmotionPackages.value.find((data) => data.pkg_id === selectedID) ?? null
+})
+
+const updateCurrentRoomEmotionMsg = (value: (string | number)[]) => {
+    moduleStore.moduleConfig.EmotionSpam.msgByRoom[currentRoomID.value] = value.map(String)
+}
+
 const handleClick = (id: number) => {
     moduleStore.moduleConfig.EmotionSpam.emotionViewSelectedID = id
-}
-const handleUpdateValue = (value: (string | number)[]) => {
-    moduleStore.moduleConfig.EmotionSpam.msg = value.map(String)
 }
 
 const rules = {
@@ -50,7 +72,7 @@ const rules = {
     }
 }
 const handleStartSpamer = () => {
-    if (moduleStore.moduleConfig.EmotionSpam.msg.length === 0) {
+    if (currentRoomEmotionMsg.value.length === 0) {
         message.error('没选表情你车什么?')
     } else if (
         moduleStore.moduleConfig.EmotionSpam.timeinterval === null ||
@@ -68,42 +90,79 @@ const handleStartSpamer = () => {
 const handleStopSpamer = () => {
     emStop.stop()
 }
+
+watch(
+    allEmotionPackages,
+    (packages) => {
+        if (packages.length === 0) return
+
+        const selectedID = moduleStore.moduleConfig.EmotionSpam.emotionViewSelectedID
+        const hasSelectedPackage = packages.some((item) => item.pkg_id === selectedID)
+
+        if (!hasSelectedPackage) {
+            moduleStore.moduleConfig.EmotionSpam.emotionViewSelectedID = packages[0].pkg_id
+        }
+    },
+    { immediate: true }
+)
 </script>
 
 <template>
     <n-page-header subtitle="表情独轮车，好用爱用" style="margin-bottom: 10px" />
-    <n-flex id="emotionTab" justify="start">
-        <div
-            style="padding: 0 5px"
-            v-for="data in biliStore.emotionData.filter((data) => data.pkg_id !== 100)"
-            :key="data.pkg_id"
-            :id="data.pkg_id.toString()"
-            @click="handleClick(data.pkg_id)"
-        >
-            <n-avatar
-                :color="uiStore.uiConfig.theme === 'dark' ? '#101014' : 'white'"
-                :src="data.current_cover"
-                :size="35"
-            />
+    <div id="emotionTab">
+        <div v-if="roomEmotionPackages.length > 0" style="margin-bottom: 8px">
+            <div style="margin-bottom: 4px">
+                房间表情
+            </div>
+            <n-flex justify="start">
+                <div
+                    style="padding: 0 5px"
+                    v-for="data in roomEmotionPackages"
+                    :key="data.pkg_id"
+                    :id="data.pkg_id.toString()"
+                    @click="handleClick(data.pkg_id)"
+                >
+                    <n-avatar
+                        :color="uiStore.uiConfig.theme === 'dark' ? '#101014' : 'white'"
+                        :src="data.current_cover"
+                        :size="35"
+                    />
+                </div>
+            </n-flex>
         </div>
-    </n-flex>
+
+        <div>
+            <div style="margin-bottom: 4px">通用表情</div>
+            <n-flex justify="start">
+                <div
+                    style="padding: 0 5px"
+                    v-for="data in commonEmotionPackages"
+                    :key="data.pkg_id"
+                    :id="data.pkg_id.toString()"
+                    @click="handleClick(data.pkg_id)"
+                >
+                    <n-avatar
+                        :color="uiStore.uiConfig.theme === 'dark' ? '#101014' : 'white'"
+                        :src="data.current_cover"
+                        :size="35"
+                    />
+                </div>
+            </n-flex>
+        </div>
+    </div>
     <n-divider style="margin: 15px 0" />
     <div
         id="emotionContent"
         v-if="moduleStore.moduleConfig.EmotionSpam.emotionViewSelectedID !== null"
     >
         <n-checkbox-group
-            v-model:value="moduleStore.moduleConfig.EmotionSpam.msg"
-            @update:value="handleUpdateValue"
+            :value="currentRoomEmotionMsg"
+            @update:value="updateCurrentRoomEmotionMsg"
         >
             <n-flex style="padding-top: 5px">
                 <n-checkbox
                     :value="data.emoticon_unique"
-                    v-for="data in biliStore.emotionData.find(
-                        (data) =>
-                            data.pkg_id ===
-                            moduleStore.moduleConfig.EmotionSpam.emotionViewSelectedID
-                    )?.emoticons"
+                    v-for="data in selectedEmotionPackage?.emoticons"
                     :key="data.emoticon_id"
                     :disabled="data.perm === 0 || moduleStore.moduleConfig.EmotionSpam.enable"
                 >
@@ -170,10 +229,10 @@ const handleStopSpamer = () => {
             v-if="!moduleStore.moduleConfig.EmotionSpam.enable"
         >
             <n-button
-                :disabled="moduleStore.moduleConfig.EmotionSpam.msg.length === 0"
+                :disabled="currentRoomEmotionMsg.length === 0"
                 round
                 type="info"
-                @click="moduleStore.moduleConfig.EmotionSpam.msg = []"
+                @click="updateCurrentRoomEmotionMsg([])"
                 >清空</n-button
             >
             <n-button round @click="uiStore.uiConfig.isShowPanel = false">取消</n-button>

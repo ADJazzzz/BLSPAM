@@ -85,11 +85,11 @@ class EmotionSpamer extends BaseModule {
         this.moduleStore.emitter.off('EmotionSpam')
         this.cleanUP()
         this.moduleStore.emitter.on('EmotionSpam', async () => {
-            const msg = this.config.msg
             const roomid = useBiliStore().BilibiliLive?.ROOMID
             const formattedTimeInterval = this.formatTime(this.config.timeinterval)
             const formattedTime = this.formatTime(this.config.timelimit)
             if (roomid) {
+                const msg = this.config.msgByRoom[String(roomid)] ?? []
                 await this.cycleSendEmotion(msg, roomid, formattedTimeInterval, formattedTime)
             }
         })

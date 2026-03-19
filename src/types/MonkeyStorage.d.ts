@@ -11,7 +11,7 @@ interface modulesConfig {
         enable: boolean
         timeinterval: number
         emotionViewSelectedID: number
-        msg: string[]
+        msgByRoom: Record<string, string[]>
         timelimit: number
     }
 
