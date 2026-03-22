@@ -46,7 +46,8 @@ const getRoomInfoText = () => {
             {
                 uname,
                 roomid: roomID,
-                statusText: getRoomStatusText(moduleStore.moduleConfig)
+                statusText: getRoomStatusText(moduleStore.moduleConfig),
+                updateTime: Date.now()
             }
         ])
     }

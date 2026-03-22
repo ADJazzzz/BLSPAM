@@ -4,6 +4,9 @@ import defaultValues from './defaultValues'
 import { modulesConfig, uiConfig, roomInfoItem } from '@/types'
 
 class Storage {
+    public static readonly roomInfoHeartbeatInterval = 5000
+    private static readonly roomInfoTTL = 15000
+
     private static normalizeRoomInfo(roomInfo: any): roomInfoItem[] {
         if (!Array.isArray(roomInfo)) return []
 
@@ -13,6 +16,7 @@ class Storage {
                 const uname = (item as { uname?: string }).uname
                 const roomid = (item as { roomid?: number }).roomid
                 const statusText = (item as { statusText?: string }).statusText
+                const updateTime = (item as { updateTime?: number }).updateTime
                 if (typeof uname !== 'string' || uname.length === 0) return null
                 if (typeof roomid !== 'number' || !Number.isFinite(roomid)) return null
                 return {
@@ -21,10 +25,20 @@ class Storage {
                     statusText:
                         typeof statusText === 'string' && statusText.length > 0
                             ? statusText
-                            : '空闲中'
+                            : '空闲中',
+                    updateTime:
+                        typeof updateTime === 'number' && Number.isFinite(updateTime)
+                            ? updateTime
+                            : Date.now()
                 }
             })
             .filter((item): item is roomInfoItem => item !== null)
+    }
+
+    public static cleanRoomInfo(roomInfo: any, now: number = Date.now()): roomInfoItem[] {
+        return this.normalizeRoomInfo(roomInfo).filter(
+            (item) => now - item.updateTime <= this.roomInfoTTL
+        )
     }
 
     private static mergeConfigs(current_config_item: any, default_config_item: any): any {
@@ -56,16 +70,28 @@ class Storage {
     public static setUiConfig(uiConfig: uiConfig) {
         GM_setValue('ui', {
             ...uiConfig,
-            roomInfo: this.normalizeRoomInfo(uiConfig.roomInfo)
+            roomInfo: this.cleanRoomInfo(uiConfig.roomInfo)
         })
     }
 
     public static getUiConfig(): uiConfig {
         const currentUiConfig = GM_getValue('ui', {})
         const mergedUiConfig = this.mergeConfigs(currentUiConfig, defaultValues.ui) as uiConfig
+        const roomInfo = this.cleanRoomInfo(mergedUiConfig.roomInfo)
+
+        if (
+            roomInfo.length !==
+            (Array.isArray(mergedUiConfig.roomInfo) ? mergedUiConfig.roomInfo.length : 0)
+        ) {
+            GM_setValue('ui', {
+                ...mergedUiConfig,
+                roomInfo
+            })
+        }
+
         return {
             ...mergedUiConfig,
-            roomInfo: this.normalizeRoomInfo(mergedUiConfig.roomInfo)
+            roomInfo
         }
     }
 

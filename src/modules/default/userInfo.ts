@@ -111,7 +111,12 @@ class UserInfo extends BaseModule {
         const latestUiConfig = Storage.getUiConfig()
         const roomInfo = Array.isArray(latestUiConfig.roomInfo) ? latestUiConfig.roomInfo : []
         const statusText = getRoomStatusText(moduleStore.moduleConfig)
-        const nextRoomInfo = updateRoomInfoItem(roomInfo, { uname, roomid, statusText })
+        const nextRoomInfo = updateRoomInfoItem(roomInfo, {
+            uname,
+            roomid,
+            statusText,
+            updateTime: Date.now()
+        })
 
         latestUiConfig.roomInfo = nextRoomInfo
         Storage.setUiConfig(latestUiConfig)
@@ -120,6 +125,18 @@ class UserInfo extends BaseModule {
 
     private roomInfoStatusSync(roomid: number, uname: string) {
         this.updateRoomInfo(roomid, uname)
+
+        const heartbeatTimer = window.setInterval(() => {
+            this.updateRoomInfo(roomid, uname)
+        }, Storage.roomInfoHeartbeatInterval)
+
+        const stopHeartbeat = () => {
+            window.clearInterval(heartbeatTimer)
+        }
+
+        window.addEventListener('beforeunload', stopHeartbeat, { once: true })
+        window.addEventListener('pagehide', stopHeartbeat, { once: true })
+        window.addEventListener('unload', stopHeartbeat, { once: true })
 
         const moduleStore = useModuleStore()
         watch(
@@ -146,6 +163,8 @@ class UserInfo extends BaseModule {
             }
         }
 
+        window.addEventListener('beforeunload', removeRoomInfo, { once: true })
+        window.addEventListener('pagehide', removeRoomInfo, { once: true })
         window.addEventListener('unload', removeRoomInfo, { once: true })
     }
 

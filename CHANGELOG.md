@@ -1,5 +1,11 @@
 ## NEXT_VERSION
 
+## [1.6.1](https://github.com/ADJazzzz/BLSPAM/compare/1.6.0...1.6.1) 2026-03-22
+
+### 修复
+
+- 当直接关闭浏览器时，不清理关闭时残留信息[(#45)](https://github.com/ADJazzzz/BLSPAM/issues/45)
+
 ## [1.6.0](https://github.com/ADJazzzz/BLSPAM/compare/1.5.0...1.6.0) 2026-03-19
 
 ### 新增
