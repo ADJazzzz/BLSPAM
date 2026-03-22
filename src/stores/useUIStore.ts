@@ -44,8 +44,7 @@ export const useUIStore = defineStore('ui', () => {
     }
 
     const applyRoomInfo = (roomInfo: any) => {
-        if (!Array.isArray(roomInfo)) return
-        uiConfig.roomInfo = roomInfo
+        uiConfig.roomInfo = Storage.cleanRoomInfo(roomInfo)
     }
     const multiSync = () => {
         if (typeof GM_addValueChangeListener === 'function') {

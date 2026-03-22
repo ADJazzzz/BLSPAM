@@ -51,6 +51,7 @@ type roomInfoItem = {
     uname: string
     roomid: number
     statusText: string
+    updateTime: number
 }
 
 type favoritesTabPanels = {
