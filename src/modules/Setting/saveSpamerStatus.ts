@@ -3,6 +3,12 @@ import { useBiliStore } from '@/stores/useBiliStore'
 import { useDiscreteAPI } from '@/utils/ui'
 import BaseModule from '../BaseModule'
 
+type RoomSpamerStatus = {
+    TextSpam: boolean
+    EmotionSpam: boolean
+    Favorites: boolean
+}
+
 class SaveSpamerStatus extends BaseModule {
     config = this.moduleStore.moduleConfig.setting.saveSpamerStatus
 
@@ -11,7 +17,7 @@ class SaveSpamerStatus extends BaseModule {
         return roomid ? String(roomid) : null
     }
 
-    private ensureRoomStatus(roomKey: string) {
+    private ensureRoomStatus(roomKey: string): RoomSpamerStatus {
         const roomStatus = this.config.roomStatus
         const hasStoredRooms = Object.keys(roomStatus).length > 0
         if (!roomStatus[roomKey]) {
@@ -31,11 +37,7 @@ class SaveSpamerStatus extends BaseModule {
         return roomStatus[roomKey]
     }
 
-    private applyRoomStatus(status: {
-        TextSpam: boolean
-        EmotionSpam: boolean
-        Favorites: boolean
-    }) {
+    private applyRoomStatus(status: RoomSpamerStatus) {
         this.moduleStore.moduleConfig.TextSpam.enable = status.TextSpam
         this.moduleStore.moduleConfig.EmotionSpam.enable = status.EmotionSpam
         this.moduleStore.moduleConfig.Favorites.enable = status.Favorites
