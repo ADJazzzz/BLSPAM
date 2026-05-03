@@ -25,6 +25,16 @@ const uiStore = useUIStore()
 const message = useMessage()
 const emStop = new stop('StopEmotionSpamer')
 
+const hasValidTimeInterval = () => {
+    const timeinterval = moduleStore.moduleConfig.EmotionSpam.timeinterval
+    return (
+        timeinterval.min !== null &&
+        timeinterval.max !== null &&
+        timeinterval.min >= 1 &&
+        timeinterval.max >= timeinterval.min
+    )
+}
+
 const allEmotionPackages = computed(() =>
     biliStore.emotionData.filter((data) => data.pkg_id !== 100)
 )
@@ -70,10 +80,10 @@ const handleClick = (id: number) => {
 const rules = {
     timeinterval: {
         required: true,
-        message: '最小为1',
+        message: '最小为1，最大值需大于等于最小值',
         trigger: ['input', 'blur'],
         validator: () => {
-            return moduleStore.moduleConfig.EmotionSpam.timeinterval !== null
+            return hasValidTimeInterval()
         }
     },
     timelimit: {
@@ -89,7 +99,7 @@ const handleStartSpamer = () => {
     if (currentRoomEmotionMsg.value.length === 0) {
         message.error('没选表情你车什么?')
     } else if (
-        moduleStore.moduleConfig.EmotionSpam.timeinterval === null ||
+        !hasValidTimeInterval() ||
         moduleStore.moduleConfig.EmotionSpam.timelimit === null
     ) {
         message.error('没参数你车什么?')
@@ -250,19 +260,32 @@ watch(
                 <n-form-item label="时间间隔" path="timeinterval">
                     <n-popover trigger="hover" style="max-width: 300px">
                         <template #trigger>
-                            <n-input-number
-                                clearable
-                                :show-button="false"
-                                v-model:value="moduleStore.moduleConfig.EmotionSpam.timeinterval"
-                                placeholder="默认5，单位为秒"
-                                min="1"
-                                :precision="0"
-                            >
-                                <template #suffix> 秒 </template>
-                            </n-input-number>
+                            <n-flex align="center">
+                                <n-input-number
+                                    clearable
+                                    :show-button="false"
+                                    v-model:value="moduleStore.moduleConfig.EmotionSpam.timeinterval.min"
+                                    placeholder="最小"
+                                    min="1"
+                                    :precision="0"
+                                >
+                                    <template #suffix> 秒 </template>
+                                </n-input-number>
+                                <span style="padding: 0 4px">~</span>
+                                <n-input-number
+                                    clearable
+                                    :show-button="false"
+                                    v-model:value="moduleStore.moduleConfig.EmotionSpam.timeinterval.max"
+                                    placeholder="最大"
+                                    :min="moduleStore.moduleConfig.EmotionSpam.timeinterval.min ?? 1"
+                                    :precision="0"
+                                >
+                                    <template #suffix> 秒 </template>
+                                </n-input-number>
+                            </n-flex>
                         </template>
                         <span
-                            >弹幕发送时间间隔，默认为5秒，也是b站最快的发弹幕频率，当然这里可以设置小于该值</span
+                            >弹幕发送时间间隔将在选定范围内随机，默认5秒，也是b站最快的发弹幕频率，当然这里可以设置小于该值</span
                         >
                     </n-popover>
                 </n-form-item>

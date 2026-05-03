@@ -1,15 +1,20 @@
+type timeIntervalRange = {
+    min: number
+    max: number
+}
+
 interface modulesConfig {
     TextSpam: {
         enable: boolean
         msg: string
-        timeinterval: number
+        timeinterval: timeIntervalRange
         textinterval: number
         timelimit: number
     }
 
     EmotionSpam: {
         enable: boolean
-        timeinterval: number
+        timeinterval: timeIntervalRange
         emotionViewSelectedID: number
         msgByRoom: Record<string, string[]>
         timelimit: number
@@ -17,7 +22,7 @@ interface modulesConfig {
 
     Favorites: {
         enable: boolean
-        timeinterval: number
+        timeinterval: timeIntervalRange
         favoritesTabsValue: number
         favoritesTabPanels: favoritesTabPanels[]
     }

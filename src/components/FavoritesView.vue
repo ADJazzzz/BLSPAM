@@ -25,13 +25,23 @@ const message = useMessage()
 const dialog = useDialog()
 const favStop = new stop('StopFavoritesSpamer')
 
+const hasValidTimeInterval = () => {
+    const timeinterval = moduleStore.moduleConfig.Favorites.timeinterval
+    return (
+        timeinterval.min !== null &&
+        timeinterval.max !== null &&
+        timeinterval.min >= 1 &&
+        timeinterval.max >= timeinterval.min
+    )
+}
+
 const rules = {
     timeinterval: {
         required: true,
-        message: '最小为1',
+        message: '最小为1，最大值需大于等于最小值',
         trigger: ['input', 'blur'],
         validator: () => {
-            return moduleStore.moduleConfig.Favorites.timeinterval !== null
+            return hasValidTimeInterval()
         }
     }
 }
@@ -91,7 +101,7 @@ const handleStartSpamer = () => {
             message.error(`${panels.tab}还没填内容呢`)
         })
     } else {
-        if (moduleStore.moduleConfig.Favorites.timeinterval === null) {
+        if (!hasValidTimeInterval()) {
             message.error('没参数你车什么?')
         } else {
             uiStore.uiConfig.isShowPanel = false
@@ -134,19 +144,32 @@ const handleSendToText = () => {
                 <n-form-item label="时间间隔" path="timeinterval">
                     <n-popover trigger="hover" style="max-width: 300px" placement="bottom">
                         <template #trigger>
-                            <n-input-number
-                                clearable
-                                :show-button="false"
-                                v-model:value="moduleStore.moduleConfig.Favorites.timeinterval"
-                                placeholder="默认5，单位为秒"
-                                min="1"
-                                :precision="0"
-                            >
-                                <template #suffix> 秒 </template>
-                            </n-input-number>
+                            <n-flex align="center">
+                                <n-input-number
+                                    clearable
+                                    :show-button="false"
+                                    v-model:value="moduleStore.moduleConfig.Favorites.timeinterval.min"
+                                    placeholder="最小"
+                                    min="1"
+                                    :precision="0"
+                                >
+                                    <template #suffix> 秒 </template>
+                                </n-input-number>
+                                <span style="padding: 0 4px">~</span>
+                                <n-input-number
+                                    clearable
+                                    :show-button="false"
+                                    v-model:value="moduleStore.moduleConfig.Favorites.timeinterval.max"
+                                    placeholder="最大"
+                                    :min="moduleStore.moduleConfig.Favorites.timeinterval.min ?? 1"
+                                    :precision="0"
+                                >
+                                    <template #suffix> 秒 </template>
+                                </n-input-number>
+                            </n-flex>
                         </template>
                         <span
-                            >弹幕发送时间间隔，默认为5秒，也是b站最快的发弹幕频率，当然这里可以设置小于该值</span
+                            >弹幕发送时间间隔将在选定范围内随机，默认5秒，也是b站最快的发弹幕频率，当然这里可以设置小于该值</span
                         >
                     </n-popover>
                 </n-form-item>

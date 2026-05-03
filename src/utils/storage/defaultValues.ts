@@ -17,20 +17,29 @@ export default {
         TextSpam: {
             enable: false,
             msg: '车',
-            timeinterval: 5,
+            timeinterval: {
+                min: 5,
+                max: 5
+            },
             textinterval: 20,
             timelimit: 0
         },
         EmotionSpam: {
             enable: false,
-            timeinterval: 5,
+            timeinterval: {
+                min: 5,
+                max: 5
+            },
             emotionViewSelectedID: 1,
             msgByRoom: {},
             timelimit: 0
         },
         Favorites: {
             enable: false,
-            timeinterval: 5,
+            timeinterval: {
+                min: 5,
+                max: 5
+            },
             favoritesTabsValue: 1,
             favoritesTabPanels: [
                 {

@@ -3,6 +3,11 @@ import { useDiscreteAPI } from '@/utils/ui'
 import { useBiliStore } from '@/stores/useBiliStore'
 import BaseModule from '../BaseModule'
 
+type TimeIntervalRange = {
+    min: number
+    max: number
+}
+
 class EmotionSpamer extends BaseModule {
     config = this.moduleStore.moduleConfig.EmotionSpam
     private intervalId: NodeJS.Timeout | null = null
@@ -11,9 +16,24 @@ class EmotionSpamer extends BaseModule {
         return time * 1000
     }
 
+    private normalizeInterval(timeinterval: TimeIntervalRange): TimeIntervalRange {
+        return {
+            min: Math.min(timeinterval.min, timeinterval.max),
+            max: Math.max(timeinterval.min, timeinterval.max)
+        }
+    }
+
+    private getRandomInterval(timeinterval: TimeIntervalRange): number {
+        const normalizedInterval = this.normalizeInterval(timeinterval)
+        const min = this.formatTime(normalizedInterval.min)
+        const max = this.formatTime(normalizedInterval.max)
+        if (max <= min) return min
+        return Math.floor(Math.random() * (max - min) + min)
+    }
+
     private cleanUP(): void {
         if (this.intervalId) {
-            clearInterval(this.intervalId)
+            clearTimeout(this.intervalId)
             this.intervalId = null
         }
     }
@@ -21,7 +41,7 @@ class EmotionSpamer extends BaseModule {
     private async cycleSendEmotion(
         emotions: string[],
         roomid: number,
-        timeinterval: number,
+        timeinterval: TimeIntervalRange,
         timelimit: number
     ): Promise<void> {
         let currentIndex = 0
@@ -57,14 +77,16 @@ class EmotionSpamer extends BaseModule {
                 if (currentIndex >= emotions.length) {
                     currentIndex = 0
                 }
-            } else {
-                this.cleanUP()
+                this.intervalId = setTimeout(
+                    sendNextEmotion,
+                    this.getRandomInterval(timeinterval)
+                )
+                return
             }
+            this.cleanUP()
         }
 
         await sendNextEmotion()
-
-        this.intervalId = setInterval(sendNextEmotion, timeinterval)
 
         if (timelimit !== 0) {
             setTimeout(() => {
@@ -86,11 +108,10 @@ class EmotionSpamer extends BaseModule {
         this.cleanUP()
         this.moduleStore.emitter.on('EmotionSpam', async () => {
             const roomid = useBiliStore().BilibiliLive?.ROOMID
-            const formattedTimeInterval = this.formatTime(this.config.timeinterval)
             const formattedTime = this.formatTime(this.config.timelimit)
             if (roomid) {
                 const msg = this.config.msgByRoom[String(roomid)] ?? []
-                await this.cycleSendEmotion(msg, roomid, formattedTimeInterval, formattedTime)
+                await this.cycleSendEmotion(msg, roomid, this.config.timeinterval, formattedTime)
             }
         })
     }

@@ -101,6 +101,19 @@ class Storage {
 
     public static getModuleConfig(): modulesConfig {
         const currentModuleConfig = GM_getValue('modules', {})
+        const normalizeTimeInterval = (config: any) => {
+            if (typeof config?.timeinterval === 'number' && Number.isFinite(config.timeinterval)) {
+                config.timeinterval = {
+                    min: config.timeinterval,
+                    max: config.timeinterval
+                }
+            }
+        }
+
+        normalizeTimeInterval(currentModuleConfig?.TextSpam)
+        normalizeTimeInterval(currentModuleConfig?.EmotionSpam)
+        normalizeTimeInterval(currentModuleConfig?.Favorites)
+
         return this.mergeConfigs(currentModuleConfig, defaultValues.modules)
     }
 }
