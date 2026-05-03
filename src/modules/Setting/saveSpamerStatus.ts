@@ -39,7 +39,7 @@ class SaveSpamerStatus extends BaseModule {
     }
 
     private watchRoomStatus(roomKey: string) {
-        watch(
+        const stop = watch(
             () => [
                 this.moduleStore.moduleConfig.TextSpam.enable,
                 this.moduleStore.moduleConfig.EmotionSpam.enable,
@@ -54,6 +54,14 @@ class SaveSpamerStatus extends BaseModule {
             },
             { immediate: true }
         )
+
+        const cleanup = () => {
+            stop()
+        }
+
+        window.addEventListener('beforeunload', cleanup, { once: true })
+        window.addEventListener('pagehide', cleanup, { once: true })
+        window.addEventListener('unload', cleanup, { once: true })
     }
 
     public async run() {
