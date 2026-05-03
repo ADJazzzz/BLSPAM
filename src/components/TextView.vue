@@ -10,7 +10,8 @@ import {
     NPageHeader,
     useMessage,
     NIcon,
-    NAvatar
+    NAvatar,
+    NSwitch
 } from 'naive-ui'
 import { useUIStore } from '@/stores/useUIStore'
 import { useModuleStore } from '@/stores/useModuleStore'
@@ -37,6 +38,13 @@ const handleStartSpamer = () => {
         moduleStore.moduleConfig.TextSpam.timelimit === null
     ) {
         message.error('没参数你车什么?')
+    } else if (
+        moduleStore.moduleConfig.TextSpam.randomize &&
+        (moduleStore.moduleConfig.TextSpam.timeintervalMax === null ||
+            moduleStore.moduleConfig.TextSpam.timeintervalMax <
+                moduleStore.moduleConfig.TextSpam.timeinterval)
+    ) {
+        message.error('最大间隔不能小于最小间隔')
     } else {
         uiStore.uiConfig.isShowPanel = false
         moduleStore.moduleConfig.TextSpam.enable = true
@@ -63,6 +71,19 @@ const rules = {
         trigger: ['input', 'blur'],
         validator: () => {
             return moduleStore.moduleConfig.TextSpam.timeinterval !== null
+        }
+    },
+    timeintervalMax: {
+        required: true,
+        message: '最小为1，且不能小于最小间隔',
+        trigger: ['input', 'blur'],
+        validator: () => {
+            if (!moduleStore.moduleConfig.TextSpam.randomize) return true
+            return (
+                moduleStore.moduleConfig.TextSpam.timeintervalMax !== null &&
+                moduleStore.moduleConfig.TextSpam.timeintervalMax >=
+                    moduleStore.moduleConfig.TextSpam.timeinterval
+            )
         }
     },
     textinterval: {
@@ -97,7 +118,18 @@ const rules = {
         <n-page-header subtitle="文字独轮车" style="margin-bottom: 10px" />
         <n-form-item :show-label="false">
             <n-flex align="center">
-                <n-form-item label="时间间隔" path="timeinterval">
+                <n-form-item label="随机间隔">
+                    <n-popover trigger="hover" style="max-width: 300px" placement="right">
+                        <template #trigger>
+                            <n-switch v-model:value="moduleStore.moduleConfig.TextSpam.randomize" />
+                        </template>
+                        <span>开启后在选定的最小和最大时间间隔范围内随机发送弹幕</span>
+                    </n-popover>
+                </n-form-item>
+                <n-form-item
+                    :label="moduleStore.moduleConfig.TextSpam.randomize ? '最小时间间隔' : '时间间隔'"
+                    path="timeinterval"
+                >
                     <n-popover trigger="hover" style="max-width: 300px" placement="bottom">
                         <template #trigger>
                             <n-input-number
@@ -114,6 +146,27 @@ const rules = {
                         <span
                             >弹幕发送时间间隔，默认为5秒，也是b站最快的发弹幕频率，当然这里可以设置小于该值</span
                         >
+                    </n-popover>
+                </n-form-item>
+                <n-form-item
+                    v-if="moduleStore.moduleConfig.TextSpam.randomize"
+                    label="最大时间间隔"
+                    path="timeintervalMax"
+                >
+                    <n-popover trigger="hover" style="max-width: 300px" placement="bottom">
+                        <template #trigger>
+                            <n-input-number
+                                clearable
+                                :show-button="false"
+                                v-model:value="moduleStore.moduleConfig.TextSpam.timeintervalMax"
+                                placeholder="默认5，单位为秒"
+                                min="1"
+                                :precision="0"
+                            >
+                                <template #suffix> 秒 </template>
+                            </n-input-number>
+                        </template>
+                        <span>弹幕发送最大时间间隔，将在最小和最大时间间隔范围内随机，与最小时间间隔相同时不随机</span>
                     </n-popover>
                 </n-form-item>
                 <n-form-item label="数量间隔" path="textinterval">

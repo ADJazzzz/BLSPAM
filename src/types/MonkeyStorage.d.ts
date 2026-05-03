@@ -9,6 +9,8 @@ interface modulesConfig {
         enable: boolean
         msg: string
         timeinterval: number
+        timeintervalMax: number
+        randomize: boolean
         textinterval: number
         timelimit: number
     }
@@ -16,6 +18,8 @@ interface modulesConfig {
     EmotionSpam: {
         enable: boolean
         timeinterval: number
+        timeintervalMax: number
+        randomize: boolean
         emotionViewSelectedID: number
         msgByRoom: Record<string, string[]>
         timelimit: number
@@ -23,7 +27,9 @@ interface modulesConfig {
 
     Favorites: {
         enable: boolean
+        timeintervalMax: number
         timeinterval: number
+        randomize: boolean
         favoritesTabsValue: number
         favoritesTabPanels: favoritesTabPanels[]
     }

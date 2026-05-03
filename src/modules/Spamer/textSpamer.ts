@@ -14,11 +14,18 @@ interface SpamConfig {
 class TextSpamer extends BaseModule {
     private textConfig = this.moduleStore.moduleConfig.TextSpam
     private favoritesConfig = this.moduleStore.moduleConfig.Favorites
-    private intervalId: NodeJS.Timeout | null = null
+    private timeoutId: NodeJS.Timeout | null = null
     private timeLimitId: NodeJS.Timeout | null = null
 
     private get roomId(): number | undefined {
         return useBiliStore().BilibiliLive?.ROOMID
+    }
+
+    private getRandomInterval(min: number, max: number): number {
+        if (max > min) {
+            return Math.floor(Math.random() * (max - min + 1) + min)
+        }
+        return min
     }
 
     private formatMsg(msg: string): string {
@@ -43,9 +50,9 @@ class TextSpamer extends BaseModule {
     }
 
     private cleanUP(): void {
-        if (this.intervalId) {
-            clearInterval(this.intervalId)
-            this.intervalId = null
+        if (this.timeoutId) {
+            clearTimeout(this.timeoutId)
+            this.timeoutId = null
         }
         if (this.timeLimitId) {
             clearTimeout(this.timeLimitId)
@@ -82,7 +89,9 @@ class TextSpamer extends BaseModule {
     private createCycleSender(
         msgs: string[],
         roomid: number,
-        timeinterval: number,
+        timeintervalMin: number,
+        timeintervalMax: number,
+        randomize: boolean,
         config: SpamConfig
     ): void {
         let currentIndex = 0
@@ -94,10 +103,14 @@ class TextSpamer extends BaseModule {
             }
             await this.sendMsg(msgs[currentIndex], roomid)
             currentIndex = (currentIndex + 1) % msgs.length
+
+            const delay = randomize
+                ? this.getRandomInterval(timeintervalMin, timeintervalMax)
+                : timeintervalMin
+            this.timeoutId = setTimeout(sendNext, delay)
         }
 
         sendNext()
-        this.intervalId = setInterval(sendNext, timeinterval)
     }
 
     private async startTextSpam(): Promise<void> {
@@ -106,10 +119,18 @@ class TextSpamer extends BaseModule {
 
         const formattedMsg = this.formatMsg(this.textConfig.msg)
         const msgs = this.sliceMsg(formattedMsg, this.textConfig.textinterval)
-        const timeinterval = this.formatTime(this.textConfig.timeinterval)
+        const timeintervalMin = this.formatTime(this.textConfig.timeinterval)
+        const timeintervalMax = this.formatTime(this.textConfig.timeintervalMax)
         const timelimit = this.formatTime(this.textConfig.timelimit)
 
-        this.createCycleSender(msgs, this.roomId, timeinterval, this.textConfig)
+        this.createCycleSender(
+            msgs,
+            this.roomId,
+            timeintervalMin,
+            timeintervalMax,
+            this.textConfig.randomize,
+            this.textConfig
+        )
 
         if (timelimit > 0) {
             this.timeLimitId = setTimeout(() => {
@@ -125,8 +146,16 @@ class TextSpamer extends BaseModule {
         const msgs = this.formatFavorites()
         if (msgs.length === 0) return
 
-        const timeinterval = this.formatTime(this.favoritesConfig.timeinterval)
-        this.createCycleSender(msgs, this.roomId, timeinterval, this.favoritesConfig)
+        const timeintervalMin = this.formatTime(this.favoritesConfig.timeinterval)
+        const timeintervalMax = this.formatTime(this.favoritesConfig.timeintervalMax)
+        this.createCycleSender(
+            msgs,
+            this.roomId,
+            timeintervalMin,
+            timeintervalMax,
+            this.favoritesConfig.randomize,
+            this.favoritesConfig
+        )
     }
 
     public stop(area: SpamArea): void {
