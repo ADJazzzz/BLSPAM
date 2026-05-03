@@ -15,6 +15,7 @@ import {
 import { useUIStore } from '@/stores/useUIStore'
 import { useModuleStore } from '@/stores/useModuleStore'
 import { useBiliStore } from '@/stores/useBiliStore'
+import { updateSaveSpamerStatusList } from '@/utils/ui'
 import EmotionIcon from '@/assets/EmotionIcon.svg?component'
 import stop from '@/modules/Spamer/textSpamer'
 
@@ -42,10 +43,17 @@ const handleStartSpamer = () => {
         moduleStore.emitter.emit('TextSpam', {
             module: 'TextSpam'
         })
+        updateSaveSpamerStatusList(
+            biliStore.BilibiliLive?.ROOMID,
+            'TextSpam',
+            true,
+            biliStore.masterInfo?.info?.uname
+        )
     }
 }
 const handleStopSpamer = () => {
     tStop.stop('text')
+    updateSaveSpamerStatusList(biliStore.BilibiliLive?.ROOMID, 'TextSpam', false)
 }
 
 const rules = {

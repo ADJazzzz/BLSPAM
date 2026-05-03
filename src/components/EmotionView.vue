@@ -17,6 +17,7 @@ import {
 import { useBiliStore } from '@/stores/useBiliStore'
 import { useModuleStore } from '@/stores/useModuleStore'
 import { useUIStore } from '@/stores/useUIStore'
+import { updateSaveSpamerStatusList } from '@/utils/ui'
 import stop from '@/modules/Spamer/emotionSpamer'
 
 const biliStore = useBiliStore()
@@ -99,10 +100,17 @@ const handleStartSpamer = () => {
         moduleStore.emitter.emit('EmotionSpam', {
             module: 'EmotionSpam'
         })
+        updateSaveSpamerStatusList(
+            currentRoomID.value ?? undefined,
+            'EmotionSpam',
+            true,
+            biliStore.masterInfo?.info?.uname
+        )
     }
 }
 const handleStopSpamer = () => {
     emStop.stop()
+    updateSaveSpamerStatusList(currentRoomID.value ?? undefined, 'EmotionSpam', false)
 }
 
 watch(

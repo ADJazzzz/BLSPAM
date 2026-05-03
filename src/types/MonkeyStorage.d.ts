@@ -31,7 +31,7 @@ interface modulesConfig {
     setting: {
         saveSpamerStatus: {
             enable: boolean
-            roomStatus: Record<string, RoomSpamerStatus>
+            saveSpamerStatusList: saveSpamerStatusListItem[]
         }
         autoCheckUpdate: {
             enable: boolean
@@ -52,6 +52,12 @@ interface uiConfig {
     isCollapsed: boolean
     theme: 'dark' | 'light'
     roomInfo: roomInfoItem[]
+}
+
+type saveSpamerStatusListItem = {
+    uname: string
+    roomid: number
+    modules: string[]
 }
 
 type roomInfoItem = {

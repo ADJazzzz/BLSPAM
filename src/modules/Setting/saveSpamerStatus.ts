@@ -1,100 +1,59 @@
-import { watch } from 'vue'
 import { useBiliStore } from '@/stores/useBiliStore'
 import { useDiscreteAPI } from '@/utils/ui'
-import type { RoomSpamerStatus } from '@/types'
 import BaseModule from '../BaseModule'
 
 class SaveSpamerStatus extends BaseModule {
     config = this.moduleStore.moduleConfig.setting.saveSpamerStatus
 
-    private getRoomKey(): string | null {
-        const roomid = useBiliStore().BilibiliLive?.ROOMID
-        return roomid ? String(roomid) : null
-    }
-
-    private ensureRoomStatus(roomKey: string): RoomSpamerStatus {
-        const roomStatus = this.config.roomStatus
-        const hasStoredRooms = Object.keys(roomStatus).length > 0
-        if (!roomStatus[roomKey]) {
-            roomStatus[roomKey] = hasStoredRooms
-                ? {
-                      TextSpam: false,
-                      EmotionSpam: false,
-                      Favorites: false
-                  }
-                : {
-                      TextSpam: this.moduleStore.moduleConfig.TextSpam.enable,
-                      EmotionSpam: this.moduleStore.moduleConfig.EmotionSpam.enable,
-                      Favorites: this.moduleStore.moduleConfig.Favorites.enable
-                  }
-        }
-
-        return roomStatus[roomKey]
-    }
-
-    private applyRoomStatus(status: RoomSpamerStatus) {
-        this.moduleStore.moduleConfig.TextSpam.enable = status.TextSpam
-        this.moduleStore.moduleConfig.EmotionSpam.enable = status.EmotionSpam
-        this.moduleStore.moduleConfig.Favorites.enable = status.Favorites
-    }
-
-    private watchRoomStatus(roomKey: string) {
-        const stop = watch(
-            () => [
-                this.moduleStore.moduleConfig.TextSpam.enable,
-                this.moduleStore.moduleConfig.EmotionSpam.enable,
-                this.moduleStore.moduleConfig.Favorites.enable
-            ],
-            ([textEnabled, emotionEnabled, favoritesEnabled]) => {
-                this.config.roomStatus[roomKey] = {
-                    TextSpam: textEnabled,
-                    EmotionSpam: emotionEnabled,
-                    Favorites: favoritesEnabled
-                }
-            },
-            { immediate: true }
-        )
-
-        const cleanup = () => {
-            stop()
-        }
-
-        window.addEventListener('beforeunload', cleanup, { once: true })
-        window.addEventListener('pagehide', cleanup, { once: true })
-        window.addEventListener('unload', cleanup, { once: true })
-    }
-
     public async run() {
         if (this.config.enable) {
-            const roomKey = this.getRoomKey()
-            if (!roomKey) return
+            const biliStore = useBiliStore()
+            const currentRoomId = biliStore.BilibiliLive?.ROOMID
 
-            this.logger.log('将恢复当前直播间独轮车开关状态')
-            const roomStatus = this.ensureRoomStatus(roomKey)
-            this.applyRoomStatus(roomStatus)
-            this.watchRoomStatus(roomKey)
+            if (!currentRoomId) {
+                this.logger.log('未检测到房间ID，跳过恢复')
+                this.moduleStore.moduleConfig.TextSpam.enable = false
+                this.moduleStore.moduleConfig.EmotionSpam.enable = false
+                this.moduleStore.moduleConfig.Favorites.enable = false
+                return
+            }
+
+            const savedEntry = this.config.saveSpamerStatusList.find(
+                (item) => item.roomid === currentRoomId
+            )
+            const modulesToRestore = savedEntry?.modules ?? []
+
+            // 先同步全局 enable 标志为当前房间的实际状态，确保 UI 跨房间正确
+            this.moduleStore.moduleConfig.TextSpam.enable = modulesToRestore.includes('TextSpam')
+            this.moduleStore.moduleConfig.EmotionSpam.enable =
+                modulesToRestore.includes('EmotionSpam')
+            this.moduleStore.moduleConfig.Favorites.enable = modulesToRestore.includes('Favorites')
+
+            if (modulesToRestore.length === 0) {
+                this.logger.log(`房间 ${currentRoomId} 无待恢复的独轮车状态`)
+                return
+            }
+
+            this.logger.log(
+                `将在房间 ${currentRoomId} 恢复独轮车状态: ${modulesToRestore.join(', ')}`
+            )
+
+            const uname = savedEntry?.uname ?? '未知用户'
 
             setTimeout(() => {
-                const modules = ['TextSpam', 'EmotionSpam', 'Favorites'] as const
-                let hasRestored = false
-                for (const module of modules) {
-                    if (roomStatus[module]) {
-                        this.moduleStore.emitter.emit(module, { module })
-                        hasRestored = true
-                    }
+                for (const module of modulesToRestore) {
+                    ;(this.moduleStore.emitter.emit as any)(module, { module })
                 }
 
-                if (hasRestored) {
-                    const { notification } = useDiscreteAPI(['notification'])
-                    notification.create({
-                        content:
-                            '将恢复当前直播间独轮车开关状态，如需关闭请到控制面板关闭并刷新网页',
-                        closable: false,
-                        duration: 6e3
-                    })
-                }
+                const { notification } = useDiscreteAPI(['notification'])
+                notification.create({
+                    content: `将在「${uname}」的直播间恢复独轮车状态，如需关闭请到控制面板关闭并刷新网页`,
+                    closable: false,
+                    duration: 6e3
+                })
             }, 200)
         } else {
+            this.config.saveSpamerStatusList = []
             this.moduleStore.moduleConfig.TextSpam.enable = false
             this.moduleStore.moduleConfig.EmotionSpam.enable = false
             this.moduleStore.moduleConfig.Favorites.enable = false

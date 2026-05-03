@@ -44,7 +44,7 @@ export default {
         setting: {
             saveSpamerStatus: {
                 enable: false,
-                roomStatus: {}
+                saveSpamerStatusList: []
             },
             autoCheckUpdate: {
                 enable: true

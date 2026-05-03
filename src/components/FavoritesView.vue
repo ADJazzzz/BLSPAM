@@ -17,10 +17,13 @@ import {
 import _ from 'lodash'
 import { useModuleStore } from '@/stores/useModuleStore'
 import { useUIStore } from '@/stores/useUIStore'
+import { useBiliStore } from '@/stores/useBiliStore'
+import { updateSaveSpamerStatusList } from '@/utils/ui'
 import stop from '@/modules/Spamer/textSpamer'
 
 const moduleStore = useModuleStore()
 const uiStore = useUIStore()
+const biliStore = useBiliStore()
 const message = useMessage()
 const dialog = useDialog()
 const favStop = new stop('StopFavoritesSpamer')
@@ -99,11 +102,18 @@ const handleStartSpamer = () => {
             moduleStore.emitter.emit('Favorites', {
                 module: 'Favorites'
             })
+            updateSaveSpamerStatusList(
+                biliStore.BilibiliLive?.ROOMID,
+                'Favorites',
+                true,
+                biliStore.masterInfo?.info?.uname
+            )
         }
     }
 }
 const handleStopSpamer = () => {
     favStop.stop('favorites')
+    updateSaveSpamerStatusList(biliStore.BilibiliLive?.ROOMID, 'Favorites', false)
 }
 const handleSendToText = () => {
     const currentTabValue = moduleStore.moduleConfig.Favorites.favoritesTabsValue
