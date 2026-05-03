@@ -25,6 +25,14 @@ interface modulesConfig {
     setting: {
         saveSpamerStatus: {
             enable: boolean
+            roomStatus: Record<
+                string,
+                {
+                    TextSpam: boolean
+                    EmotionSpam: boolean
+                    Favorites: boolean
+                }
+            >
         }
         autoCheckUpdate: {
             enable: boolean
