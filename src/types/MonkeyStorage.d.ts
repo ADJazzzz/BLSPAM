@@ -1,3 +1,9 @@
+type RoomSpamerStatus = {
+    TextSpam: boolean
+    EmotionSpam: boolean
+    Favorites: boolean
+}
+
 interface modulesConfig {
     TextSpam: {
         enable: boolean
@@ -25,14 +31,7 @@ interface modulesConfig {
     setting: {
         saveSpamerStatus: {
             enable: boolean
-            roomStatus: Record<
-                string,
-                {
-                    TextSpam: boolean
-                    EmotionSpam: boolean
-                    Favorites: boolean
-                }
-            >
+            roomStatus: Record<string, RoomSpamerStatus>
         }
         autoCheckUpdate: {
             enable: boolean
@@ -83,4 +82,4 @@ type moduleEmitter = {
     }
 }
 
-export { modulesConfig, uiConfig, menuIndex, moduleEmitter, roomInfoItem }
+export { modulesConfig, uiConfig, menuIndex, moduleEmitter, roomInfoItem, RoomSpamerStatus }

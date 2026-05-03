@@ -1,13 +1,8 @@
 import { watch } from 'vue'
 import { useBiliStore } from '@/stores/useBiliStore'
 import { useDiscreteAPI } from '@/utils/ui'
+import type { RoomSpamerStatus } from '@/types'
 import BaseModule from '../BaseModule'
-
-type RoomSpamerStatus = {
-    TextSpam: boolean
-    EmotionSpam: boolean
-    Favorites: boolean
-}
 
 class SaveSpamerStatus extends BaseModule {
     config = this.moduleStore.moduleConfig.setting.saveSpamerStatus
@@ -76,7 +71,7 @@ class SaveSpamerStatus extends BaseModule {
                 let hasRestored = false
                 for (const module of modules) {
                     if (roomStatus[module]) {
-                        ;(this.moduleStore.emitter.emit as any)(module, { module })
+                        this.moduleStore.emitter.emit(module, { module })
                         hasRestored = true
                     }
                 }
