@@ -24,7 +24,7 @@ class EmotionSpamer extends BaseModule {
         const min = this.formatTime(normalizedInterval.min)
         const max = this.formatTime(normalizedInterval.max)
         if (max === min) return min
-        return Math.floor(Math.random() * (max - min + 1) + min)
+        return Math.round(Math.random() * (max - min) + min)
     }
 
     private cleanUP(): void {
@@ -66,6 +66,8 @@ class EmotionSpamer extends BaseModule {
 
         const sendNextEmotion = async () => {
             if (this.config.enable) {
+                const nextInterval = this.getRandomInterval(timeinterval)
+                const startTime = Date.now()
                 try {
                     if (currentIndex < emotions.length) {
                         await sendEmotion(emotions[currentIndex])
@@ -77,10 +79,9 @@ class EmotionSpamer extends BaseModule {
                 } catch (error) {
                     this.logger.error('表情发送发生异常', error)
                 }
-                this.intervalId = setTimeout(
-                    sendNextEmotion,
-                    this.getRandomInterval(timeinterval)
-                )
+                const elapsed = Date.now() - startTime
+                const delay = Math.max(0, nextInterval - elapsed)
+                this.intervalId = setTimeout(sendNextEmotion, delay)
                 return
             }
             this.cleanUP()

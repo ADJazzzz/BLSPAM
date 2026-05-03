@@ -55,7 +55,7 @@ class TextSpamer extends BaseModule {
         const min = this.formatTime(normalizedInterval.min)
         const max = this.formatTime(normalizedInterval.max)
         if (max === min) return min
-        return Math.floor(Math.random() * (max - min + 1) + min)
+        return Math.round(Math.random() * (max - min) + min)
     }
 
     private cleanUP(): void {
@@ -108,6 +108,8 @@ class TextSpamer extends BaseModule {
                 this.cleanUP()
                 return
             }
+            const nextInterval = this.getRandomInterval(timeinterval)
+            const startTime = Date.now()
             try {
                 await this.sendMsg(msgs[currentIndex], roomid)
             } catch (error) {
@@ -115,7 +117,9 @@ class TextSpamer extends BaseModule {
             } finally {
                 currentIndex = (currentIndex + 1) % msgs.length
             }
-            this.intervalId = setTimeout(sendNext, this.getRandomInterval(timeinterval))
+            const elapsed = Date.now() - startTime
+            const delay = Math.max(0, nextInterval - elapsed)
+            this.intervalId = setTimeout(sendNext, delay)
         }
 
         sendNext()
