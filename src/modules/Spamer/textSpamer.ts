@@ -110,8 +110,13 @@ class TextSpamer extends BaseModule {
                 this.cleanUP()
                 return
             }
-            await this.sendMsg(msgs[currentIndex], roomid)
-            currentIndex = (currentIndex + 1) % msgs.length
+            try {
+                await this.sendMsg(msgs[currentIndex], roomid)
+            } catch (error) {
+                this.logger.error('弹幕发送发生异常', error)
+            } finally {
+                currentIndex = (currentIndex + 1) % msgs.length
+            }
             this.intervalId = setTimeout(sendNext, this.getRandomInterval(timeinterval))
         }
 

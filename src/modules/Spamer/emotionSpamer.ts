@@ -68,12 +68,16 @@ class EmotionSpamer extends BaseModule {
 
         const sendNextEmotion = async () => {
             if (this.config.enable) {
-                if (currentIndex < emotions.length) {
-                    await sendEmotion(emotions[currentIndex])
-                    currentIndex++
-                }
-                if (currentIndex >= emotions.length) {
-                    currentIndex = 0
+                try {
+                    if (currentIndex < emotions.length) {
+                        await sendEmotion(emotions[currentIndex])
+                        currentIndex++
+                    }
+                    if (currentIndex >= emotions.length) {
+                        currentIndex = 0
+                    }
+                } catch (error) {
+                    this.logger.error('表情发送发生异常', error)
                 }
                 this.intervalId = setTimeout(
                     sendNextEmotion,

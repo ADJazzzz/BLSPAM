@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { GM_getValue, GM_setValue } from '$'
 import defaultValues from './defaultValues'
-import { modulesConfig, uiConfig, roomInfoItem } from '@/types'
+import { modulesConfig, uiConfig, roomInfoItem, timeIntervalRange } from '@/types'
 
 class Storage {
     public static readonly roomInfoHeartbeatInterval = 5000
@@ -100,8 +100,17 @@ class Storage {
     }
 
     public static getModuleConfig(): modulesConfig {
-        const currentModuleConfig = GM_getValue('modules', {})
-        const normalizeTimeInterval = (config: any) => {
+        type LegacyIntervalConfig = {
+            timeinterval?: number | timeIntervalRange
+        }
+        type LegacyModuleConfig = {
+            TextSpam?: LegacyIntervalConfig
+            EmotionSpam?: LegacyIntervalConfig
+            Favorites?: LegacyIntervalConfig
+        } & Record<string, unknown>
+
+        const currentModuleConfig = GM_getValue('modules', {}) as LegacyModuleConfig
+        const normalizeTimeInterval = (config?: LegacyIntervalConfig) => {
             if (typeof config?.timeinterval === 'number' && Number.isFinite(config.timeinterval)) {
                 config.timeinterval = {
                     min: config.timeinterval,
@@ -110,9 +119,9 @@ class Storage {
             }
         }
 
-        normalizeTimeInterval(currentModuleConfig?.TextSpam)
-        normalizeTimeInterval(currentModuleConfig?.EmotionSpam)
-        normalizeTimeInterval(currentModuleConfig?.Favorites)
+        normalizeTimeInterval(currentModuleConfig.TextSpam)
+        normalizeTimeInterval(currentModuleConfig.EmotionSpam)
+        normalizeTimeInterval(currentModuleConfig.Favorites)
 
         return this.mergeConfigs(currentModuleConfig, defaultValues.modules)
     }
