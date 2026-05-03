@@ -43,7 +43,8 @@ export default {
         },
         setting: {
             saveSpamerStatus: {
-                enable: false
+                enable: false,
+                saveSpamerStatusList: []
             },
             autoCheckUpdate: {
                 enable: true
