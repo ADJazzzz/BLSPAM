@@ -80,4 +80,4 @@ type moduleEmitter = {
     }
 }
 
-export { modulesConfig, uiConfig, menuIndex, moduleEmitter, roomInfoItem }
+export { modulesConfig, uiConfig, menuIndex, moduleEmitter, roomInfoItem, timeIntervalRange }
