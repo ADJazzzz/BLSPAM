@@ -4,8 +4,6 @@ import { useBiliStore } from '@/stores/useBiliStore'
 import type { timeIntervalRange } from '@/types'
 import BaseModule from '../BaseModule'
 
-type TimeIntervalRange = timeIntervalRange
-
 class EmotionSpamer extends BaseModule {
     config = this.moduleStore.moduleConfig.EmotionSpam
     private intervalId: NodeJS.Timeout | null = null
@@ -14,19 +12,19 @@ class EmotionSpamer extends BaseModule {
         return time * 1000
     }
 
-    private normalizeInterval(timeinterval: TimeIntervalRange): TimeIntervalRange {
+    private normalizeInterval(timeinterval: timeIntervalRange): timeIntervalRange {
         return {
             min: Math.min(timeinterval.min, timeinterval.max),
             max: Math.max(timeinterval.min, timeinterval.max)
         }
     }
 
-    private getRandomInterval(timeinterval: TimeIntervalRange): number {
+    private getRandomInterval(timeinterval: timeIntervalRange): number {
         const normalizedInterval = this.normalizeInterval(timeinterval)
         const min = this.formatTime(normalizedInterval.min)
         const max = this.formatTime(normalizedInterval.max)
         if (max === min) return min
-        return Math.floor(Math.random() * (max - min) + min)
+        return Math.floor(Math.random() * (max - min + 1) + min)
     }
 
     private cleanUP(): void {
@@ -39,7 +37,7 @@ class EmotionSpamer extends BaseModule {
     private async cycleSendEmotion(
         emotions: string[],
         roomid: number,
-        timeinterval: TimeIntervalRange,
+        timeinterval: timeIntervalRange,
         timelimit: number
     ): Promise<void> {
         let currentIndex = 0

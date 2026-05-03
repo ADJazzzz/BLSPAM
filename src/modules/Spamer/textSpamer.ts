@@ -7,11 +7,9 @@ import BaseModule from '../BaseModule'
 
 type SpamArea = 'text' | 'favorites'
 
-type TimeIntervalRange = timeIntervalRange
-
 interface SpamConfig {
     enable: boolean
-    timeinterval: TimeIntervalRange
+    timeinterval: timeIntervalRange
 }
 
 class TextSpamer extends BaseModule {
@@ -45,19 +43,19 @@ class TextSpamer extends BaseModule {
         return seconds * 1000
     }
 
-    private normalizeInterval(timeinterval: TimeIntervalRange): TimeIntervalRange {
+    private normalizeInterval(timeinterval: timeIntervalRange): timeIntervalRange {
         return {
             min: Math.min(timeinterval.min, timeinterval.max),
             max: Math.max(timeinterval.min, timeinterval.max)
         }
     }
 
-    private getRandomInterval(timeinterval: TimeIntervalRange): number {
+    private getRandomInterval(timeinterval: timeIntervalRange): number {
         const normalizedInterval = this.normalizeInterval(timeinterval)
         const min = this.formatTime(normalizedInterval.min)
         const max = this.formatTime(normalizedInterval.max)
         if (max === min) return min
-        return Math.floor(Math.random() * (max - min) + min)
+        return Math.floor(Math.random() * (max - min + 1) + min)
     }
 
     private cleanUP(): void {
@@ -100,7 +98,7 @@ class TextSpamer extends BaseModule {
     private createCycleSender(
         msgs: string[],
         roomid: number,
-        timeinterval: TimeIntervalRange,
+        timeinterval: timeIntervalRange,
         config: SpamConfig
     ): void {
         let currentIndex = 0
