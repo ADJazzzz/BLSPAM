@@ -328,7 +328,9 @@ watch(
                                 <template #suffix> 秒 </template>
                             </n-input-number>
                         </template>
-                        <span>弹幕发送最大时间间隔，将在最小和最大时间间隔范围内随机，与最小时间间隔相同时不随机</span>
+                        <span
+                            >弹幕发送最大时间间隔，将在最小和最大时间间隔范围内随机，与最小时间间隔相同时不随机</span
+                        >
                     </n-popover>
                 </n-form-item>
                 <n-form-item label="时间限制" path="timelimit">

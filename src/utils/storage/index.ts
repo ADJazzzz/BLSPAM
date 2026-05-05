@@ -19,13 +19,9 @@ class Storage {
             uname,
             roomid,
             statusText:
-                typeof statusText === 'string' && statusText.length > 0
-                    ? statusText
-                    : '闲置中',
+                typeof statusText === 'string' && statusText.length > 0 ? statusText : '闲置中',
             updateTime:
-                typeof updateTime === 'number' && Number.isFinite(updateTime)
-                    ? updateTime
-                    : 0
+                typeof updateTime === 'number' && Number.isFinite(updateTime) ? updateTime : 0
         }
     }
 

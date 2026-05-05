@@ -127,7 +127,9 @@ const rules = {
                     </n-popover>
                 </n-form-item>
                 <n-form-item
-                    :label="moduleStore.moduleConfig.TextSpam.randomize ? '最小时间间隔' : '时间间隔'"
+                    :label="
+                        moduleStore.moduleConfig.TextSpam.randomize ? '最小时间间隔' : '时间间隔'
+                    "
                     path="timeinterval"
                 >
                     <n-popover trigger="hover" style="max-width: 300px" placement="bottom">
@@ -166,7 +168,9 @@ const rules = {
                                 <template #suffix> 秒 </template>
                             </n-input-number>
                         </template>
-                        <span>弹幕发送最大时间间隔，将在最小和最大时间间隔范围内随机，与最小时间间隔相同时不随机</span>
+                        <span
+                            >弹幕发送最大时间间隔，将在最小和最大时间间隔范围内随机，与最小时间间隔相同时不随机</span
+                        >
                     </n-popover>
                 </n-form-item>
                 <n-form-item label="数量间隔" path="textinterval">
