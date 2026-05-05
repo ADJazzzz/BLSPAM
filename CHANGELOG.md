@@ -1,5 +1,20 @@
 ## NEXT_VERSION
 
+## [1.7.0](https://github.com/ADJazzzz/BLSPAM/compare/1.6.1...1.7.0) 2026-05-05
+
+### 新增
+
+- 弹幕发送时间间隔随机[(#48)](https://github.com/ADJazzzz/BLSPAM/issues/48)
+
+### 调整
+
+- 取消独轮车状态保持的全局应用，调整为独立房间设置[(#47)](https://github.com/ADJazzzz/BLSPAM/issues/47)
+- 主题检测逻辑
+
+### 更新
+
+- 主要依赖项
+
 ## [1.6.1](https://github.com/ADJazzzz/BLSPAM/compare/1.6.0...1.6.1) 2026-03-22
 
 ### 修复
