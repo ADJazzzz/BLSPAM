@@ -52,7 +52,7 @@ const handleDanmakuModeChange = () => {
                 " />保持独轮车开关状态<InfoDialog id="SettingView.saveSpamerStatus"
         /></n-flex>
         <n-flex v-if="showSavedRooms" align="center" :wrap="true">
-            <span style="color: #909399; font-size: 12px; white-space: nowrap">已开启的房间：</span>
+            <span style="color: #909399; font-size: 12px; white-space: nowrap">已开启的直播间（点击直播间可移除保持）：</span>
             <n-button
                 v-for="entry in savedRoomEntries"
                 :key="entry.roomid"
@@ -79,7 +79,7 @@ const handleDanmakuModeChange = () => {
                     moduleStore.moduleConfig.setting.danmakuModules.mode === 'menu'
                         ? '菜单模式'
                         : '直接渲染模式'
-                }}</NButton
+                }}（点击切换模式）</NButton
             ></n-flex
         >
         <n-flex align="center"
