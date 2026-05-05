@@ -2,6 +2,7 @@ import { createDiscreteApi, darkTheme, lightTheme } from 'naive-ui'
 import type { ConfigProviderProps } from 'naive-ui'
 import { computed } from 'vue'
 import { useUIStore } from '@/stores/useUIStore'
+import { useModuleStore } from '@/stores/useModuleStore'
 import { modulesConfig, roomInfoItem } from '@/types'
 
 type RunningSpamer = '文字' | '表情' | '收藏'
@@ -65,4 +66,37 @@ export const updateRoomInfoItem = (
 
 export const formatRoomInfoText = (list: roomInfoItem[]): string => {
     return list.map((item) => `${item.uname}(${item.roomid})-${item.statusText}`).join(' / ')
+}
+
+export const updateSaveSpamerStatusList = (
+    roomId: number | undefined,
+    moduleName: string,
+    enabled: boolean,
+    uname?: string
+) => {
+    if (!roomId) return
+    const moduleStore = useModuleStore()
+    const list = moduleStore.moduleConfig.setting.saveSpamerStatus.saveSpamerStatusList
+    const index = list.findIndex((item) => item.roomid === roomId)
+
+    if (enabled) {
+        if (index === -1) {
+            list.push({ uname: uname ?? '未知主播', roomid: roomId, modules: [moduleName] })
+            return
+        }
+        const entry = list[index]
+        if (!entry.modules.includes(moduleName)) {
+            list[index] = { ...entry, modules: [...entry.modules, moduleName] }
+        }
+        return
+    }
+
+    if (index === -1) return
+    const entry = list[index]
+    const next = entry.modules.filter((m) => m !== moduleName)
+    if (next.length === 0) {
+        list.splice(index, 1)
+    } else {
+        list[index] = { ...entry, modules: next }
+    }
 }

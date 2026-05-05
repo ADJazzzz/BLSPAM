@@ -12,15 +12,19 @@ import {
     NButton,
     NPageHeader,
     useMessage,
-    useDialog
+    useDialog,
+    NSwitch
 } from 'naive-ui'
 import _ from 'lodash'
 import { useModuleStore } from '@/stores/useModuleStore'
 import { useUIStore } from '@/stores/useUIStore'
+import { useBiliStore } from '@/stores/useBiliStore'
+import { updateSaveSpamerStatusList } from '@/utils/ui'
 import stop from '@/modules/Spamer/textSpamer'
 
 const moduleStore = useModuleStore()
 const uiStore = useUIStore()
+const biliStore = useBiliStore()
 const message = useMessage()
 const dialog = useDialog()
 const favStop = new stop('StopFavoritesSpamer')
@@ -32,6 +36,19 @@ const rules = {
         trigger: ['input', 'blur'],
         validator: () => {
             return moduleStore.moduleConfig.Favorites.timeinterval !== null
+        }
+    },
+    timeintervalMax: {
+        required: true,
+        message: '最小为1，且不能小于最小间隔',
+        trigger: ['input', 'blur'],
+        validator: () => {
+            if (!moduleStore.moduleConfig.Favorites.randomize) return true
+            return (
+                moduleStore.moduleConfig.Favorites.timeintervalMax !== null &&
+                moduleStore.moduleConfig.Favorites.timeintervalMax >=
+                    moduleStore.moduleConfig.Favorites.timeinterval
+            )
         }
     }
 }
@@ -93,17 +110,31 @@ const handleStartSpamer = () => {
     } else {
         if (moduleStore.moduleConfig.Favorites.timeinterval === null) {
             message.error('没参数你车什么?')
+        } else if (
+            moduleStore.moduleConfig.Favorites.randomize &&
+            (moduleStore.moduleConfig.Favorites.timeintervalMax === null ||
+                moduleStore.moduleConfig.Favorites.timeintervalMax <
+                    moduleStore.moduleConfig.Favorites.timeinterval)
+        ) {
+            message.error('最大间隔不能小于最小间隔')
         } else {
             uiStore.uiConfig.isShowPanel = false
             moduleStore.moduleConfig.Favorites.enable = true
             moduleStore.emitter.emit('Favorites', {
                 module: 'Favorites'
             })
+            updateSaveSpamerStatusList(
+                biliStore.BilibiliLive?.ROOMID,
+                'Favorites',
+                true,
+                biliStore.masterInfo?.info?.uname
+            )
         }
     }
 }
 const handleStopSpamer = () => {
     favStop.stop('favorites')
+    updateSaveSpamerStatusList(biliStore.BilibiliLive?.ROOMID, 'Favorites', false)
 }
 const handleSendToText = () => {
     const currentTabValue = moduleStore.moduleConfig.Favorites.favoritesTabsValue
@@ -131,7 +162,22 @@ const handleSendToText = () => {
         />
         <n-form-item :show-label="false">
             <n-flex>
-                <n-form-item label="时间间隔" path="timeinterval">
+                <n-form-item label="随机间隔">
+                    <n-popover trigger="hover" style="max-width: 300px" placement="right">
+                        <template #trigger>
+                            <n-switch
+                                v-model:value="moduleStore.moduleConfig.Favorites.randomize"
+                            />
+                        </template>
+                        <span>开启后在选定的最小和最大间隔范围内随机发送弹幕</span>
+                    </n-popover>
+                </n-form-item>
+                <n-form-item
+                    :label="
+                        moduleStore.moduleConfig.Favorites.randomize ? '最小时间间隔' : '时间间隔'
+                    "
+                    path="timeinterval"
+                >
                     <n-popover trigger="hover" style="max-width: 300px" placement="bottom">
                         <template #trigger>
                             <n-input-number
@@ -147,6 +193,29 @@ const handleSendToText = () => {
                         </template>
                         <span
                             >弹幕发送时间间隔，默认为5秒，也是b站最快的发弹幕频率，当然这里可以设置小于该值</span
+                        >
+                    </n-popover>
+                </n-form-item>
+                <n-form-item
+                    v-if="moduleStore.moduleConfig.Favorites.randomize"
+                    label="最大时间间隔"
+                    path="timeintervalMax"
+                >
+                    <n-popover trigger="hover" style="max-width: 300px" placement="bottom">
+                        <template #trigger>
+                            <n-input-number
+                                clearable
+                                :show-button="false"
+                                v-model:value="moduleStore.moduleConfig.Favorites.timeintervalMax"
+                                placeholder="默认5，单位为秒"
+                                min="1"
+                                :precision="0"
+                            >
+                                <template #suffix> 秒 </template>
+                            </n-input-number>
+                        </template>
+                        <span
+                            >弹幕发送最大时间间隔，将在最小和最大时间间隔范围内随机，与最小时间间隔相同时不随机</span
                         >
                     </n-popover>
                 </n-form-item>

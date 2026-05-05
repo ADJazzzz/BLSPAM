@@ -18,12 +18,16 @@ export default {
             enable: false,
             msg: '车',
             timeinterval: 5,
+            timeintervalMax: 5,
+            randomize: false,
             textinterval: 20,
             timelimit: 0
         },
         EmotionSpam: {
             enable: false,
             timeinterval: 5,
+            timeintervalMax: 5,
+            randomize: false,
             emotionViewSelectedID: 1,
             msgByRoom: {},
             timelimit: 0
@@ -31,6 +35,8 @@ export default {
         Favorites: {
             enable: false,
             timeinterval: 5,
+            timeintervalMax: 5,
+            randomize: false,
             favoritesTabsValue: 1,
             favoritesTabPanels: [
                 {
@@ -43,7 +49,8 @@ export default {
         },
         setting: {
             saveSpamerStatus: {
-                enable: false
+                enable: false,
+                saveSpamerStatusList: []
             },
             autoCheckUpdate: {
                 enable: true

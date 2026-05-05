@@ -27,15 +27,21 @@ class UserInfo extends BaseModule {
     }
 
     private getWindowBiliLive(): Promise<Window['BilibiliLive']> {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             const timer = setInterval(() => {
                 const windowBiliLive = unsafeWindow.BilibiliLive
                 if (windowBiliLive) {
                     clearInterval(timer)
+                    clearTimeout(timeout)
                     this.logger.log('windowBiliLive', windowBiliLive)
                     resolve(windowBiliLive)
                 }
             }, 200)
+
+            const timeout = setTimeout(() => {
+                clearInterval(timer)
+                reject(new Error('获取 BilibiliLive 超时'))
+            }, 10000)
         })
     }
 
@@ -105,6 +111,12 @@ class UserInfo extends BaseModule {
         }
     }
 
+    private onPageExit(fn: () => void) {
+        for (const event of ['beforeunload', 'pagehide', 'unload'] as const) {
+            window.addEventListener(event, fn, { once: true })
+        }
+    }
+
     private updateRoomInfo(roomid: number, uname: string) {
         const moduleStore = useModuleStore()
         const uiStore = useUIStore()
@@ -130,16 +142,8 @@ class UserInfo extends BaseModule {
             this.updateRoomInfo(roomid, uname)
         }, Storage.roomInfoHeartbeatInterval)
 
-        const stopHeartbeat = () => {
-            window.clearInterval(heartbeatTimer)
-        }
-
-        window.addEventListener('beforeunload', stopHeartbeat, { once: true })
-        window.addEventListener('pagehide', stopHeartbeat, { once: true })
-        window.addEventListener('unload', stopHeartbeat, { once: true })
-
         const moduleStore = useModuleStore()
-        watch(
+        const stopWatch = watch(
             () => [
                 moduleStore.moduleConfig.TextSpam.enable,
                 moduleStore.moduleConfig.EmotionSpam.enable,
@@ -149,10 +153,15 @@ class UserInfo extends BaseModule {
                 this.updateRoomInfo(roomid, uname)
             }
         )
+
+        this.onPageExit(() => {
+            window.clearInterval(heartbeatTimer)
+            stopWatch()
+        })
     }
 
     private roomInfoCleanup(roomid: number) {
-        const removeRoomInfo = () => {
+        this.onPageExit(() => {
             const uiConfig = Storage.getUiConfig()
             const currentRoomInfo = Array.isArray(uiConfig.roomInfo) ? uiConfig.roomInfo : []
             const roomInfo = currentRoomInfo.filter((item) => item.roomid !== roomid)
@@ -161,20 +170,22 @@ class UserInfo extends BaseModule {
                 uiConfig.roomInfo = roomInfo
                 Storage.setUiConfig(uiConfig)
             }
-        }
-
-        window.addEventListener('beforeunload', removeRoomInfo, { once: true })
-        window.addEventListener('pagehide', removeRoomInfo, { once: true })
-        window.addEventListener('unload', removeRoomInfo, { once: true })
+        })
     }
 
     public async run(): Promise<void> {
         useBiliStore().BilibiliLive = await this.getWindowBiliLive()
         if (useBiliStore().BilibiliLive) {
-            useBiliStore().emotionData = await this.getEmotionData()
-            useBiliStore().loginInfo = await this.getLoginInfo()
-            useBiliStore().infoByuser = await this.getInfoByUser()
-            useBiliStore().masterInfo = await this.getMasterInfo()
+            const [emotionData, loginInfo, infoByuser, masterInfo] = await Promise.all([
+                this.getEmotionData(),
+                this.getLoginInfo(),
+                this.getInfoByUser(),
+                this.getMasterInfo()
+            ])
+            useBiliStore().emotionData = emotionData
+            useBiliStore().loginInfo = loginInfo
+            useBiliStore().infoByuser = infoByuser
+            useBiliStore().masterInfo = masterInfo
         }
 
         const roomID = useBiliStore().masterInfo?.room_id

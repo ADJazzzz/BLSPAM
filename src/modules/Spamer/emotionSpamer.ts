@@ -5,24 +5,33 @@ import BaseModule from '../BaseModule'
 
 class EmotionSpamer extends BaseModule {
     config = this.moduleStore.moduleConfig.EmotionSpam
-    private intervalId: NodeJS.Timeout | null = null
+    private timeoutId: NodeJS.Timeout | null = null
 
     private formatTime(time: number): number {
         return time * 1000
     }
 
+    private getRandomInterval(min: number, max: number): number {
+        if (max > min) {
+            return Math.floor(Math.random() * (max - min + 1) + min)
+        }
+        return min
+    }
+
     private cleanUP(): void {
-        if (this.intervalId) {
-            clearInterval(this.intervalId)
-            this.intervalId = null
+        if (this.timeoutId) {
+            clearTimeout(this.timeoutId)
+            this.timeoutId = null
         }
     }
 
     private async cycleSendEmotion(
         emotions: string[],
         roomid: number,
-        timeinterval: number,
-        timelimit: number
+        timeintervalMin: number,
+        timeintervalMax: number,
+        timelimit: number,
+        randomize: boolean
     ): Promise<void> {
         let currentIndex = 0
 
@@ -57,14 +66,16 @@ class EmotionSpamer extends BaseModule {
                 if (currentIndex >= emotions.length) {
                     currentIndex = 0
                 }
+                const delay = randomize
+                    ? this.getRandomInterval(timeintervalMin, timeintervalMax)
+                    : timeintervalMin
+                this.timeoutId = setTimeout(sendNextEmotion, delay)
             } else {
                 this.cleanUP()
             }
         }
 
         await sendNextEmotion()
-
-        this.intervalId = setInterval(sendNextEmotion, timeinterval)
 
         if (timelimit !== 0) {
             setTimeout(() => {
@@ -86,11 +97,19 @@ class EmotionSpamer extends BaseModule {
         this.cleanUP()
         this.moduleStore.emitter.on('EmotionSpam', async () => {
             const roomid = useBiliStore().BilibiliLive?.ROOMID
-            const formattedTimeInterval = this.formatTime(this.config.timeinterval)
+            const formattedTimeIntervalMin = this.formatTime(this.config.timeinterval)
+            const formattedTimeIntervalMax = this.formatTime(this.config.timeintervalMax)
             const formattedTime = this.formatTime(this.config.timelimit)
             if (roomid) {
                 const msg = this.config.msgByRoom[String(roomid)] ?? []
-                await this.cycleSendEmotion(msg, roomid, formattedTimeInterval, formattedTime)
+                await this.cycleSendEmotion(
+                    msg,
+                    roomid,
+                    formattedTimeIntervalMin,
+                    formattedTimeIntervalMax,
+                    formattedTime,
+                    this.config.randomize
+                )
             }
         })
     }

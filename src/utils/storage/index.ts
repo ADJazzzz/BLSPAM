@@ -7,31 +7,28 @@ class Storage {
     public static readonly roomInfoHeartbeatInterval = 5000
     private static readonly roomInfoTTL = 15000
 
+    private static toRoomInfoItem(item: unknown): roomInfoItem | null {
+        if (!item || typeof item !== 'object') return null
+        const uname = (item as { uname?: string }).uname
+        const roomid = (item as { roomid?: number }).roomid
+        const statusText = (item as { statusText?: string }).statusText
+        const updateTime = (item as { updateTime?: number }).updateTime
+        if (typeof uname !== 'string' || uname.length === 0) return null
+        if (typeof roomid !== 'number' || !Number.isFinite(roomid)) return null
+        return {
+            uname,
+            roomid,
+            statusText:
+                typeof statusText === 'string' && statusText.length > 0 ? statusText : '闲置中',
+            updateTime:
+                typeof updateTime === 'number' && Number.isFinite(updateTime) ? updateTime : 0
+        }
+    }
+
     private static normalizeRoomInfo(roomInfo: any): roomInfoItem[] {
         if (!Array.isArray(roomInfo)) return []
-
         return roomInfo
-            .map((item) => {
-                if (!item || typeof item !== 'object') return null
-                const uname = (item as { uname?: string }).uname
-                const roomid = (item as { roomid?: number }).roomid
-                const statusText = (item as { statusText?: string }).statusText
-                const updateTime = (item as { updateTime?: number }).updateTime
-                if (typeof uname !== 'string' || uname.length === 0) return null
-                if (typeof roomid !== 'number' || !Number.isFinite(roomid)) return null
-                return {
-                    uname,
-                    roomid,
-                    statusText:
-                        typeof statusText === 'string' && statusText.length > 0
-                            ? statusText
-                            : '空闲中',
-                    updateTime:
-                        typeof updateTime === 'number' && Number.isFinite(updateTime)
-                            ? updateTime
-                            : Date.now()
-                }
-            })
+            .map((item) => this.toRoomInfoItem(item))
             .filter((item): item is roomInfoItem => item !== null)
     }
 
