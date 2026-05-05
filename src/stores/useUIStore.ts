@@ -3,7 +3,7 @@ import { reactive, watch } from 'vue'
 import _ from 'lodash'
 import { uiConfig, menuIndex } from '@/types'
 import Storage from '@/utils/storage'
-import { GM_addValueChangeListener, unsafeWindow } from '$'
+import { GM_addValueChangeListener } from '$'
 
 export const useUIStore = defineStore('ui', () => {
     const uiConfig: uiConfig = reactive(Storage.getUiConfig())
@@ -12,35 +12,23 @@ export const useUIStore = defineStore('ui', () => {
         uiConfig.activeMenuIndex = key
     }
 
-    const isLiteRoom = () => {
-        try {
-            return (
-                new URLSearchParams(window.location.search).get('liteVersion') === 'true' &&
-                window.top !== window
-            )
-        } catch {
-            return false
-        }
-    }
+    let themeObserver: MutationObserver | null = null
     const startThemeSync = () => {
+        if (themeObserver) return
         const sync = () => {
-            let theme: 'dark' | 'light' = 'light'
-            try {
-                if (!isLiteRoom()) {
-                    theme =
-                        unsafeWindow?.bililiveThemeV2?.getTheme?.() === 'dark' ? 'dark' : 'light'
-                }
-            } catch {
-                theme = 'light'
-            }
-
+            const labStyle = document.documentElement.getAttribute('lab-style') || ''
+            const theme: 'dark' | 'light' = labStyle.includes('dark') ? 'dark' : 'light'
             if (theme !== uiConfig.theme) {
                 uiConfig.theme = theme
             }
         }
 
         sync()
-        window.setInterval(sync, 1000)
+        themeObserver = new MutationObserver(_.debounce(sync, 300))
+        themeObserver.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['lab-style']
+        })
     }
 
     const applyRoomInfo = (roomInfo: any) => {
