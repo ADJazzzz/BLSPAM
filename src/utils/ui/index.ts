@@ -82,21 +82,21 @@ export const updateSaveSpamerStatusList = (
     if (enabled) {
         if (index === -1) {
             list.push({ uname: uname ?? '未知主播', roomid: roomId, modules: [moduleName] })
-        } else {
-            const entry = list[index]
-            if (!entry.modules.includes(moduleName)) {
-                list[index] = { ...entry, modules: [...entry.modules, moduleName] }
-            }
+            return
         }
+        const entry = list[index]
+        if (!entry.modules.includes(moduleName)) {
+            list[index] = { ...entry, modules: [...entry.modules, moduleName] }
+        }
+        return
+    }
+
+    if (index === -1) return
+    const entry = list[index]
+    const next = entry.modules.filter((m) => m !== moduleName)
+    if (next.length === 0) {
+        list.splice(index, 1)
     } else {
-        if (index !== -1) {
-            const entry = list[index]
-            const next = entry.modules.filter((m) => m !== moduleName)
-            if (next.length === 0) {
-                list.splice(index, 1)
-            } else {
-                list[index] = { ...entry, modules: next }
-            }
-        }
+        list[index] = { ...entry, modules: next }
     }
 }
