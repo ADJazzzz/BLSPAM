@@ -1,5 +1,15 @@
 ## NEXT_VERSION
 
+## [1.7.1](https://github.com/ADJazzzz/BLSPAM/compare/1.7.0...1.7.1) 2026-05-09
+
+### 修复
+
+- 在新UI下，弹幕+1和复制功能的菜单模式入口问题
+
+### 更新
+
+- 主要依赖项（`VITE`->`8.x`）
+
 ## [1.7.0](https://github.com/ADJazzzz/BLSPAM/compare/1.6.1...1.7.0) 2026-05-05
 
 ### 新增
