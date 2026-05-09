@@ -127,7 +127,7 @@ class danmakuModules extends BaseModule {
     }
 
     private renderMenu(msg: string) {
-        const dmMenu = dq('.danmaku-menu.p-fixed.ts-dot-4.a-move-in-top.p-relative.z-danmaku-menu')
+        const dmMenu = dq('.danmaku-menu.p-fixed.ts-dot-4.p-relative.z-danmaku-menu')
         if (dmMenu) {
             dmMenu.querySelectorAll('.none-select').forEach((element) => {
                 if (!element.querySelector('.dm-repeat')) {
