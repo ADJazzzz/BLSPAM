@@ -116,7 +116,7 @@ const handleStartSpamer = () => {
                 moduleStore.moduleConfig.Favorites.timeintervalMax <
                     moduleStore.moduleConfig.Favorites.timeinterval)
         ) {
-            message.error('最大间隔不能小于最小间隔')
+            message.error('最大时间间隔不能小于最小时间间隔')
         } else {
             uiStore.uiConfig.isShowPanel = false
             moduleStore.moduleConfig.Favorites.enable = true
@@ -162,14 +162,14 @@ const handleSendToText = () => {
         />
         <n-form-item :show-label="false">
             <n-flex>
-                <n-form-item label="随机间隔">
+                <n-form-item label="随机时间间隔">
                     <n-popover trigger="hover" style="max-width: 300px" placement="right">
                         <template #trigger>
                             <n-switch
                                 v-model:value="moduleStore.moduleConfig.Favorites.randomize"
                             />
                         </template>
-                        <span>开启后在选定的最小和最大间隔范围内随机发送弹幕</span>
+                        <span>开启后在选定的最小和最大时间间隔范围内随机发送弹幕</span>
                     </n-popover>
                 </n-form-item>
                 <n-form-item
