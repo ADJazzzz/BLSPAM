@@ -44,7 +44,7 @@ const handleStartSpamer = () => {
             moduleStore.moduleConfig.TextSpam.timeintervalMax <
                 moduleStore.moduleConfig.TextSpam.timeinterval)
     ) {
-        message.error('最大间隔不能小于最小间隔')
+        message.error('最大时间间隔不能小于最小时间间隔')
     } else {
         uiStore.uiConfig.isShowPanel = false
         moduleStore.moduleConfig.TextSpam.enable = true
@@ -118,7 +118,7 @@ const rules = {
         <n-page-header subtitle="文字独轮车" style="margin-bottom: 10px" />
         <n-form-item :show-label="false">
             <n-flex align="center">
-                <n-form-item label="随机间隔">
+                <n-form-item label="随机时间间隔">
                     <n-popover trigger="hover" style="max-width: 300px" placement="right">
                         <template #trigger>
                             <n-switch v-model:value="moduleStore.moduleConfig.TextSpam.randomize" />

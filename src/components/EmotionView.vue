@@ -114,7 +114,7 @@ const handleStartSpamer = () => {
             moduleStore.moduleConfig.EmotionSpam.timeintervalMax <
                 moduleStore.moduleConfig.EmotionSpam.timeinterval)
     ) {
-        message.error('最大间隔不能小于最小间隔')
+        message.error('最大时间间隔不能小于最小时间间隔')
     } else {
         uiStore.uiConfig.isShowPanel = false
         moduleStore.moduleConfig.EmotionSpam.enable = true
@@ -276,7 +276,7 @@ watch(
     <n-flex justify="space-between" align="center">
         <n-form :rules="rules" :disabled="moduleStore.moduleConfig.EmotionSpam.enable">
             <n-flex>
-                <n-form-item label="随机间隔">
+                <n-form-item label="随机时间间隔">
                     <n-popover trigger="hover" style="max-width: 300px" placement="right">
                         <template #trigger>
                             <n-switch
