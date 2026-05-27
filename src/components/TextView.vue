@@ -180,7 +180,7 @@ const rules = {
                                 clearable
                                 :show-button="false"
                                 v-model:value="moduleStore.moduleConfig.TextSpam.textinterval"
-                                placeholder="默认20"
+                                placeholder="默认40"
                                 min="1"
                                 :max="biliStore.infoByuser?.property.danmu.length"
                                 :precision="0"

@@ -20,7 +20,7 @@ export default {
             timeinterval: 5,
             timeintervalMax: 5,
             randomize: false,
-            textinterval: 20,
+            textinterval: 40,
             timelimit: 0
         },
         EmotionSpam: {
