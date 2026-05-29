@@ -17,6 +17,7 @@ import { useUIStore } from '@/stores/useUIStore'
 import { useModuleStore } from '@/stores/useModuleStore'
 import { useBiliStore } from '@/stores/useBiliStore'
 import { updateSaveSpamerStatusList } from '@/utils/ui'
+import { getDanmakuLength } from '@/utils/danmaku'
 import EmotionIcon from '@/assets/EmotionIcon.svg?component'
 import stop from '@/modules/Spamer/textSpamer'
 
@@ -220,7 +221,11 @@ const rules = {
                 v-model:value="moduleStore.moduleConfig.TextSpam.msg"
                 placeholder="车了可能会被禁，但不车就等于一直被禁"
                 rows="5"
-            />
+            >
+                <template #count="{ value }">
+                    {{ getDanmakuLength(value ?? '') }}
+                </template>
+            </n-input>
             <n-popover trigger="click" placement="left" style="width: 500px">
                 <template #trigger>
                     <n-button text style="padding-left: 4px">

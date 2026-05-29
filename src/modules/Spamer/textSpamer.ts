@@ -2,6 +2,7 @@ import _ from 'lodash'
 import { BILIAPI } from '@/utils/bili'
 import { useDiscreteAPI } from '@/utils/ui'
 import { useBiliStore } from '@/stores/useBiliStore'
+import { sliceDanmaku } from '@/utils/danmaku'
 import BaseModule from '../BaseModule'
 
 type SpamArea = 'text' | 'favorites'
@@ -32,16 +33,11 @@ class TextSpamer extends BaseModule {
         return msg.replace(/\n/g, '')
     }
 
-    private sliceMsg(msg: string, maxLength: number): string[] {
-        if (msg.length <= maxLength) return [msg]
-        return msg.match(new RegExp(`.{1,${maxLength}}`, 'g')) || []
-    }
-
     private formatFavorites(): string[] {
         return _.flatMap(this.favoritesConfig.favoritesTabPanels, (item) => {
             if (!item.msg) return []
             const processedMsg = this.formatMsg(item.msg)
-            return this.sliceMsg(processedMsg, this.textConfig.textinterval)
+            return sliceDanmaku(processedMsg, this.textConfig.textinterval)
         })
     }
 
@@ -118,7 +114,7 @@ class TextSpamer extends BaseModule {
         if (!this.roomId) return
 
         const formattedMsg = this.formatMsg(this.textConfig.msg)
-        const msgs = this.sliceMsg(formattedMsg, this.textConfig.textinterval)
+        const msgs = sliceDanmaku(formattedMsg, this.textConfig.textinterval)
         const timeintervalMin = this.formatTime(this.textConfig.timeinterval)
         const timeintervalMax = this.formatTime(this.textConfig.timeintervalMax)
         const timelimit = this.formatTime(this.textConfig.timelimit)
