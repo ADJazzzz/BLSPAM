@@ -20,6 +20,7 @@ import { useModuleStore } from '@/stores/useModuleStore'
 import { useUIStore } from '@/stores/useUIStore'
 import { useBiliStore } from '@/stores/useBiliStore'
 import { updateSaveSpamerStatusList } from '@/utils/ui'
+import { getDanmakuLength } from '@/utils/danmaku'
 import stop from '@/modules/Spamer/textSpamer'
 
 const moduleStore = useModuleStore()
@@ -261,7 +262,11 @@ const handleSendToText = () => {
                             type="textarea"
                             placeholder="默认每次弹幕发送字数为你文字独轮车设置的间隔，超出相应值将自动分割到下一条弹幕"
                             rows="5"
-                        />
+                        >
+                            <template #count="{ value }">
+                                {{ getDanmakuLength(value ?? '') }}
+                            </template>
+                        </n-input>
                     </n-form-item>
                 </n-tab-pane>
             </n-tabs>
