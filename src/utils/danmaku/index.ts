@@ -1,10 +1,10 @@
 const graphemeSegmenter = new Intl.Segmenter('zh', { granularity: 'grapheme' })
 
-function isEmojiGrapheme(grapheme: string): boolean {
+const isEmojiGrapheme = (grapheme: string): boolean => {
     return /\p{Extended_Pictographic}/u.test(grapheme)
 }
 
-export function getDanmakuLength(str: string): number {
+export const getDanmakuLength = (str: string): number => {
     let count = 0
     for (const { segment } of graphemeSegmenter.segment(str)) {
         count += isEmojiGrapheme(segment) ? 2 : 1
@@ -12,9 +12,7 @@ export function getDanmakuLength(str: string): number {
     return count
 }
 
-export function sliceDanmaku(msg: string, maxLength: number): string[] {
-    if (getDanmakuLength(msg) <= maxLength) return [msg]
-
+export const sliceDanmaku = (msg: string, maxLength: number): string[] => {
     const result: string[] = []
     let current = ''
     let currentLength = 0
@@ -22,7 +20,7 @@ export function sliceDanmaku(msg: string, maxLength: number): string[] {
     for (const { segment } of graphemeSegmenter.segment(msg)) {
         const charLen = isEmojiGrapheme(segment) ? 2 : 1
         if (currentLength + charLen > maxLength) {
-            result.push(current)
+            if (current) result.push(current)
             current = segment
             currentLength = charLen
         } else {
@@ -31,6 +29,7 @@ export function sliceDanmaku(msg: string, maxLength: number): string[] {
         }
     }
 
+    if (result.length === 0) return [msg]
     if (current) result.push(current)
     return result
 }
