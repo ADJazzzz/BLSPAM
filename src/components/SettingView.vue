@@ -52,7 +52,9 @@ const handleDanmakuModeChange = () => {
                 " />保持独轮车开关状态<InfoDialog id="SettingView.saveSpamerStatus"
         /></n-flex>
         <n-flex v-if="showSavedRooms" align="center" :wrap="true">
-            <span style="color: #909399; font-size: 12px; white-space: nowrap">已开启的直播间（点击可移除保持，刷新生效）：</span>
+            <span style="color: #909399; font-size: 12px; white-space: nowrap"
+                >已开启的直播间（点击可移除保持，刷新生效）：</span
+            >
             <n-button
                 v-for="entry in savedRoomEntries"
                 :key="entry.roomid"

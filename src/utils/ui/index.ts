@@ -7,10 +7,10 @@ import { modulesConfig, roomInfoItem } from '@/types'
 
 type RunningSpamer = '文字' | '表情' | '收藏'
 
-export function useDiscreteAPI<T extends ('message' | 'dialog' | 'notification' | 'loadingBar')[]>(
+export const useDiscreteAPI = <T extends ('message' | 'dialog' | 'notification' | 'loadingBar')[]>(
     apis: T,
     disable: boolean = false
-) {
+) => {
     if (disable) {
         const emptyAPI: Record<string, any> = {}
         apis.forEach((api) => {

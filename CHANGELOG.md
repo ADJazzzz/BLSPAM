@@ -1,5 +1,11 @@
 ## NEXT_VERSION
 
+## [1.7.2](https://github.com/ADJazzzz/BLSPAM/compare/1.7.1...1.7.2) 2026-05-31
+
+### 修复
+
+- 修复弹幕字数统计未按B站规则计算emoji问题[(#55)](https://github.com/ADJazzzz/BLSPAM/pull/55)
+
 ## [1.7.1](https://github.com/ADJazzzz/BLSPAM/compare/1.7.0...1.7.1) 2026-05-09
 
 ### 修复
