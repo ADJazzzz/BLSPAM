@@ -33,12 +33,16 @@ class TextSpamer extends BaseModule {
         return msg.split('\n').filter((line) => line.length > 0)
     }
 
+    private splitAndSliceDanmaku(msg: string): string[] {
+        return this.splitLines(msg).flatMap((line) =>
+            sliceDanmaku(line, this.textConfig.textinterval)
+        )
+    }
+
     private formatFavorites(): string[] {
         return _.flatMap(this.favoritesConfig.favoritesTabPanels, (item) => {
             if (!item.msg) return []
-            return this.splitLines(item.msg).flatMap((line) =>
-                sliceDanmaku(line, this.textConfig.textinterval)
-            )
+            return this.splitAndSliceDanmaku(item.msg)
         })
     }
 
@@ -114,9 +118,7 @@ class TextSpamer extends BaseModule {
         this.cleanUP()
         if (!this.roomId) return
 
-        const msgs = this.splitLines(this.textConfig.msg).flatMap((line) =>
-            sliceDanmaku(line, this.textConfig.textinterval)
-        )
+        const msgs = this.splitAndSliceDanmaku(this.textConfig.msg)
         const timeintervalMin = this.formatTime(this.textConfig.timeinterval)
         const timeintervalMax = this.formatTime(this.textConfig.timeintervalMax)
         const timelimit = this.formatTime(this.textConfig.timelimit)

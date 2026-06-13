@@ -14,6 +14,7 @@ export const getDanmakuLength = (str: string): number => {
 }
 
 export const sliceDanmaku = (msg: string, maxLength: number): string[] => {
+    if (msg.length === 0) return []
     const result: string[] = []
     let current = ''
     let currentLength = 0
