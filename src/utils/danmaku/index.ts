@@ -7,6 +7,7 @@ const isEmojiGrapheme = (grapheme: string): boolean => {
 export const getDanmakuLength = (str: string): number => {
     let count = 0
     for (const { segment } of graphemeSegmenter.segment(str)) {
+        if (segment === '\n') continue
         count += isEmojiGrapheme(segment) ? 2 : 1
     }
     return count
