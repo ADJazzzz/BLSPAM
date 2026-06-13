@@ -1,5 +1,11 @@
 ## NEXT_VERSION
 
+## [1.7.3](https://github.com/ADJazzzz/BLSPAM/compare/1.7.2...1.7.3) 2026-06-13
+
+### 调整
+
+- 支持换行分隔弹幕[(#57)](https://github.com/ADJazzzz/BLSPAM/pull/57)
+
 ## [1.7.2](https://github.com/ADJazzzz/BLSPAM/compare/1.7.1...1.7.2) 2026-05-31
 
 ### 修复
