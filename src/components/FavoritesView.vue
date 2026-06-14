@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 import {
     NForm,
     NFormItem,
@@ -22,6 +22,7 @@ import { useBiliStore } from '@/stores/useBiliStore'
 import { updateSaveSpamerStatusList } from '@/utils/ui'
 import { getDanmakuLength } from '@/utils/danmaku'
 import stop from '@/modules/Spamer/textSpamer'
+import SearchReplaceWidget from './SearchReplaceWidget.vue'
 
 const moduleStore = useModuleStore()
 const uiStore = useUIStore()
@@ -153,6 +154,40 @@ const handleSendToText = () => {
         message.error('未找到当前标签页')
     }
 }
+
+const showSearchReplace = ref(false)
+const textareaInstRef = ref<any>(null)
+
+const currentPanel = computed(() => {
+    return moduleStore.moduleConfig.Favorites.favoritesTabPanels.find(
+        (panel) => panel.name === moduleStore.moduleConfig.Favorites.favoritesTabsValue
+    )
+})
+
+const currentPanelMsg = computed({
+    get: () => currentPanel.value?.msg ?? '',
+    set: (val) => {
+        if (currentPanel.value) {
+            currentPanel.value.msg = val
+        }
+    }
+})
+
+const handleKeyDown = (e: KeyboardEvent) => {
+    if (!uiStore.uiConfig.isShowPanel) return
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'F')) {
+        e.preventDefault()
+        showSearchReplace.value = true
+    }
+}
+
+onMounted(() => {
+    window.addEventListener('keydown', handleKeyDown)
+})
+
+onUnmounted(() => {
+    window.removeEventListener('keydown', handleKeyDown)
+})
 </script>
 
 <template>
@@ -250,23 +285,45 @@ const handleSendToText = () => {
                         />
                     </n-form-item>
                     <n-form-item
-                        label="发送内容"
-                        show-require-mark
+                        :show-label="false"
                         :validation-status="panels.msg === '' ? 'error' : undefined"
                     >
-                        <n-input
-                            v-model:value="panels.msg"
-                            round
-                            clearable
-                            show-count
-                            type="textarea"
-                            placeholder="默认每次弹幕发送字数为你文字独轮车设置的间隔，超出相应值将自动分割到下一条弹幕"
-                            rows="5"
-                        >
-                            <template #count="{ value }">
-                                {{ getDanmakuLength(value ?? '') }}
-                            </template>
-                        </n-input>
+                        <n-flex vertical style="width: 100%; gap: 6px;">
+                            <n-flex justify="space-between" align="center" style="width: 100%">
+                                <span style="font-weight: 500; font-size: 14px;">
+                                    <span style="color: #d03050; margin-right: 4px;">*</span>发送内容
+                                </span>
+                                <n-button
+                                    size="tiny"
+                                    type="primary"
+                                    secondary
+                                    @click="showSearchReplace = true"
+                                >
+                                    搜索替换
+                                </n-button>
+                            </n-flex>
+                            <div class="blspam-textarea-container" style="position: relative; width: 100%;">
+                                <n-input
+                                    ref="textareaInstRef"
+                                    v-model:value="panels.msg"
+                                    round
+                                    clearable
+                                    show-count
+                                    type="textarea"
+                                    placeholder="默认每次弹幕发送字数为你文字独轮车设置的间隔，超出相应值将自动分割到下一条弹幕"
+                                    rows="5"
+                                >
+                                    <template #count="{ value }">
+                                        {{ getDanmakuLength(value ?? '') }}
+                                    </template>
+                                </n-input>
+                                <SearchReplaceWidget
+                                    v-model:show="showSearchReplace"
+                                    v-model:value="currentPanelMsg"
+                                    :textarea-inst="textareaInstRef"
+                                />
+                            </div>
+                        </n-flex>
                     </n-form-item>
                 </n-tab-pane>
             </n-tabs>
