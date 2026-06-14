@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
 import {
     NButton,
     NForm,
@@ -20,12 +21,32 @@ import { updateSaveSpamerStatusList } from '@/utils/ui'
 import { getDanmakuLength } from '@/utils/danmaku'
 import EmotionIcon from '@/assets/EmotionIcon.svg?component'
 import stop from '@/modules/Spamer/textSpamer'
+import SearchReplaceWidget from './SearchReplaceWidget.vue'
 
 const uiStore = useUIStore()
 const moduleStore = useModuleStore()
 const biliStore = useBiliStore()
 const message = useMessage()
 const tStop = new stop('StopTextSpamer')
+
+const showSearchReplace = ref(false)
+const textareaInstRef = ref<any>(null)
+
+const handleKeyDown = (e: KeyboardEvent) => {
+    if (!uiStore.uiConfig.isShowPanel) return
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'F')) {
+        e.preventDefault()
+        showSearchReplace.value = true
+    }
+}
+
+onMounted(() => {
+    window.addEventListener('keydown', handleKeyDown)
+})
+
+onUnmounted(() => {
+    window.removeEventListener('keydown', handleKeyDown)
+})
 
 const handleStartSpamer = () => {
     if (
@@ -212,53 +233,36 @@ const rules = {
                 </n-form-item>
             </n-flex>
         </n-form-item>
-        <n-form-item label="发送内容" path="msg">
-            <n-input
-                round
-                clearable
-                type="textarea"
-                show-count
-                v-model:value="moduleStore.moduleConfig.TextSpam.msg"
-                placeholder="车了可能会被禁，但不车就等于一直被禁"
-                rows="5"
-            >
-                <template #count="{ value }">
-                    {{ getDanmakuLength(value ?? '') }}
-                </template>
-            </n-input>
-            <n-popover trigger="click" placement="left" style="width: 500px">
-                <template #trigger>
-                    <n-button text style="padding-left: 4px">
-                        <n-icon :size="24">
-                            <EmotionIcon />
-                        </n-icon>
+        <n-form-item path="msg" :show-label="false">
+            <n-flex vertical style="width: 100%; gap: 6px;">
+                <n-flex justify="space-between" align="center" style="width: 100%">
+                    <span style="font-weight: 500; font-size: 14px;">发送内容</span>
+                    <n-button size="tiny" type="primary" secondary @click="showSearchReplace = true">
+                        搜索替换
                     </n-button>
-                </template>
-                <div
-                    style="
-                        display: grid;
-                        grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
-                        gap: 8px;
-                        padding: 8px;
-                    "
-                >
-                    <div
-                        v-for="data in biliStore.emotionData.find((data) => data.pkg_id === 100)
-                            ?.emoticons"
-                        :key="data.emoticon_id"
-                        :disabled="data.perm === 0"
+                </n-flex>
+                <div class="blspam-textarea-container" style="position: relative; width: 100%;">
+                    <n-input
+                        ref="textareaInstRef"
+                        round
+                        clearable
+                        type="textarea"
+                        show-count
+                        v-model:value="moduleStore.moduleConfig.TextSpam.msg"
+                        placeholder="车了可能会被禁，但不车就等于一直被禁"
+                        rows="5"
                     >
-                        <n-avatar
-                            :color="uiStore.uiConfig.theme === 'dark' ? '#48484E' : 'white'"
-                            :size="24"
-                            :src="data.url"
-                            object-fit="contain"
-                            style="cursor: pointer"
-                            @click="moduleStore.moduleConfig.TextSpam.msg += data.emoji"
-                        />
-                    </div>
+                        <template #count="{ value }">
+                            {{ getDanmakuLength(value ?? '') }}
+                        </template>
+                    </n-input>
+                    <SearchReplaceWidget
+                        v-model:show="showSearchReplace"
+                        v-model:value="moduleStore.moduleConfig.TextSpam.msg"
+                        :textarea-inst="textareaInstRef"
+                    />
                 </div>
-            </n-popover>
+            </n-flex>
         </n-form-item>
         <n-flex
             justify="end"
