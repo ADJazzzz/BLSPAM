@@ -2,6 +2,7 @@
     "name": "bilibili-live-spamer",
     "private": true,
     "version": "1.7.3",
+    "packageManager": "pnpm@11.1.0",
     "type": "module",
     "scripts": {
         "dev": "vite",
