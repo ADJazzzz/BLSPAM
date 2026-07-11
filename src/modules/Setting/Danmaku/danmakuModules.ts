@@ -12,6 +12,15 @@ import BaseModule from '@/modules/BaseModule'
 class danmakuModules extends BaseModule {
     config = this.moduleStore.moduleConfig.setting.danmakuModules
 
+    // 缓存反馈组件，防止重复生成n-config-provider
+    private _discreteAPI: ReturnType<typeof useDiscreteAPI<['message', 'notification']>> | null = null
+    private get discreteAPI() {
+        if (!this._discreteAPI) {
+            this._discreteAPI = useDiscreteAPI(['message', 'notification'])
+        }
+        return this._discreteAPI
+    }
+
     private async dmOB() {
         const dmArea = dq('.chat-items')
         if (dmArea) {
@@ -32,12 +41,11 @@ class danmakuModules extends BaseModule {
                                 (node.classList.contains('has-bubble') &&
                                     node.classList.length === 3))
                         ) {
-                            const { message } = useDiscreteAPI(['message'])
                             const danmaku = node.dataset.danmaku
                             const replyMid = node.dataset.replymid
                             if (danmaku === undefined || replyMid === undefined) {
                                 this.logger.error('弹幕节点数据异常，请检查以下节点:', node)
-                                message.error('发生错误，详情查看控制台👀')
+                                this.discreteAPI.message.error('发生错误，详情查看控制台👀')
                                 return
                             }
 
@@ -53,7 +61,7 @@ class danmakuModules extends BaseModule {
                                         '弹幕节点数据异常，未找到回复用户名，请检查以下节点:',
                                         node
                                     )
-                                    message.error('发生错误，详情查看控制台👀')
+                                    this.discreteAPI.message.error('发生错误，详情查看控制台👀')
                                     return
                                 }
                             }
@@ -183,7 +191,7 @@ class danmakuModules extends BaseModule {
         if (roomid) {
             try {
                 const response = await BILIAPI.sendMsg(msg, roomid)
-                const { message, notification } = useDiscreteAPI(['message', 'notification'])
+                const { message, notification } = this.discreteAPI
                 if (response.code === 0) {
                     this.logger.log(`弹幕 ${msg} 发送成功`, response)
                     message.success(`弹幕 ${msg} 发送成功`, { duration: 2500 })
@@ -204,8 +212,7 @@ class danmakuModules extends BaseModule {
     private async dmCopy(msg: string) {
         try {
             await navigator.clipboard.writeText(msg)
-            const { message } = useDiscreteAPI(['message'])
-            message.success(`弹幕 ${msg} 已复制`, { duration: 2500 })
+            this.discreteAPI.message.success(`弹幕 ${msg} 已复制`, { duration: 2500 })
         } catch (error) {
             this.logger.log('复制到剪切板失败', error)
         }
