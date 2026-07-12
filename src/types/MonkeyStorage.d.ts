@@ -27,11 +27,9 @@ interface modulesConfig {
 
     Favorites: {
         enable: boolean
-        timeintervalMax: number
-        timeinterval: number
-        randomize: boolean
         favoritesTabsValue: number
         favoritesTabPanels: favoritesTabPanels[]
+        enabledOrder: number[]
     }
 
     setting: {
@@ -78,6 +76,10 @@ type favoritesTabPanels = {
     name: number
     tab: string
     msg: string
+    enabled: boolean
+    timeinterval: number
+    timeintervalMax: number
+    randomize: boolean
 }
 
 type menuIndex = 'TextView' | 'EmotionView' | 'FavoritesView' | 'SettingView'

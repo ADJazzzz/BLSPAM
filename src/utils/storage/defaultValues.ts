@@ -34,18 +34,20 @@ export default {
         },
         Favorites: {
             enable: false,
-            timeinterval: 5,
-            timeintervalMax: 5,
-            randomize: false,
             favoritesTabsValue: 1,
             favoritesTabPanels: [
                 {
                     key: 1,
                     name: 1,
                     tab: '第一个',
-                    msg: ''
+                    msg: '',
+                    enabled: false,
+                    timeinterval: 5,
+                    timeintervalMax: 5,
+                    randomize: false
                 }
-            ]
+            ],
+            enabledOrder: []
         },
         setting: {
             saveSpamerStatus: {
