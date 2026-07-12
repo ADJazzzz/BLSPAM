@@ -13,7 +13,8 @@ class danmakuModules extends BaseModule {
     config = this.moduleStore.moduleConfig.setting.danmakuModules
 
     // 缓存反馈组件，防止重复生成n-config-provider
-    private _discreteAPI: ReturnType<typeof useDiscreteAPI<['message', 'notification']>> | null = null
+    private _discreteAPI: ReturnType<typeof useDiscreteAPI<['message', 'notification']>> | null =
+        null
     private get discreteAPI() {
         if (!this._discreteAPI) {
             this._discreteAPI = useDiscreteAPI(['message', 'notification'])

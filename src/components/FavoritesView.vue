@@ -193,16 +193,18 @@ const handleSendToText = () => {
         <n-form-item id="controlpanel" label="收藏夹发送序列">
             <div style="overflow-x: auto; padding-bottom: 4px">
                 <n-timeline horizontal v-if="enabledPanelsInOrder.length > 0">
-                <n-timeline-item
-                    v-for="panels in enabledPanelsInOrder"
-                    :key="panels.key"
-                    :color="getTimelineColor(panels.key)"
-                    :title="panels.tab || '(未命名)'"
-                    :content="panels.randomize && panels.timeintervalMax > panels.timeinterval
-                        ? `随机时间间隔: ${panels.timeinterval}-${panels.timeintervalMax}秒`
-                        : `时间间隔：${panels.timeinterval}秒`"
-                />
-            </n-timeline>
+                    <n-timeline-item
+                        v-for="panels in enabledPanelsInOrder"
+                        :key="panels.key"
+                        :color="getTimelineColor(panels.key)"
+                        :title="panels.tab || '(未命名)'"
+                        :content="
+                            panels.randomize && panels.timeintervalMax > panels.timeinterval
+                                ? `随机时间间隔: ${panels.timeinterval}-${panels.timeintervalMax}秒`
+                                : `时间间隔：${panels.timeinterval}秒`
+                        "
+                    />
+                </n-timeline>
             </div>
         </n-form-item>
         <n-form-item :show-feedback="false" :show-label="false" id="favpanel">
@@ -272,7 +274,15 @@ const handleSendToText = () => {
                                                 min="1"
                                                 :precision="0"
                                                 style="width: 100px"
-                                                @update:value="(val: number | null) => { if (val !== null && panels.timeintervalMax < val) panels.timeintervalMax = val }"
+                                                @update:value="
+                                                    (val: number | null) => {
+                                                        if (
+                                                            val !== null &&
+                                                            panels.timeintervalMax < val
+                                                        )
+                                                            panels.timeintervalMax = val
+                                                    }
+                                                "
                                             >
                                                 <template #suffix> 秒 </template>
                                             </n-input-number>
@@ -295,7 +305,15 @@ const handleSendToText = () => {
                                                 min="1"
                                                 :precision="0"
                                                 style="width: 100px"
-                                                @update:value="(val: number | null) => { if (val !== null && val < panels.timeinterval) panels.timeinterval = val }"
+                                                @update:value="
+                                                    (val: number | null) => {
+                                                        if (
+                                                            val !== null &&
+                                                            val < panels.timeinterval
+                                                        )
+                                                            panels.timeinterval = val
+                                                    }
+                                                "
                                             >
                                                 <template #suffix> 秒 </template>
                                             </n-input-number>
@@ -334,7 +352,9 @@ const handleSendToText = () => {
             v-if="!moduleStore.moduleConfig.Favorites.enable"
         >
             <n-button round type="info" @click="handleSendToText">发送到文字独轮车</n-button>
-            <n-button round type="warning" :focusable="false" @click="handleClearAllSequence">清除序列</n-button>
+            <n-button round type="warning" :focusable="false" @click="handleClearAllSequence"
+                >清除序列</n-button
+            >
             <n-button round @click="uiStore.uiConfig.isShowPanel = false">取消</n-button>
             <n-button round type="primary" @click="handleStartSpamer">开车</n-button>
         </n-flex>
