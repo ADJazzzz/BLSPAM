@@ -12,6 +12,13 @@ interface SpamConfig {
     timeinterval: number
 }
 
+interface PanelWithMsgs {
+    msgs: string[]
+    timeinterval: number
+    timeintervalMax: number
+    randomize: boolean
+}
+
 class TextSpamer extends BaseModule {
     private textConfig = this.moduleStore.moduleConfig.TextSpam
     private favoritesConfig = this.moduleStore.moduleConfig.Favorites
@@ -39,11 +46,18 @@ class TextSpamer extends BaseModule {
         )
     }
 
-    private formatFavorites(): string[] {
-        return _.flatMap(this.favoritesConfig.favoritesTabPanels, (item) => {
-            if (!item.msg) return []
-            return this.splitAndSliceDanmaku(item.msg)
-        })
+    private getEnabledPanelsInOrder(): PanelWithMsgs[] {
+        const panels = this.favoritesConfig.favoritesTabPanels
+        const order = this.favoritesConfig.enabledOrder
+        return order
+            .map((key) => panels.find((p) => p.key === key && p.enabled && p.msg))
+            .filter((p): p is NonNullable<typeof p> => !!p)
+            .map((p) => ({
+                msgs: this.splitAndSliceDanmaku(p.msg),
+                timeinterval: p.timeinterval,
+                timeintervalMax: p.timeintervalMax,
+                randomize: p.randomize
+            }))
     }
 
     private formatTime(seconds: number): number {
@@ -143,19 +157,45 @@ class TextSpamer extends BaseModule {
         this.cleanUP()
         if (!this.roomId) return
 
-        const msgs = this.formatFavorites()
-        if (msgs.length === 0) return
+        const enabledPanels = this.getEnabledPanelsInOrder()
+        if (enabledPanels.length === 0) return
 
-        const timeintervalMin = this.formatTime(this.favoritesConfig.timeinterval)
-        const timeintervalMax = this.formatTime(this.favoritesConfig.timeintervalMax)
-        this.createCycleSender(
-            msgs,
-            this.roomId,
-            timeintervalMin,
-            timeintervalMax,
-            this.favoritesConfig.randomize,
-            this.favoritesConfig
-        )
+        const msgIndices = new Array(enabledPanels.length).fill(0)
+        let panelIndex = 0
+
+        const sendNext = async () => {
+            if (!this.favoritesConfig.enable) {
+                this.cleanUP()
+                return
+            }
+
+            const panel = enabledPanels[panelIndex]
+            if (panel.msgs.length > 0) {
+                const msgIndex = msgIndices[panelIndex]
+                await this.sendMsg(panel.msgs[msgIndex], this.roomId!)
+                msgIndices[panelIndex] = (msgIndex + 1) % panel.msgs.length
+            }
+
+            panelIndex = (panelIndex + 1) % enabledPanels.length
+            const nextPanel = enabledPanels[panelIndex]
+
+            const delayMin = this.formatTime(nextPanel.timeinterval)
+            const delayMax = this.formatTime(nextPanel.timeintervalMax)
+            const delay = nextPanel.randomize
+                ? this.getRandomInterval(delayMin, delayMax)
+                : delayMin
+
+            this.timeoutId = setTimeout(sendNext, delay)
+        }
+
+        const firstPanel = enabledPanels[0]
+        const firstDelayMin = this.formatTime(firstPanel.timeinterval)
+        const firstDelayMax = this.formatTime(firstPanel.timeintervalMax)
+        const firstDelay = firstPanel.randomize
+            ? this.getRandomInterval(firstDelayMin, firstDelayMax)
+            : firstDelayMin
+
+        this.timeoutId = setTimeout(sendNext, firstDelay)
     }
 
     public stop(area: SpamArea): void {

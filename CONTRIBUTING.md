@@ -8,9 +8,9 @@
 - 安装 [Node.js](https://nodejs.org/zh-cn) (LTS版本就可以)
 - 安装 [Visual Studio Code](https://code.visualstudio.com/download)
 - 安装 [git](https://git-scm.com/) 或者任意GIT GUI客户端，例如 [Github Desktop](https://desktop.github.com/download/)
-- 运行以下命令安装pnpm
+- 运行以下命令启用Corepack
 ```sh
-npm install -g pnpm
+corepack enable
 ```
 - Fork 本项目 (不用勾选 Copy the `main` branch only)，并 clone 至本地
 - 在项目根目录中运行以下命令安装依赖

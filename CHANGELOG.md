@@ -1,5 +1,24 @@
 ## NEXT_VERSION
 
+## [1.8.0](https://github.com/ADJazzzz/BLSPAM/compare/1.7.3...1.8.0) 2026-07-12
+
+### 新增
+
+- 收藏夹功能添加发送序列[(#61)](https://github.com/ADJazzzz/BLSPAM/issues/61)
+
+### 调整
+
+- 收藏夹取消全局时间调整，改为每个组独立时间设置
+- 启用Corepack管理
+
+### 修复
+
+- 修复由于反馈组件导致无限生成n-config-provider的问题[(#62)](https://github.com/ADJazzzz/BLSPAM/issues/62)
+
+### 更新
+
+- 主要依赖项
+
 ## [1.7.3](https://github.com/ADJazzzz/BLSPAM/compare/1.7.2...1.7.3) 2026-06-13
 
 ### 调整
