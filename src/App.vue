@@ -55,96 +55,127 @@ const getRoomInfoText = () => {
     return formatRoomInfoText([])
 }
 
-const renderAppBtn = (ctrEleName: string, appStyle: object) => {
-    pollingQuery(document, ctrEleName, 300, 1200, true).then((eleContent) => {
-        watchEffect(() => {
-            const roomInfoText = getRoomInfoText()
-            const buttonNode = h(
-                NConfigProvider,
-                {
-                    theme: uiStore.uiConfig.theme === 'dark' ? darkTheme : lightTheme
-                },
-                {
-                    default: () =>
-                        h(
-                            NButton,
-                            {
-                                class: 'blspam_app_btn',
-                                text: true,
-                                style: appStyle,
-                                focusable: false,
-                                bordered: false,
-                                onClick: () => {
-                                    if (!useBiliStore().loginInfo?.isLogin) {
-                                        uiStore.uiConfig.isShowPanel = false
-                                    } else {
-                                        uiStore.uiConfig.isShowPanel = true
-                                    }
-                                }
-                            },
-                            {
-                                default: () =>
-                                    h(
-                                        NPopover,
-                                        {
-                                            trigger: 'hover'
-                                        },
-                                        {
-                                            trigger: () =>
-                                                h(
-                                                    NBadge,
-                                                    {
-                                                        dot: true,
-                                                        processing: true,
-                                                        offset: [-1, 2],
-                                                        type:
-                                                            moduleStore.moduleConfig.TextSpam
-                                                                .enable ||
-                                                            moduleStore.moduleConfig.EmotionSpam
-                                                                .enable ||
-                                                            moduleStore.moduleConfig.Favorites
-                                                                .enable
-                                                                ? 'success'
-                                                                : useBiliStore().loginInfo
-                                                                        ?.isLogin &&
-                                                                    useBiliStore().cookies
-                                                                  ? 'info'
-                                                                  : 'error'
-                                                    },
-                                                    {
-                                                        default: () =>
-                                                            h(NIcon, {
-                                                                component: AppIcon,
-                                                                size: 24
-                                                            })
-                                                    }
-                                                ),
-                                            default: () => roomInfoText
+const renderAppBtn = () => {
+    pollingQuery(
+        document,
+        '#control-panel-ctnr-box .icon-left-part, #control-panel-ctnr-box .icon-right-part',
+        300,
+        1200,
+        true
+    )
+        .then((eleContent) => {
+            const appStyle = eleContent.classList.contains('icon-left-part')
+                ? {
+                      marginLeft: '4px',
+                      display: 'inline-block'
+                  }
+                : {
+                      marginLeft: '5px',
+                      display: 'inline-flex',
+                      alignItems: 'center'
+                  }
+
+            watchEffect(() => {
+                const roomInfoText = getRoomInfoText()
+                const buttonNode = h(
+                    NConfigProvider,
+                    {
+                        theme: uiStore.uiConfig.theme === 'dark' ? darkTheme : lightTheme,
+                        style: {
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            flexShrink: 0
+                        }
+                    },
+                    {
+                        default: () =>
+                            h(
+                                NButton,
+                                {
+                                    class: 'blspam_app_btn',
+                                    text: true,
+                                    style: appStyle,
+                                    focusable: false,
+                                    bordered: false,
+                                    onClick: () => {
+                                        if (!useBiliStore().loginInfo?.isLogin) {
+                                            uiStore.uiConfig.isShowPanel = false
+                                        } else {
+                                            uiStore.uiConfig.isShowPanel = true
                                         }
-                                    )
-                            }
-                        )
-                }
-            )
-            render(buttonNode, eleContent)
+                                    }
+                                },
+                                {
+                                    default: () =>
+                                        h(
+                                            NPopover,
+                                            {
+                                                trigger: 'hover'
+                                            },
+                                            {
+                                                trigger: () =>
+                                                    h(
+                                                        NBadge,
+                                                        {
+                                                            dot: true,
+                                                            processing: true,
+                                                            offset: [-1, 2],
+                                                            type:
+                                                                moduleStore.moduleConfig.TextSpam
+                                                                    .enable ||
+                                                                moduleStore.moduleConfig.EmotionSpam
+                                                                    .enable ||
+                                                                moduleStore.moduleConfig.Favorites
+                                                                    .enable
+                                                                    ? 'success'
+                                                                    : useBiliStore().loginInfo
+                                                                            ?.isLogin &&
+                                                                        useBiliStore().cookies
+                                                                      ? 'info'
+                                                                      : 'error'
+                                                        },
+                                                        {
+                                                            default: () =>
+                                                                h(NIcon, {
+                                                                    component: AppIcon,
+                                                                    size: 24
+                                                                })
+                                                        }
+                                                    ),
+                                                default: () => roomInfoText
+                                            }
+                                        )
+                                }
+                            )
+                    }
+                )
+                render(buttonNode, eleContent)
+            })
         })
-    })
+        .catch((error) => {
+            logger.error('渲染入口按钮失败', error)
+        })
 }
 const handleUpdateCollapse = (collapsed: boolean) => {
     uiStore.uiConfig.isCollapsed = collapsed
 }
 
-new MutationObserver((_mutationsList, observer) => {
+const initAppBtn = () => {
     const controlPanel = dq('#control-panel-ctnr-box')
-    if (controlPanel) {
-        renderAppBtn('.icon-left-part', {
-            marginLeft: '4px',
-            display: 'inline-block'
-        })
-        observer.disconnect()
-        logger.info('初始化完成')
-    }
-}).observe(document.body, { childList: true, subtree: true })
+    if (!controlPanel) return false
+
+    renderAppBtn()
+    logger.info('初始化完成')
+    return true
+}
+
+if (!initAppBtn()) {
+    new MutationObserver((_mutationsList, observer) => {
+        if (initAppBtn()) {
+            observer.disconnect()
+        }
+    }).observe(document.body, { childList: true, subtree: true })
+}
 // n-config-provider 的 preflight-style-disabled 属性不知道为什么不生效，只能这样了
 GM_addStyle('body { font-size: 12px }')
 </script>
