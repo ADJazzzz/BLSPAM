@@ -1,5 +1,15 @@
 ## NEXT_VERSION
 
+## [1.8.1](https://github.com/ADJazzzz/BLSPAM/compare/1.8.0...1.8.1) 2026-11-19
+
+### 调整
+
+- 适配B站直播间新版控制栏布局 [(#64)](https://github.com/ADJazzzz/BLSPAM/pull/64)
+
+### 更新
+
+- 主要依赖项
+
 ## [1.8.0](https://github.com/ADJazzzz/BLSPAM/compare/1.7.3...1.8.0) 2026-07-12
 
 ### 新增
